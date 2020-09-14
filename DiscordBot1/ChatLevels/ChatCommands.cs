@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.ChatLevels
+namespace HeartFlame.ChatLevels
 {
     [Group("Level"), Alias("lv", "lvl")]
     public class ChatCommands : ModuleBase<SocketCommandContext>

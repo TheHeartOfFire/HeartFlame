@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DiscordBot1.Permissions
+namespace HeartFlame.Permissions
 {
     public class PermissionsDataType
     {

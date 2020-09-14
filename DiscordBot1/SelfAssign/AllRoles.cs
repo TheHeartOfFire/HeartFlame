@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot1.SelfAssign
+namespace HeartFlame.SelfAssign
 {
     public class AllRoles
     {

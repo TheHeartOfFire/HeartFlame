@@ -1,10 +1,10 @@
-﻿using DiscordBot1.Misc;
+﻿using HeartFlame.Misc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.Configuration
+namespace HeartFlame.Configuration
 {
     public class Configuration
     {

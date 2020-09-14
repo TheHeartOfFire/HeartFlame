@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot1.Misc
+namespace HeartFlame.Misc
 {
     public static class ModuleControl
     {

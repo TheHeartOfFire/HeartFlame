@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.SelfAssign
+namespace HeartFlame.SelfAssign
 {
     public class SelfAssign
     {

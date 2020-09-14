@@ -1,11 +1,11 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using DiscordBot1.ChatLevels;
+using HeartFlame.ChatLevels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot1.SelfAssign
+namespace HeartFlame.SelfAssign
 {
     public class SelfAssign_ModuleIntegrator
     {

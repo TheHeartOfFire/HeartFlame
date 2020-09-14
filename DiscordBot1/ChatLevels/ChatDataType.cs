@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiscordBot1.ChatLevels
+namespace HeartFlame.ChatLevels
 {
     public class ChatDataType : IComparable<ChatDataType>, IEquatable<ChatDataType>
     {

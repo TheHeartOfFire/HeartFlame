@@ -1,14 +1,14 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.Configuration
+namespace HeartFlame.Configuration
 {
     [Group("Configuration"), Alias("Config")]
     public class Configuration_Command : ModuleBase<SocketCommandContext>

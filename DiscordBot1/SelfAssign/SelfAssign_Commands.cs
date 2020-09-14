@@ -1,13 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.SelfAssign
+namespace HeartFlame.SelfAssign
 {
     [Group("SelfAssign"), Alias("Self Assign", "Self", "sa", "s a")]
     public class SelfAssign_Commands : ModuleBase<SocketCommandContext>

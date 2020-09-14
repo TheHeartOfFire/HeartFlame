@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DiscordBot1.Permissions
+namespace HeartFlame.Permissions
 {
     public class Permissions_User
     {

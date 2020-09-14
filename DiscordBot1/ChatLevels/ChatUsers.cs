@@ -1,5 +1,5 @@
 ﻿using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace DiscordBot1.ChatLevels
+namespace HeartFlame.ChatLevels
 {
     public class ChatUsers
     {

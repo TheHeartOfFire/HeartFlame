@@ -13,7 +13,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.ChatLevels
+namespace HeartFlame.ChatLevels
 {
     public class BannerMaker
     {

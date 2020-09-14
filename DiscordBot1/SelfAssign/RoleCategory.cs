@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DiscordBot1.SelfAssign
+namespace HeartFlame.SelfAssign
 {
     public class RoleCategory<t>
     {

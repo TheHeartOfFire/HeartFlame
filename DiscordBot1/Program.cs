@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DiscordBot1
+namespace HeartFlame
 {
     public class Program
     {

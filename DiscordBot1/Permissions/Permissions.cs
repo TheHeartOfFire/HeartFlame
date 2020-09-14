@@ -1,5 +1,5 @@
 ﻿using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.Permissions
+namespace HeartFlame.Permissions
 {
     public class Permissions
     {

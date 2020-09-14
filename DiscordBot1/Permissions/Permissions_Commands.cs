@@ -1,12 +1,12 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBot1.Misc;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBot1.Permissions
+namespace HeartFlame.Permissions
 {
     [Group("Permissions"), Alias("perms")]
     public class Permissions_Command : ModuleBase<SocketCommandContext>

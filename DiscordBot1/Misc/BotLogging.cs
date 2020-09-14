@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 
-namespace DiscordBot1.Misc
+namespace HeartFlame.Misc
 {
     public class BotLogging
     {

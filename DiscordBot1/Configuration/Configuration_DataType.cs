@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DiscordBot1.Configuration
+namespace HeartFlame.Configuration
 {
     public class Configuration_DataType
     {
