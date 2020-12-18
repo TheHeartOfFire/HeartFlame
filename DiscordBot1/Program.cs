@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using HeartFlame.GuildControl;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -51,10 +52,24 @@ namespace HeartFlame
             Client.Log += Client_Log;
             Client.ReactionAdded += Client_ReactionAdded;
             Client.ReactionRemoved += Client_ReactionRemoved;
+            Client.JoinedGuild += Client_JoinedGuild;
+            Client.LeftGuild += Client_LeftGuild;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
             Misc.ModuleControl.InitializeModules();
             await Task.Delay(-1);
+        }
+
+        private async Task Client_LeftGuild(SocketGuild arg)
+        {
+            GuildManager.RemoveGuild(arg.Id);
+            await Task.CompletedTask;
+        }
+
+        private async Task Client_JoinedGuild(SocketGuild arg)
+        {
+            GuildManager.AddGuild(arg.Id);
+            await Task.CompletedTask;
         }
 
         private async Task Client_ReactionRemoved(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)

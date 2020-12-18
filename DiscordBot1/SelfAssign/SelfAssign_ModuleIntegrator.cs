@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using HeartFlame.ChatLevels;
+using HeartFlame.GuildControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,38 +17,43 @@ namespace HeartFlame.SelfAssign
 
             if (user.IsBot)
                 return;
-
-            if (Reaction.MessageId == SelfAssign.roles.Consoles.MsgID)
+            foreach (var Guild in GuildManager.Guilds)
             {
-                foreach (var role in SelfAssign.roles.Consoles.Roles)
+                if (Reaction.MessageId == Guild.SelfAssign.Consoles.MsgID)
                 {
-                    if (role.Emoji.Contains(Reaction.Emote.Name))
+                    if (Reaction.MessageId == Guild.SelfAssign.Consoles.MsgID)
                     {
-                        var Role = guild.GetRole(role.RoleID);
-                        await user.AddRoleAsync(Role);
-                        if (SelfAssign.roles.Consoles.DividerRoleID > 0)
+                        foreach (var role in Guild.SelfAssign.Consoles.Roles)
                         {
-                            Role = guild.GetRole(SelfAssign.roles.Consoles.DividerRoleID);
-                            await user.AddRoleAsync(Role);
+                            if (role.Emoji.Contains(Reaction.Emote.Name))
+                            {
+                                var Role = guild.GetRole(role.RoleID);
+                                await user.AddRoleAsync(Role);
+                                if (Guild.SelfAssign.Consoles.DividerRoleID > 0)
+                                {
+                                    Role = guild.GetRole(Guild.SelfAssign.Consoles.DividerRoleID);
+                                    await user.AddRoleAsync(Role);
+                                }
+                                return;
+                            }
                         }
-                        return;
                     }
-                }
-            }
-            if (Reaction.MessageId == SelfAssign.roles.TimeZones.MsgID)
-            {
-                foreach (var role in SelfAssign.roles.TimeZones.Roles)
-                {
-                    if (role.Emoji.Contains(Reaction.Emote.Name))
+                    if (Reaction.MessageId == Guild.SelfAssign.TimeZones.MsgID)
                     {
-                        var Role = guild.GetRole(role.RoleID);
-                        await user.AddRoleAsync(Role);
-                        if (SelfAssign.roles.TimeZones.DividerRoleID > 0)
+                        foreach (var role in Guild.SelfAssign.TimeZones.Roles)
                         {
-                            Role = guild.GetRole(SelfAssign.roles.TimeZones.DividerRoleID);
-                            await user.AddRoleAsync(Role);
+                            if (role.Emoji.Contains(Reaction.Emote.Name))
+                            {
+                                var Role = guild.GetRole(role.RoleID);
+                                await user.AddRoleAsync(Role);
+                                if (Guild.SelfAssign.TimeZones.DividerRoleID > 0)
+                                {
+                                    Role = guild.GetRole(Guild.SelfAssign.TimeZones.DividerRoleID);
+                                    await user.AddRoleAsync(Role);
+                                }
+                                return;
+                            }
                         }
-                        return;
                     }
                 }
             }
@@ -61,27 +67,30 @@ namespace HeartFlame.SelfAssign
             if (user.IsBot)
                 return;
 
-            if (Reaction.MessageId == SelfAssign.roles.Consoles.MsgID)
+            foreach (var Guild in GuildManager.Guilds)
             {
-                foreach (var role in SelfAssign.roles.Consoles.Roles)
+                if (Reaction.MessageId == Guild.SelfAssign.Consoles.MsgID)
                 {
-                    if (role.Emoji.Contains(Reaction.Emote.Name))
+                    foreach (var role in Guild.SelfAssign.Consoles.Roles)
                     {
-                        var Role = guild.GetRole(role.RoleID);
-                        await user.RemoveRoleAsync(Role);
-                        return;
+                        if (role.Emoji.Contains(Reaction.Emote.Name))
+                        {
+                            var Role = guild.GetRole(role.RoleID);
+                            await user.RemoveRoleAsync(Role);
+                            return;
+                        }
                     }
                 }
-            }
-            if (Reaction.MessageId == SelfAssign.roles.TimeZones.MsgID)
-            {
-                foreach (var role in SelfAssign.roles.TimeZones.Roles)
+                if (Reaction.MessageId == Guild.SelfAssign.TimeZones.MsgID)
                 {
-                    if (role.Emoji.Contains(Reaction.Emote.Name))
+                    foreach (var role in Guild.SelfAssign.TimeZones.Roles)
                     {
-                        var Role = guild.GetRole(role.RoleID);
-                        await user.RemoveRoleAsync(Role);
-                        return;
+                        if (role.Emoji.Contains(Reaction.Emote.Name))
+                        {
+                            var Role = guild.GetRole(role.RoleID);
+                            await user.RemoveRoleAsync(Role);
+                            return;
+                        }
                     }
                 }
             }

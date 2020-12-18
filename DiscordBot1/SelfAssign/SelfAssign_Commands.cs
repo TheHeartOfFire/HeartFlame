@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using HeartFlame.GuildControl;
 using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace HeartFlame.SelfAssign
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Group"), Remarks("SelfAssign_Help")]
         public async Task SelfAssignHelp()
         {
-            if (!ModuleControl.IncludeSelfAssign)
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            if (!BotGuild.ModuleControl.IncludeSelfAssign)
             {
                 await ReplyAsync(Properties.Resources.NotSelf);
                 return;
@@ -34,7 +36,8 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Console Group"), Remarks("SelfAssign_Console_Help")]
             public async Task SelfAssignHelp()
             {
-                if (!ModuleControl.IncludeSelfAssign)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
@@ -50,24 +53,25 @@ namespace HeartFlame.SelfAssign
             [Command("Prefab"), Alias("default", "pre"), Summary("Generate the prefabricated Console Self Assign."), Priority(1)]
             public async Task SelfAssignConsoles()
             {
-                if (!ModuleControl.IncludeSelfAssign)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
                 }
 
-                if (ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
+                if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
                 }
 
-                if (SelfAssign.roles.Consoles.MsgID > 0)
+                if (BotGuild.SelfAssign.Consoles.MsgID > 0)
                 {
                     foreach (var chnl in Context.Guild.Channels)
                     {
-                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(SelfAssign.roles.Consoles.MsgID) != null)
-                            await ((IMessageChannel)chnl).DeleteMessageAsync(SelfAssign.roles.Consoles.MsgID);
+                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(BotGuild.SelfAssign.Consoles.MsgID) != null)
+                            await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID);
                     }
                 }
 
@@ -75,17 +79,19 @@ namespace HeartFlame.SelfAssign
 
                 var msgID = await Context.Channel.SendMessageAsync("", false, Embed);
 
-                SelfAssign.SetConsoleMessageID(msgID.Id);
+                SelfAssign.SetConsoleMessageID(msgID.Id, Context.Guild.Id);
 
-                foreach (var role in SelfAssign.roles.Consoles.Roles)
+                foreach (var role in BotGuild.SelfAssign.Consoles.Roles)
                 {
                     await msgID.AddReactionAsync(Emote.Parse(role.Emoji));
                 }
 
-                BotLogging.PrintLogMessage(
+                if (BotGuild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
                     "SelfAssign.SelfAssign_Commands.SelfAssign_Console_Commands.SelfAssignConsoles()",
                     "Generated the prefabricated Console Self Assign.",
                     $"A Console Self Assign prefab was generated in {Context.Channel.Name}",
+                        Context.Guild.Id,
                     (SocketGuildUser)Context.User);
             }
         }
@@ -96,7 +102,8 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Time Group"), Remarks("SelfAssign_Time_Help")]
             public async Task SelfAssignHelp()
             {
-                if (!ModuleControl.IncludeSelfAssign)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
@@ -112,24 +119,25 @@ namespace HeartFlame.SelfAssign
             [Command("Prefab"), Alias("default", "pre"), Summary("Generate the prefabricated TimeZone Self Assign."), Priority(1)]
             public async Task SelfAssignTime()
             {
-                if (!ModuleControl.IncludeSelfAssign)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
                 }
 
-                if (ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
+                if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
                 }
 
-                if (SelfAssign.roles.TimeZones.MsgID > 0)
+                if (BotGuild.SelfAssign.TimeZones.MsgID > 0)
                 {
                     foreach (var chnl in Context.Guild.Channels)
                     {
-                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(SelfAssign.roles.TimeZones.MsgID) != null)
-                            await ((IMessageChannel)chnl).DeleteMessageAsync(SelfAssign.roles.TimeZones.MsgID);
+                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID) != null)
+                            await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID);
                     }
                 }
 
@@ -137,17 +145,19 @@ namespace HeartFlame.SelfAssign
 
                 var msgID = await Context.Channel.SendMessageAsync("", false, Embed);
 
-                SelfAssign.SetTimeMessageID(msgID.Id);
+                SelfAssign.SetTimeMessageID(msgID.Id, Context.Guild.Id);
 
-                foreach (var role in SelfAssign.roles.TimeZones.Roles)
+                foreach (var role in BotGuild.SelfAssign.TimeZones.Roles)
                 {
                     await msgID.AddReactionAsync(Emote.Parse(role.Emoji));
                 }
 
-                BotLogging.PrintLogMessage(
+                if (BotGuild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
                     "SelfAssign.SelfAssign_Commands.SelfAssignTime()",
                     "Generated the prefabricated TimeZone Self Assign.",
                     $"A TimeZone Self Assign prefab was generated in {Context.Channel.Name}",
+                        Context.Guild.Id,
                     (SocketGuildUser)Context.User);
             }
         }

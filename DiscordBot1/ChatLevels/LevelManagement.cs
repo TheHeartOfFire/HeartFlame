@@ -1,4 +1,5 @@
 ﻿using Discord;
+using HeartFlame.GuildControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -42,23 +43,30 @@ namespace HeartFlame.ChatLevels
             return -1;
         }
 
-        public static Embed Top10()
+        public static Embed Top10(ulong GuildID)
         {
-            var Users = ChatUsers.Chat_Users;
-            Users.Sort();
-            var Embed = new EmbedBuilder();
-            Embed.WithTitle("Chat Level Top 10");
-
-            var Count = 10;
-            if (Users.Count < 10)
-                Count = Users.Count;
-
-            for (int i = 0; i < Count; i++)
+            foreach (var Guild in GuildManager.Guilds)
             {
-                Embed.AddField($"Name: {Users[i].DiscordUsername}", $"Level: {Users[i].ChatLevel}\nExperience: {Users[i].ChatExp}/{GetExpAtLevel(Users[i].ChatLevel)}\nMessages Sent: {Users[i].MessagesSent}");
-            }
+                if (Guild.GuildID == GuildID)
+                {
+                    var Users = Guild.Chat;
+                    Users.Sort();
+                    var Embed = new EmbedBuilder();
+                    Embed.WithTitle("Chat Level Top 10");
 
-            return Embed.Build();
+                    var Count = 10;
+                    if (Users.Count < 10)
+                        Count = Users.Count;
+
+                    for (int i = 0; i < Count; i++)
+                    {
+                        Embed.AddField($"Name: {Users[i].DiscordUsername}", $"Level: {Users[i].ChatLevel}\nExperience: {Users[i].ChatExp}/{GetExpAtLevel(Users[i].ChatLevel)}\nMessages Sent: {Users[i].MessagesSent}");
+                    }
+
+                    return Embed.Build();
+                }
+            }
+            return null;
         }
     }
 }

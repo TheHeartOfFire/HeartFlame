@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using HeartFlame.GuildControl;
 using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace HeartFlame.ChatLevels
         [Command(""), Summary("Get the user's current chat level. Optionally mention another user to get their level. Input: SocketGuildUser \"Mentioned Discord User\" ")]
         public async Task GetLevel(SocketGuildUser User = null)
         {
-            if (!ModuleControl.IncludeChat)
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            if (!BotGuild.ModuleControl.IncludeChat)
             {
                 await ReplyAsync(Properties.Resources.NotChat);
                 return;
@@ -37,9 +39,9 @@ namespace HeartFlame.ChatLevels
             {
                 Console.WriteLine(e.InnerException.Message);
             }
-            if (Configuration.Configuration.bot.UseChatChannel)
+            if (BotGuild.Configuration.UseChatChannel)
             {
-                var IDs = Configuration.Configuration.bot.ChatChannel;
+                var IDs = BotGuild.Configuration.ChatChannel;
                 foreach (var id in IDs)
                 {
                     await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -52,28 +54,30 @@ namespace HeartFlame.ChatLevels
         [Command("Ranking"), Alias("Top", "Leaders", "LeaderBoard", "Leader Board"), Summary("Get the top 10 chat levels.")]
         public async Task GetRankings()
         {
-            if (!ModuleControl.IncludeChat)
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            if (!BotGuild.ModuleControl.IncludeChat)
             {
                 await ReplyAsync(Properties.Resources.NotChat);
                 return;
             }
 
-            if (Configuration.Configuration.bot.UseChatChannel)
+            if (BotGuild.Configuration.UseChatChannel)
             {
-                var IDs = Configuration.Configuration.bot.ChatChannel;
+                var IDs = BotGuild.Configuration.ChatChannel;
                 foreach (var id in IDs)
                 {
-                    await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendMessageAsync("", false, LevelManagement.Top10());
+                    await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendMessageAsync("", false, LevelManagement.Top10(Context.Guild.Id));
                 }
             }
             else
-                await Context.Channel.SendMessageAsync("", false, LevelManagement.Top10());
+                await Context.Channel.SendMessageAsync("", false, LevelManagement.Top10(Context.Guild.Id));
         }
 
         [Command("Help"), Alias("h", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("ChatCommandHelp"), Priority(1)]
         public async Task ChatCommandsHelp()
         {
-            if (!ModuleControl.IncludeChat)
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            if (!BotGuild.ModuleControl.IncludeChat)
             {
                 await ReplyAsync(Properties.Resources.NotChat);
                 return;
@@ -92,7 +96,8 @@ namespace HeartFlame.ChatLevels
             [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the ChatImage Group"), Remarks("ChatCommandImageHelp")]
             public async Task ChatCommandImageHelp()
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -108,7 +113,8 @@ namespace HeartFlame.ChatLevels
             [Command("Banner"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name[Blank = default]\""), Priority(1)]
             public async Task BannerSet(SocketGuildUser User, string name = "default")
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -133,9 +139,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -144,18 +150,20 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsImage.SetBanner(SocketGuildUser User, String ImageName)",
                         "Set the user's banner image.",
                         $"{User.Username}'s banner has been set to {name}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
             [Command("Profile"), Summary("Set the user's profile image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Profile Image Name[Blank = default]\""), Priority(1)]
             public async Task ProfileSet(SocketGuildUser User, string name = "default")
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -180,9 +188,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -191,18 +199,20 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsImage.SetProfile(SocketGuildUser User, String ImageName)",
                         "Set the user's profile image.",
                         $"{User.Username}'s profile has been set to {name}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
             [Command("Background"), Summary("Toggle the user's text background. Input: SocketGuildUser \"Mentioned Discord User\" Bool \"Background Active?\""), Priority(1)]
             public async Task BackgroundSet(SocketGuildUser User, bool Active = true)
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -227,9 +237,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -242,18 +252,20 @@ namespace HeartFlame.ChatLevels
                 if (Active)
                     msg = "on";
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsImage.SetBackground(SocketGuildUser User, Bool Active)",
                         "Toggle the user's text background.",
                         $"{User.Username}'s text background has been turned {msg}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
             [Command("Greyscale"), Summary("Set the user's text background greyscale value. Input: SocketGuildUser \"Mentioned Discord User\" int \"Greyscale value 0-255[Default = 227]\""), Priority(1)]
             public async Task grayscaleSet(SocketGuildUser User, int Greyscale = 227)
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -278,9 +290,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -289,11 +301,12 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsImage.SetGreyscale(SocketGuildUser User, int Greyscale = 227)",
                         "Set the user's text background greyscale value.",
                         $"{User.Username}'s greyscale value has been set to {Greyscale}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
         }
@@ -304,7 +317,8 @@ namespace HeartFlame.ChatLevels
             [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the Chat Color Group"), Remarks("ChatCommandColorHelp")]
             public async Task ChatCommandColorHelp()
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -320,7 +334,8 @@ namespace HeartFlame.ChatLevels
             [Command("hex"), Alias("h"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:String \"Color Hex Code i.e. FF00FF\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
             public async Task SetColor(string hex, SocketGuildUser User = null)
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -345,9 +360,9 @@ namespace HeartFlame.ChatLevels
 
                 ChatUsers.SetUserColor(DisUser, ColorTranslator.FromHtml("#" + hex));
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendMessageAsync($"Color set to #{hex}").ConfigureAwait(false);
@@ -367,9 +382,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -378,18 +393,20 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsColor.SetColor(string Hex Code, SocketGuildUser User)",
                         "Set the user's chat text color. Optionally mention a user to set their Chat Color",
                         $"{DisUser.Username}'s chat color has been set to {hex}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
             [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
             public async Task SetColorByARGB(int R, int G, int B, SocketGuildUser User = null)
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -418,9 +435,9 @@ namespace HeartFlame.ChatLevels
 
                 ChatUsers.SetUserColor(DisUser, System.Drawing.Color.FromArgb(R, G, B));
 
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendMessageAsync("Color Set").ConfigureAwait(false);
@@ -439,9 +456,9 @@ namespace HeartFlame.ChatLevels
                 {
                     Console.WriteLine(e.InnerException.Message);
                 }
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -450,18 +467,20 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsColor.SetColor(int Red, int Green, int Blue, SocketGuildUser User)",
                         "Set the user's chat text color. Optionally mention a user to set their Chat Color",
                         $"{DisUser.Username}'s chat color has been set to {R} {G} {B}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
             [Command("name"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
             public async Task SetColorByName(string name, SocketGuildUser User = null)
             {
-                if (!ModuleControl.IncludeChat)
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
@@ -490,9 +509,9 @@ namespace HeartFlame.ChatLevels
                 }
 
                 ChatUsers.SetUserColor(DisUser, (System.Drawing.Color)ColorInfo.GetValue(colorType));
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendMessageAsync("Color Set").ConfigureAwait(false);
@@ -512,9 +531,9 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
                 ChatUsers.SetUserColor(DisUser, (System.Drawing.Color)ColorInfo.GetValue(colorType));
-                if (Configuration.Configuration.bot.UseChatChannel)
+                if (BotGuild.Configuration.UseChatChannel)
                 {
-                    var IDs = Configuration.Configuration.bot.ChatChannel;
+                    var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
                         await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
@@ -523,11 +542,12 @@ namespace HeartFlame.ChatLevels
                 else
                     await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
-                if (ModuleControl.IncludeLogging)
+                if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         "ChatCommands.ChatCommandsColor.SetColor(int Red, int Green, int Blue, SocketGuildUser User)",
                         "Set the user's chat text color. Optionally mention a user to set their Chat Color",
                         $"{DisUser.Username}'s chat color has been set to {name}.",
+                        Context.Guild.Id,
                         (SocketGuildUser)Context.User);
             }
 
