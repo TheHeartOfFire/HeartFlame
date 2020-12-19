@@ -30,7 +30,7 @@ namespace HeartFlame.Configuration
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
 
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
             {
                 await ReplyAsync(":x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command.");
                 return;
@@ -54,7 +54,7 @@ namespace HeartFlame.Configuration
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
             {
                 await ReplyAsync(":x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command.");
                 return;
@@ -83,7 +83,7 @@ namespace HeartFlame.Configuration
                 await ReplyAsync(Properties.Resources.NotLogging);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -122,7 +122,7 @@ namespace HeartFlame.Configuration
                 await ReplyAsync(Properties.Resources.NotChat);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -162,7 +162,7 @@ namespace HeartFlame.Configuration
                 await ReplyAsync(Properties.Resources.NotChat);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;

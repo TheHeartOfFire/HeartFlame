@@ -24,18 +24,18 @@ namespace HeartFlame.ChatLevels
             var user = (SocketGuildUser)arg.Author;
             var GUser = BotGuild.GetUser(user);
 
-            if (!GUser.ExpPending)
+            if (!GUser.Chat.ExpPending)
             {
-                GUser.ExpPending = true;
+                GUser.Chat.ExpPending = true;
             }
 
-            GUser.MessagesSent++;
+            GUser.Chat.MessagesSent++;
             GUser.UpdateName(user);
 
-            if (GUser.LevelPending)
+            if (GUser.Chat.LevelPending)
             {
-                GUser.LevelPending = false;
-                GUser.ChatLevel = LevelManagement.GetLevelAtExp(GUser.ChatExp);
+                GUser.Chat.LevelPending = false;
+                GUser.Chat.ChatLevel = LevelManagement.GetLevelAtExp(GUser.Chat.ChatExp);
 
 
                 if (BotGuild.Configuration.UseChatChannel)
@@ -48,7 +48,7 @@ namespace HeartFlame.ChatLevels
                                 await BannerMaker.BuildBannerAsync(user, false), 
                             System.Drawing.Imaging.ImageFormat.Png), 
                             "banner.png", 
-                            $"{user.Mention} Has just advanced to level {GUser.ChatLevel}");
+                            $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}");
                     }
                 }
                 else
@@ -57,7 +57,7 @@ namespace HeartFlame.ChatLevels
                             await BannerMaker.BuildBannerAsync(user, false), 
                             System.Drawing.Imaging.ImageFormat.Png), 
                         "banner.png", 
-                        $"{user.Mention} Has just advanced to level {GUser.ChatLevel}").ConfigureAwait(false);
+                        $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}").ConfigureAwait(false);
             }
         }
 
@@ -67,16 +67,16 @@ namespace HeartFlame.ChatLevels
             {
                 foreach (var User in Guild.Users)
                 {
-                    if (User.ExpPending)
+                    if (User.Chat.ExpPending)
                     {
-                        var level = User.ChatLevel;
-                        User.ExpPending = false;
-                        User.ChatExp += 5;
-                        var newLevel = LevelManagement.GetLevelAtExp(User.ChatExp);
+                        var level = User.Chat.ChatLevel;
+                        User.Chat.ExpPending = false;
+                        User.Chat.ChatExp += 5;
+                        var newLevel = LevelManagement.GetLevelAtExp(User.Chat.ChatExp);
                         if (newLevel > level)
                         {
-                            User.LevelPending = true;
-                            User.ChatLevel = newLevel;
+                            User.Chat.LevelPending = true;
+                            User.Chat.ChatLevel = newLevel;
                         }
 
                     }

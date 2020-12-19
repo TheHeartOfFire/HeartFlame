@@ -16,8 +16,8 @@ namespace HeartFlame.Permissions
                     {
                         if(GUser.DiscordID == User.Id)
                         {
-                            GUser.Mod = true;
-                            GUser.Admin = false;
+                            GUser.Perms.Mod = true;
+                            GUser.Perms.Admin = false;
                         }
                     }
                 }
@@ -37,8 +37,8 @@ namespace HeartFlame.Permissions
                         {
                             if(GUser.DiscordID == User.Id)
                             {
-                                GUser.Mod = true;
-                                GUser.Admin = false;
+                                GUser.Perms.Mod = true;
+                                GUser.Perms.Admin = false;
                             }
                         }
                     }
@@ -57,8 +57,8 @@ namespace HeartFlame.Permissions
                     {
                         if (GUser.DiscordID == User.Id)
                         {
-                            GUser.Admin = true;
-                            GUser.Mod = false;
+                            GUser.Perms.Admin = true;
+                            GUser.Perms.Mod = false;
                         }
                     }
 
@@ -79,8 +79,8 @@ namespace HeartFlame.Permissions
                         {
                             if (GUser.DiscordID == User.Id)
                             {
-                                GUser.Mod = true;
-                                GUser.Admin = false;
+                                GUser.Perms.Mod = true;
+                                GUser.Perms.Admin = false;
                             }
                         }
                     }
@@ -99,7 +99,7 @@ namespace HeartFlame.Permissions
                     {
                         if (GUser.DiscordID == User.Id)
                         {
-                            GUser.Mod = false;
+                            GUser.Perms.Mod = false;
                         }
                     }
                 }
@@ -119,9 +119,9 @@ namespace HeartFlame.Permissions
                         {
                             if(GUser.DiscordID == User.Id)
                             {
-                                if (GUser.isMod())
+                                if (GUser.Perms.Mod)
                                 {
-                                    GUser.Mod = false;
+                                    GUser.Perms.Mod = false;
                                 }
                             }
                         }
@@ -142,7 +142,7 @@ namespace HeartFlame.Permissions
                     {
                         if (GUser.DiscordID == User.Id)
                         {
-                            GUser.Admin = false;
+                            GUser.Perms.Admin = false;
                         }
                     }
                 }
@@ -162,9 +162,9 @@ namespace HeartFlame.Permissions
                         {
                             if (GUser.DiscordID == User.Id)
                             {
-                                if (GUser.isMod())
+                                if (GUser.Perms.Mod)
                                 {
-                                    GUser.Admin = false;
+                                    GUser.Perms.Admin = false;
                                 }
                             }
                         }

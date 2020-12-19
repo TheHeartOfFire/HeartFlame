@@ -40,7 +40,7 @@ namespace HeartFlame.Permissions
                 return;
             }
 
-            if (!GUser.isAdmin())
+            if (!GUser.Perms.Admin)
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -48,7 +48,7 @@ namespace HeartFlame.Permissions
             if (User is null) return;
             if (MakeMod)
             {
-                if (GUser.isMod())
+                if (GUser.Perms.Mod)
                     await ReplyAsync($"{User.Username} is already a mod for the bot!");
                 else
                 {
@@ -65,7 +65,7 @@ namespace HeartFlame.Permissions
             }
             else
             {
-                if (!GUser.isMod())
+                if (!GUser.Perms.Mod)
                     await ReplyAsync($"{User.Username} is already not a mod for the bot!");
                 else
                 {
@@ -103,7 +103,7 @@ namespace HeartFlame.Permissions
 
             if (MakeAdmin)
             {
-                if (GUser.isAdmin())
+                if (GUser.Perms.Admin)
                     await ReplyAsync($"{User.Username} is already an admin for the bot!");
                 else
                 {
@@ -121,7 +121,7 @@ namespace HeartFlame.Permissions
             }
             else
             {
-                if (!GUser.isAdmin())
+                if (!GUser.Perms.Admin)
                     await ReplyAsync($"{User.Username} is already not an admin for the bot!");
                 else
                 {

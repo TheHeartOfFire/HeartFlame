@@ -121,13 +121,13 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.isAdmin())
+                if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                GUser.BannerImage = name;
+                GUser.Banner.BannerImage = name;
                 GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
@@ -172,13 +172,13 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.isAdmin())
+                if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                GUser.BannerImage = name;
+                GUser.Banner.BannerImage = name;
                 GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
@@ -223,13 +223,13 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.isAdmin())
+                if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                GUser.TextBackground = Active;
+                GUser.Banner.TextBackground = Active;
                 GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
@@ -278,13 +278,13 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.isAdmin())
+                if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                GUser.Greyscale = Greyscale;
+                GUser.Banner.Greyscale = Greyscale;
                 GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
@@ -353,7 +353,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!GUser.isMod())
+                else if (!GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -368,7 +368,7 @@ namespace HeartFlame.ChatLevels
                 }
 
 
-                GUser.SetColor(ColorTranslator.FromHtml("#" + hex));
+                GUser.Banner.SetColor(ColorTranslator.FromHtml("#" + hex));
                 GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
@@ -427,7 +427,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!GUser.isMod())
+                else if (!GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -445,7 +445,7 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                GUser.SetColor(System.Drawing.Color.FromArgb(R, G, B));
+                GUser.Banner.SetColor(System.Drawing.Color.FromArgb(R, G, B));
                 GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
@@ -503,7 +503,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!GUser.isMod())
+                else if (!GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -522,7 +522,7 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                GUser.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
+                GUser.Banner.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
                 GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
@@ -547,7 +547,7 @@ namespace HeartFlame.ChatLevels
                     Console.WriteLine(e.InnerException.Message);
                 }
 
-                GUser.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
+                GUser.Banner.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
                 GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)

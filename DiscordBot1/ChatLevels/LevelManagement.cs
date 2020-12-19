@@ -60,7 +60,10 @@ namespace HeartFlame.ChatLevels
 
                     for (int i = 0; i < Count; i++)
                     {
-                        Embed.AddField($"Name: {Users[i].Name}", $"Level: {Users[i].ChatLevel}\nExperience: {Users[i].ChatExp}/{GetExpAtLevel(Users[i].ChatLevel)}\nMessages Sent: {Users[i].MessagesSent}");
+                        Embed.AddField($"Name: {Users[i].Name}", 
+                            $"Level: {Users[i].Chat.ChatLevel}\n" +
+                            $"Experience: {Users[i].Chat.ChatExp}/{GetExpAtLevel(Users[i].Chat.ChatLevel)}\n" +
+                            $"Messages Sent: {Users[i].Chat.MessagesSent}");
                     }
 
                     return Embed.Build();

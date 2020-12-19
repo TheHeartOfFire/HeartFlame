@@ -61,7 +61,7 @@ namespace HeartFlame.SelfAssign
                     return;
                 }
 
-                if (BotGuild.ModuleControl.IncludePermissions && !GUser.isMod())
+                if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -128,7 +128,7 @@ namespace HeartFlame.SelfAssign
                     return;
                 }
 
-                if (BotGuild.ModuleControl.IncludePermissions && !GUser.isMod())
+                if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;

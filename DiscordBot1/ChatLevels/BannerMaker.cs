@@ -23,9 +23,9 @@ namespace HeartFlame.ChatLevels
             var Guild = GuildManager.GetGuild(user.Guild.Id);
             var User = Guild.GetUser(user);
 
-            var color = User.GetColor();
+            var color = User.Banner.GetColor();
 
-            Image image = await GetBannerAsync(User.BannerImage);
+            Image image = await GetBannerAsync(User.Banner.BannerImage);
             ImageFactory imf = new ImageFactory();//get banner
             imf.Load(image);
             image.Dispose();
@@ -34,9 +34,9 @@ namespace HeartFlame.ChatLevels
             imf.Overlay(iL);//add avatar
             iL.Dispose();
 
-            if (User.TextBackground)
+            if (User.Banner.TextBackground)
             {
-                int greyscale = User.Greyscale;
+                int greyscale = User.Banner.Greyscale;
                 SolidBrush bgColor = new SolidBrush(System.Drawing.Color.FromArgb(215, greyscale, greyscale, greyscale));
                 Graphics.FromImage(imf.Image).FillRectangle(bgColor, GetTextBackground());//add background for text
                 bgColor.Dispose();
@@ -48,15 +48,15 @@ namespace HeartFlame.ChatLevels
 
             if (levelUp)
             {
-                overlayText += $" has just advanced to level {User.ChatLevel}. Congratulations!\n" +
-                    $"Total Messages: {User.MessagesSent}\n" +
-                    $"Current Experience: {User.ChatExp}/{LevelManagement.GetExpAtLevel(User.ChatLevel)}";
+                overlayText += $" has just advanced to level {User.Chat.ChatLevel}. Congratulations!\n" +
+                    $"Total Messages: {User.Chat.MessagesSent}\n" +
+                    $"Current Experience: {User.Chat.ChatExp}/{LevelManagement.GetExpAtLevel(User.Chat.ChatLevel)}";
             }
             else
             {
-                overlayText += $"\nLevel: {User.ChatLevel}\n" +
-                    $"Total Messages: {User.MessagesSent}\n" +
-                    $"Current Experience: {User.ChatExp}/{LevelManagement.GetExpAtLevel(User.ChatLevel)}";
+                overlayText += $"\nLevel: {User.Chat.ChatLevel}\n" +
+                    $"Total Messages: {User.Chat.MessagesSent}\n" +
+                    $"Current Experience: {User.Chat.ChatExp}/{LevelManagement.GetExpAtLevel(User.Chat.ChatLevel)}";
             }
 
             TextLayer tl = GetTextLayer(overlayText, color);
@@ -102,10 +102,10 @@ namespace HeartFlame.ChatLevels
         {
             var Guild = GuildManager.GetGuild(user.Guild.Id);
             var User = Guild.GetUser(user);
-            if (User.ProfileImage != null && !User.ProfileImage.Equals("default"))
+            if (User.Banner.ProfileImage != null && !User.Banner.ProfileImage.Equals("default"))
             {
                 WebClient wc = new WebClient();
-                Uri ImageUri = (await DownloadBanner(User.ProfileImage)).PrimaryUri;
+                Uri ImageUri = (await DownloadBanner(User.Banner.ProfileImage)).PrimaryUri;
                 byte[] byteS = wc.DownloadData(ImageUri.OriginalString);
                 MemoryStream MS = new MemoryStream(byteS);
                 wc.Dispose();
@@ -188,10 +188,10 @@ namespace HeartFlame.ChatLevels
         public static int GetExpLength(GuildUser User)
         {
             float maxW = 450;
-            int userLevel = User.ChatLevel;
+            int userLevel = User.Chat.ChatLevel;
             if (userLevel == 0)
                 userLevel++;
-            float exp = User.ChatExp - LevelManagement.GetExpAtLevel(userLevel - 1);
+            float exp = User.Chat.ChatExp - LevelManagement.GetExpAtLevel(userLevel - 1);
             float nextLv = LevelManagement.GetExpAtLevel(userLevel) - LevelManagement.GetExpAtLevel(userLevel - 1);
             exp /= nextLv;
             exp *= maxW;
