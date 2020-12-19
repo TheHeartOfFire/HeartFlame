@@ -28,8 +28,9 @@ namespace HeartFlame.Configuration
         public async Task SetPrefix(string Prefix)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
 
-            if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
             {
                 await ReplyAsync(":x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command.");
                 return;
@@ -52,7 +53,8 @@ namespace HeartFlame.Configuration
         public async Task SetGame(string Game)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
             {
                 await ReplyAsync(":x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command.");
                 return;
@@ -75,12 +77,13 @@ namespace HeartFlame.Configuration
         public async Task AddLogChannel(IChannel channel = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
             if (!BotGuild.ModuleControl.IncludeLogging)
             {
                 await ReplyAsync(Properties.Resources.NotLogging);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -113,12 +116,13 @@ namespace HeartFlame.Configuration
         public async Task AddChatChannel(IChannel channel = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
             if (!BotGuild.ModuleControl.IncludeChat)
             {
                 await ReplyAsync(Properties.Resources.NotChat);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -152,12 +156,13 @@ namespace HeartFlame.Configuration
         public async Task UseChatChannel(bool use = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
             if (!BotGuild.ModuleControl.IncludeChat)
             {
                 await ReplyAsync(Properties.Resources.NotChat);
             }
 
-            if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+            if (BotGuild.ModuleControl.IncludePermissions && !GUser.isAdmin())
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;

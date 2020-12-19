@@ -4,13 +4,13 @@ using System.Text;
 
 namespace HeartFlame.Configuration
 {
-    public class GuildConfiguration
+    public class GuildConfigurationData
     {
         public List<ulong> LogChannel { get; set; }
         public List<ulong> ChatChannel { get; set; }
         public bool UseChatChannel { get; set; }
 
-        public GuildConfiguration()
+        public GuildConfigurationData()
         {
             LogChannel = new List<ulong>();
             ChatChannel = new List<ulong>();

@@ -33,13 +33,14 @@ namespace HeartFlame.Permissions
         public async Task PermissionsMod(SocketGuildUser User, bool MakeMod = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser(User);
             if (!BotGuild.ModuleControl.IncludePermissions)
             {
                 await ReplyAsync(Properties.Resources.NotPerms);
                 return;
             }
 
-            if (!Permissions.IsAdmin((SocketGuildUser)Context.User))
+            if (!GUser.isAdmin())
             {
                 await ReplyAsync(Properties.Resources.NotAdmin);
                 return;
@@ -47,7 +48,7 @@ namespace HeartFlame.Permissions
             if (User is null) return;
             if (MakeMod)
             {
-                if (Permissions.IsMod(User))
+                if (GUser.isMod())
                     await ReplyAsync($"{User.Username} is already a mod for the bot!");
                 else
                 {
@@ -64,7 +65,7 @@ namespace HeartFlame.Permissions
             }
             else
             {
-                if (!Permissions.IsMod(User))
+                if (!GUser.isMod())
                     await ReplyAsync($"{User.Username} is already not a mod for the bot!");
                 else
                 {
@@ -86,6 +87,7 @@ namespace HeartFlame.Permissions
         public async Task PermissionsAfmin(SocketGuildUser User, bool MakeAdmin = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser(User);
             if (!BotGuild.ModuleControl.IncludePermissions)
             {
                 await ReplyAsync(Properties.Resources.NotPerms);
@@ -101,7 +103,7 @@ namespace HeartFlame.Permissions
 
             if (MakeAdmin)
             {
-                if (Permissions.IsAdmin(User))
+                if (GUser.isAdmin())
                     await ReplyAsync($"{User.Username} is already an admin for the bot!");
                 else
                 {
@@ -119,7 +121,7 @@ namespace HeartFlame.Permissions
             }
             else
             {
-                if (!Permissions.IsAdmin(User))
+                if (!GUser.isAdmin())
                     await ReplyAsync($"{User.Username} is already not an admin for the bot!");
                 else
                 {

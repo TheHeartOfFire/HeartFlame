@@ -3,36 +3,61 @@ using HeartFlame.GuildControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Timers;
 
 namespace HeartFlame.ChatLevels
 {
     public class ChatModuleIntegrator
     {
+        private static Timer ChatDelay = new Timer();
+
+        public static void OnpreProcessing()
+        {
+            ChatDelay.Interval = 300000;
+            ChatDelay.Elapsed += ChatDelayElapsed;
+            ChatDelay.Enabled = true;
+        }
+
         public static async void OnMessagePosted(SocketMessage arg)
         {
             var BotGuild = GuildManager.GetGuild(((SocketGuildChannel)arg.Channel).Guild.Id);
             var user = (SocketGuildUser)arg.Author;
-            if (!ChatUsers.RetrieveOrCreateChatUser(user).ExpPending)
+            var GUser = BotGuild.GetUser(user);
+
+            if (!GUser.ExpPending)
             {
-                ChatUsers.ToggleExpPending(user);
+                GUser.ExpPending = true;
             }
-            ChatUsers.UpdateUser(user, 1);
-            ChatUsers.UpdateUsername(user);
-            if (ChatUsers.RetrieveOrCreateChatUser(user).LevelPending)
+
+            GUser.MessagesSent++;
+            GUser.UpdateName(user);
+
+            if (GUser.LevelPending)
             {
-                ChatUsers.ToggleLevelPending(user, false);
-                ChatUsers.SetLevel(user, LevelManagement.GetLevelAtExp(ChatUsers.RetrieveOrCreateChatUser(user).ChatExp));
+                GUser.LevelPending = false;
+                GUser.ChatLevel = LevelManagement.GetLevelAtExp(GUser.ChatExp);
+
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
                     var IDs = BotGuild.Configuration.ChatChannel;
                     foreach (var id in IDs)
                     {
-                        await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(BannerMaker.ToStream(await BannerMaker.BuildBannerAsync(user, false), System.Drawing.Imaging.ImageFormat.Png), "banner.png", $"{user.Mention} Has just advanced to level {ChatUsers.RetrieveOrCreateChatUser(user).ChatLevel}");
+                        await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(
+                            BannerMaker.ToStream(
+                                await BannerMaker.BuildBannerAsync(user, false), 
+                            System.Drawing.Imaging.ImageFormat.Png), 
+                            "banner.png", 
+                            $"{user.Mention} Has just advanced to level {GUser.ChatLevel}");
                     }
                 }
                 else
-                    await arg.Channel.SendFileAsync(BannerMaker.ToStream(await BannerMaker.BuildBannerAsync(user, false), System.Drawing.Imaging.ImageFormat.Png), "banner.png", $"{user.Mention} Has just advanced to level {ChatUsers.RetrieveOrCreateChatUser(user).ChatLevel}").ConfigureAwait(false);
+                    await arg.Channel.SendFileAsync(
+                        BannerMaker.ToStream(
+                            await BannerMaker.BuildBannerAsync(user, false), 
+                            System.Drawing.Imaging.ImageFormat.Png), 
+                        "banner.png", 
+                        $"{user.Mention} Has just advanced to level {GUser.ChatLevel}").ConfigureAwait(false);
             }
         }
 
@@ -40,7 +65,7 @@ namespace HeartFlame.ChatLevels
         {
             foreach (var Guild in GuildManager.Guilds)
             {
-                foreach (var User in Guild.Chat)
+                foreach (var User in Guild.Users)
                 {
                     if (User.ExpPending)
                     {

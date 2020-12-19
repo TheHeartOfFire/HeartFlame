@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using HeartFlame.GuildControl;
 using ImageProcessor;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
@@ -19,9 +20,12 @@ namespace HeartFlame.ChatLevels
     {
         public static async Task<Image> BuildBannerAsync(SocketGuildUser user, bool levelUp)
         {
-            var color = ChatUsers.GetUserColor(user);
+            var Guild = GuildManager.GetGuild(user.Guild.Id);
+            var User = Guild.GetUser(user);
 
-            Image image = await GetBannerAsync(ChatUsers.RetrieveOrCreateChatUser(user).BannerImage);
+            var color = User.GetColor();
+
+            Image image = await GetBannerAsync(User.BannerImage);
             ImageFactory imf = new ImageFactory();//get banner
             imf.Load(image);
             image.Dispose();
@@ -30,30 +34,29 @@ namespace HeartFlame.ChatLevels
             imf.Overlay(iL);//add avatar
             iL.Dispose();
 
-            if (ChatUsers.RetrieveOrCreateChatUser(user).TextBackground)
+            if (User.TextBackground)
             {
-                int greyscale = ChatUsers.RetrieveOrCreateChatUser(user).Greyscale;
+                int greyscale = User.Greyscale;
                 SolidBrush bgColor = new SolidBrush(System.Drawing.Color.FromArgb(215, greyscale, greyscale, greyscale));
                 Graphics.FromImage(imf.Image).FillRectangle(bgColor, GetTextBackground());//add background for text
                 bgColor.Dispose();
             }
 
-            var UserInfo = ChatUsers.RetrieveOrCreateChatUser(user);
             string overlayText = user.Username;//build display string
             if (user.Nickname != null)
                 overlayText = user.Nickname;
 
             if (levelUp)
             {
-                overlayText += $" has just advanced to level {UserInfo.ChatLevel}. Congratulations!\n" +
-                    $"Total Messages: {UserInfo.MessagesSent}\n" +
-                    $"Current Experience: {UserInfo.ChatExp}/{LevelManagement.GetExpAtLevel(UserInfo.ChatLevel)}";
+                overlayText += $" has just advanced to level {User.ChatLevel}. Congratulations!\n" +
+                    $"Total Messages: {User.MessagesSent}\n" +
+                    $"Current Experience: {User.ChatExp}/{LevelManagement.GetExpAtLevel(User.ChatLevel)}";
             }
             else
             {
-                overlayText += $"\nLevel: {UserInfo.ChatLevel}\n" +
-                    $"Total Messages: {UserInfo.MessagesSent}\n" +
-                    $"Current Experience: {UserInfo.ChatExp}/{LevelManagement.GetExpAtLevel(UserInfo.ChatLevel)}";
+                overlayText += $"\nLevel: {User.ChatLevel}\n" +
+                    $"Total Messages: {User.MessagesSent}\n" +
+                    $"Current Experience: {User.ChatExp}/{LevelManagement.GetExpAtLevel(User.ChatLevel)}";
             }
 
             TextLayer tl = GetTextLayer(overlayText, color);
@@ -61,7 +64,7 @@ namespace HeartFlame.ChatLevels
             tl.Dispose();
 
             SolidBrush ExpBarColor = new SolidBrush(color);
-            Graphics.FromImage(imf.Image).FillRectangle(ExpBarColor, GetExpBar(GetExpLength(UserInfo)));//add exp bar
+            Graphics.FromImage(imf.Image).FillRectangle(ExpBarColor, GetExpBar(GetExpLength(User)));//add exp bar
             ExpBarColor.Dispose();
             imf.Format(new PngFormat());
             Image output = imf.Image;
@@ -97,10 +100,12 @@ namespace HeartFlame.ChatLevels
 
         public static async Task<ImageLayer> GetUserAvatarAsync(SocketGuildUser user)
         {
-            if (ChatUsers.RetrieveOrCreateChatUser(user).ProfileImage != null && !ChatUsers.RetrieveOrCreateChatUser(user).ProfileImage.Equals("default"))
+            var Guild = GuildManager.GetGuild(user.Guild.Id);
+            var User = Guild.GetUser(user);
+            if (User.ProfileImage != null && !User.ProfileImage.Equals("default"))
             {
                 WebClient wc = new WebClient();
-                Uri ImageUri = (await DownloadBanner(ChatUsers.RetrieveOrCreateChatUser(user).ProfileImage)).PrimaryUri;
+                Uri ImageUri = (await DownloadBanner(User.ProfileImage)).PrimaryUri;
                 byte[] byteS = wc.DownloadData(ImageUri.OriginalString);
                 MemoryStream MS = new MemoryStream(byteS);
                 wc.Dispose();
@@ -180,7 +185,7 @@ namespace HeartFlame.ChatLevels
             return bar;
         }
 
-        public static int GetExpLength(ChatDataType User)
+        public static int GetExpLength(GuildUser User)
         {
             float maxW = 450;
             int userLevel = User.ChatLevel;

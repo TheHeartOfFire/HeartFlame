@@ -68,7 +68,7 @@ namespace HeartFlame
 
         private async Task Client_JoinedGuild(SocketGuild arg)
         {
-            GuildManager.AddGuild(arg.Id);
+            GuildManager.AddGuild(arg);
             await Task.CompletedTask;
         }
 

@@ -49,7 +49,7 @@ namespace HeartFlame.ChatLevels
             {
                 if (Guild.GuildID == GuildID)
                 {
-                    var Users = Guild.Chat;
+                    var Users = Guild.Users;
                     Users.Sort();
                     var Embed = new EmbedBuilder();
                     Embed.WithTitle("Chat Level Top 10");
@@ -60,7 +60,7 @@ namespace HeartFlame.ChatLevels
 
                     for (int i = 0; i < Count; i++)
                     {
-                        Embed.AddField($"Name: {Users[i].DiscordUsername}", $"Level: {Users[i].ChatLevel}\nExperience: {Users[i].ChatExp}/{GetExpAtLevel(Users[i].ChatLevel)}\nMessages Sent: {Users[i].MessagesSent}");
+                        Embed.AddField($"Name: {Users[i].Name}", $"Level: {Users[i].ChatLevel}\nExperience: {Users[i].ChatExp}/{GetExpAtLevel(Users[i].ChatLevel)}\nMessages Sent: {Users[i].MessagesSent}");
                     }
 
                     return Embed.Build();

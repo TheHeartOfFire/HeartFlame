@@ -12,12 +12,14 @@ namespace HeartFlame.Permissions
             {
                 if(Guild.GuildID == User.Guild.Id)
                 {
-                    Guild.Permissions.Mods.Add(new Permissions_User
+                    foreach(var GUser in Guild.Users)
                     {
-                        Name = User.Username,
-                        ID = User.Id
-                    });
-
+                        if(GUser.DiscordID == User.Id)
+                        {
+                            GUser.Mod = true;
+                            GUser.Admin = false;
+                        }
+                    }
                 }
             }
             GuildManager.SaveChangesToJson();
@@ -31,11 +33,14 @@ namespace HeartFlame.Permissions
                 {
                     foreach (var User in Users)
                     {
-                        Guild.Permissions.Mods.Add(new Permissions_User
+                        foreach(var GUser in Guild.Users)
                         {
-                            Name = User.Username,
-                            ID = User.Id
-                        });
+                            if(GUser.DiscordID == User.Id)
+                            {
+                                GUser.Mod = true;
+                                GUser.Admin = false;
+                            }
+                        }
                     }
                 }
             }
@@ -48,11 +53,14 @@ namespace HeartFlame.Permissions
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
-                    Guild.Permissions.Admins.Add(new Permissions_User
+                    foreach (var GUser in Guild.Users)
                     {
-                        Name = User.Username,
-                        ID = User.Id
-                    });
+                        if (GUser.DiscordID == User.Id)
+                        {
+                            GUser.Admin = true;
+                            GUser.Mod = false;
+                        }
+                    }
 
                 }
             }
@@ -67,11 +75,14 @@ namespace HeartFlame.Permissions
                 {
                     foreach (var User in Users)
                     {
-                        Guild.Permissions.Admins.Add(new Permissions_User
+                        foreach (var GUser in Guild.Users)
                         {
-                            Name = User.Username,
-                            ID = User.Id
-                        });
+                            if (GUser.DiscordID == User.Id)
+                            {
+                                GUser.Mod = true;
+                                GUser.Admin = false;
+                            }
+                        }
                     }
                 }
             }
@@ -84,12 +95,13 @@ namespace HeartFlame.Permissions
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
-                    foreach (var user in Guild.Permissions.Mods)
+                    foreach (var GUser in Guild.Users)
                     {
-                        if (User.Id == user.ID)
-                            Guild.Permissions.Mods.Remove(user);
+                        if (GUser.DiscordID == User.Id)
+                        {
+                            GUser.Mod = false;
+                        }
                     }
-
                 }
             }
             GuildManager.SaveChangesToJson();
@@ -103,12 +115,14 @@ namespace HeartFlame.Permissions
                 {
                     foreach (var User in Users)
                     {
-                        if (IsMod(User))
+                        foreach(var GUser in Guild.Users)
                         {
-                            foreach (var user in Guild.Permissions.Mods)
+                            if(GUser.DiscordID == User.Id)
                             {
-                                if (User.Id == user.ID)
-                                    Guild.Permissions.Mods.Remove(user);
+                                if (GUser.isMod())
+                                {
+                                    GUser.Mod = false;
+                                }
                             }
                         }
                     }
@@ -124,12 +138,13 @@ namespace HeartFlame.Permissions
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
-                    foreach (var user in Guild.Permissions.Admins)
+                    foreach (var GUser in Guild.Users)
                     {
-                        if (User.Id == user.ID)
-                            Guild.Permissions.Admins.Remove(user);
+                        if (GUser.DiscordID == User.Id)
+                        {
+                            GUser.Admin = false;
+                        }
                     }
-
                 }
             }
             GuildManager.SaveChangesToJson();
@@ -143,12 +158,14 @@ namespace HeartFlame.Permissions
                 {
                     foreach (var User in Users)
                     {
-                        if (IsMod(User))
+                        foreach (var GUser in Guild.Users)
                         {
-                            foreach (var user in Guild.Permissions.Admins)
+                            if (GUser.DiscordID == User.Id)
                             {
-                                if (User.Id == user.ID)
-                                    Guild.Permissions.Admins.Remove(user);
+                                if (GUser.isMod())
+                                {
+                                    GUser.Admin = false;
+                                }
                             }
                         }
                     }
@@ -158,49 +175,5 @@ namespace HeartFlame.Permissions
             GuildManager.SaveChangesToJson();
         }
 
-        public static bool IsMod(SocketGuildUser User)
-        {
-            if (User is null) return false;
-
-            foreach (var Guild in GuildManager.Guilds)
-            {
-                if (Guild.GuildID == User.Guild.Id)
-                {
-                    foreach (var user in Guild.Permissions.Mods)
-                    {
-                        if (user.ID == User.Id)
-                            return true;
-                    }
-                    foreach (var user in Guild.Permissions.Admins)
-                    {
-                        if (user.ID == User.Id)
-                            return true;
-                    }
-
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsAdmin(SocketGuildUser User)
-        {
-            if (User is null) return false;
-
-            foreach (var Guild in GuildManager.Guilds)
-            {
-                if (Guild.GuildID == User.Guild.Id)
-                {
-                    foreach (var user in Guild.Permissions.Admins)
-                    {
-                        if (user.ID == User.Id)
-                            return true;
-                    }
-
-                }
-            }
-
-            return false;
-        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HeartFlame.Misc;
+﻿using Discord.WebSocket;
+using HeartFlame.Misc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -57,15 +58,15 @@ namespace HeartFlame.GuildControl
             blob.UploadTextAsync(json).Wait();
         }
 
-        public static void AddGuild(ulong GuildID)
+        public static void AddGuild(SocketGuild guild)
         {
             foreach(var Guild in Guilds)
             {
-                if(Guild.GuildID == GuildID)
+                if(Guild.GuildID == guild.Id)
                     return;
             }
 
-            Guilds.Add(new GuildData(GuildID));
+            Guilds.Add(new GuildData(guild.Id, guild.Users as List<SocketGuildUser>));
             SaveChangesToJson();
         }
 

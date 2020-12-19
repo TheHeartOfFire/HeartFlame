@@ -54,13 +54,14 @@ namespace HeartFlame.SelfAssign
             public async Task SelfAssignConsoles()
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
                 }
 
-                if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
+                if (BotGuild.ModuleControl.IncludePermissions && !GUser.isMod())
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -120,13 +121,14 @@ namespace HeartFlame.SelfAssign
             public async Task SelfAssignTime()
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeSelfAssign)
                 {
                     await ReplyAsync(Properties.Resources.NotSelf);
                     return;
                 }
 
-                if (BotGuild.ModuleControl.IncludePermissions && !Permissions.Permissions.IsMod((SocketGuildUser)Context.User))
+                if (BotGuild.ModuleControl.IncludePermissions && !GUser.isMod())
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;

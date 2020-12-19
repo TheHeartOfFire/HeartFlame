@@ -114,19 +114,21 @@ namespace HeartFlame.ChatLevels
             public async Task BannerSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
                 }
 
-                if (!Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+                if (!GUser.isAdmin())
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                ChatUsers.SetBanner(User, name);
+                GUser.BannerImage = name;
+                GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -163,19 +165,21 @@ namespace HeartFlame.ChatLevels
             public async Task ProfileSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
                 }
 
-                if (!Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+                if (!GUser.isAdmin())
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                ChatUsers.Setprofile(User, name);
+                GUser.BannerImage = name;
+                GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -212,19 +216,21 @@ namespace HeartFlame.ChatLevels
             public async Task BackgroundSet(SocketGuildUser User, bool Active = true)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
                 }
 
-                if (!Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+                if (!GUser.isAdmin())
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                ChatUsers.SetBackground(User, Active);
+                GUser.TextBackground = Active;
+                GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -265,19 +271,21 @@ namespace HeartFlame.ChatLevels
             public async Task grayscaleSet(SocketGuildUser User, int Greyscale = 227)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
                     return;
                 }
 
-                if (!Permissions.Permissions.IsAdmin((SocketGuildUser)Context.User))
+                if (!GUser.isAdmin())
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
-                ChatUsers.SetGreyscale(User, Greyscale);
+                GUser.Greyscale = Greyscale;
+                GuildManager.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -335,6 +343,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColor(string hex, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -344,7 +353,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!Permissions.Permissions.IsMod(User))
+                else if (!GUser.isMod())
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -358,7 +367,9 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                ChatUsers.SetUserColor(DisUser, ColorTranslator.FromHtml("#" + hex));
+
+                GUser.SetColor(ColorTranslator.FromHtml("#" + hex));
+                GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
@@ -406,6 +417,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColorByARGB(int R, int G, int B, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -415,7 +427,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!Permissions.Permissions.IsMod(User))
+                else if (!GUser.isMod())
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -433,7 +445,8 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                ChatUsers.SetUserColor(DisUser, System.Drawing.Color.FromArgb(R, G, B));
+                GUser.SetColor(System.Drawing.Color.FromArgb(R, G, B));
+                GuildManager.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
@@ -480,6 +493,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColorByName(string name, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -489,7 +503,7 @@ namespace HeartFlame.ChatLevels
                 var DisUser = User;
                 if (User is null)
                     DisUser = (SocketGuildUser)Context.User;
-                else if (!Permissions.Permissions.IsMod(User))
+                else if (!GUser.isMod())
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -508,7 +522,9 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                ChatUsers.SetUserColor(DisUser, (System.Drawing.Color)ColorInfo.GetValue(colorType));
+                GUser.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
+                GuildManager.SaveChangesToJson();
+
                 if (BotGuild.Configuration.UseChatChannel)
                 {
                     var IDs = BotGuild.Configuration.ChatChannel;
@@ -530,7 +546,10 @@ namespace HeartFlame.ChatLevels
                 {
                     Console.WriteLine(e.InnerException.Message);
                 }
-                ChatUsers.SetUserColor(DisUser, (System.Drawing.Color)ColorInfo.GetValue(colorType));
+
+                GUser.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
+                GuildManager.SaveChangesToJson();
+
                 if (BotGuild.Configuration.UseChatChannel)
                 {
                     var IDs = BotGuild.Configuration.ChatChannel;
