@@ -1,8 +1,8 @@
 ﻿using Discord.WebSocket;
 using HeartFlame.ChatLevels;
+using HeartFlame.Compendium;
 using HeartFlame.Permissions;
 using System;
-using System.Drawing;
 
 namespace HeartFlame.GuildControl
 {
@@ -13,6 +13,7 @@ namespace HeartFlame.GuildControl
         public PermissionsData Perms { get; set; }
         public ChatData Chat { get; set; }
         public BannerData Banner { get; set; }
+        public CompendiumData Usernames { get; set; }
 
         public GuildUser(SocketGuildUser User)
         {
@@ -20,6 +21,7 @@ namespace HeartFlame.GuildControl
             UpdateName(User);
             Perms = new PermissionsData();
             Banner = new BannerData();
+            Usernames = new CompendiumData();
         }
 
         public void UpdateName(SocketGuildUser User)

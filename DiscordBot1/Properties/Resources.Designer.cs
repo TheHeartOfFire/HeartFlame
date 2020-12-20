@@ -79,6 +79,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error..
+        /// </summary>
+        internal static string NotComp {
+            get {
+                return ResourceManager.GetString("NotComp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x:Hmm. The bot logging module has not been enabled. Please contact the bot developer to enable the logging feature if this is in error..
         /// </summary>
         internal static string NotLogging {

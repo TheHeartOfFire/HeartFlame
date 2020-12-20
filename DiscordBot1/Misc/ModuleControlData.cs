@@ -10,6 +10,7 @@ namespace HeartFlame.Misc
         public bool IncludeLogging { get; set; }
         public bool IncludeChat { get; set; }
         public bool IncludeSelfAssign { get; set; }
+        public bool IncludeCompendium { get; set; }
     
         public ModuleControlData()
         {
@@ -17,6 +18,7 @@ namespace HeartFlame.Misc
             IncludeLogging = true;
             IncludePermissions = true;
             IncludeSelfAssign = true;
+            IncludeCompendium = true;
         }
     }
 }

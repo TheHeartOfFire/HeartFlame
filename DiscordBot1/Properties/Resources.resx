@@ -125,6 +125,10 @@
     <value>:x:Hmm. The chat module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error.</value>
     <comment>Error Message if chat is not enabled.</comment>
   </data>
+  <data name="NotComp" xml:space="preserve">
+    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
+    <comment>Error Message if compendium is not enabled.</comment>
+  </data>
   <data name="NotLogging" xml:space="preserve">
     <value>:x:Hmm. The bot logging module has not been enabled. Please contact the bot developer to enable the logging feature if this is in error.</value>
     <comment>Error Message if bot logging is not enabled.</comment>
