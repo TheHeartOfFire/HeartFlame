@@ -350,7 +350,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColor(string hex, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                var GUser = BotGuild.GetUser(User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -358,7 +358,11 @@ namespace HeartFlame.ChatLevels
                 }
 
                 var DisUser = User;
-                if (User is null) DisUser = (SocketGuildUser)Context.User;
+                if (User is null) 
+                {
+                    DisUser = (SocketGuildUser)Context.User;
+                    GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                } 
                 else if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
@@ -423,7 +427,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColorByARGB(int R, int G, int B, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                var GUser = BotGuild.GetUser(User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -432,7 +436,10 @@ namespace HeartFlame.ChatLevels
 
                 var DisUser = User;
                 if (User is null)
+                {
                     DisUser = (SocketGuildUser)Context.User;
+                    GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                }
                 else if (!GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
@@ -499,7 +506,7 @@ namespace HeartFlame.ChatLevels
             public async Task SetColorByName(string name, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                var GUser = BotGuild.GetUser(User);
                 if (!BotGuild.ModuleControl.IncludeChat)
                 {
                     await ReplyAsync(Properties.Resources.NotChat);
@@ -508,7 +515,10 @@ namespace HeartFlame.ChatLevels
 
                 var DisUser = User;
                 if (User is null)
+                {
                     DisUser = (SocketGuildUser)Context.User;
+                    GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
+                }
                 else if (!GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
