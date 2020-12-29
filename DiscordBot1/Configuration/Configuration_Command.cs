@@ -36,8 +36,8 @@ namespace HeartFlame.Configuration
                 return;
             }
 
-            Configuration.bot.CommandPrefix = Prefix + " ";
-            Configuration.SaveChangesToJson();
+            PersistentData.Data.Config.CommandPrefix = Prefix + " ";
+            PersistentData.SaveChangesToJson();
             await Context.Channel.SendMessageAsync($"Command Prefix has been set to {Prefix}");
 
             if (BotGuild.ModuleControl.IncludeLogging)
@@ -60,8 +60,8 @@ namespace HeartFlame.Configuration
                 return;
             }
 
-            Configuration.bot.Game = Game;
-            Configuration.SaveChangesToJson();
+            PersistentData.Data.Config.Game = Game;
+            PersistentData.SaveChangesToJson();
             await Context.Channel.SendMessageAsync($"Animyst Bot is now playing {Game}");
 
             if (BotGuild.ModuleControl.IncludeLogging)
@@ -100,7 +100,7 @@ namespace HeartFlame.Configuration
                 BotGuild.Configuration.LogChannel.Add(channel.Id);
                 chnl = channel.Name;
             }
-            Configuration.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
 
             await Context.Channel.SendMessageAsync($"The bot's log channels has been set to {chnl}.");
 
@@ -139,7 +139,7 @@ namespace HeartFlame.Configuration
                 BotGuild.Configuration.ChatChannel.Add(channel.Id);
                 chnl = channel.Name;
             }
-            Configuration.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
 
             await Context.Channel.SendMessageAsync($"The bot's chat level channel has been set to {chnl}.");
 
@@ -170,12 +170,12 @@ namespace HeartFlame.Configuration
 
             if (use && BotGuild.Configuration.ChatChannel.Count <= 0)
             {
-                await ReplyAsync($"There is no channel specified. Please use `{Configuration.bot.CommandPrefix}Configuration Chat` to select a channel for this purpose.");
+                await ReplyAsync($"There is no channel specified. Please use `{PersistentData.Data.Config.CommandPrefix}Configuration Chat` to select a channel for this purpose.");
                 return;
             }
 
             BotGuild.Configuration.UseChatChannel = use;
-            Configuration.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
 
             var msg = "Chat level messages will now be limited to a single channel.";
             if (!use)
@@ -206,7 +206,7 @@ namespace HeartFlame.Configuration
             var ModCommands = Module.Commands.ToList();
             var Children = Module.Submodules.ToList();
 
-            string intermediate = Configuration.bot.CommandPrefix;
+            string intermediate = PersistentData.Data.Config.CommandPrefix;
             if (level == 0)
             {
                 intermediate += Module.Name + " ";

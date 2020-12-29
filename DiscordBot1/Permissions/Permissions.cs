@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using System.Collections.Generic;
 
 namespace HeartFlame.Permissions
@@ -8,7 +9,7 @@ namespace HeartFlame.Permissions
     {
         public static void AddMod(SocketGuildUser User)
         {
-            foreach(var Guild in GuildManager.Guilds)
+            foreach(var Guild in PersistentData.Data.Guilds)
             {
                 if(Guild.GuildID == User.Guild.Id)
                 {
@@ -22,12 +23,12 @@ namespace HeartFlame.Permissions
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void AddMod(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == Users[0].Guild.Id)
                 {
@@ -44,12 +45,12 @@ namespace HeartFlame.Permissions
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void AddAdmin(SocketGuildUser User)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
@@ -64,12 +65,12 @@ namespace HeartFlame.Permissions
 
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void AddAdmin(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == Users[0].Guild.Id)
                 {
@@ -86,12 +87,12 @@ namespace HeartFlame.Permissions
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveMod(SocketGuildUser User)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
@@ -104,12 +105,12 @@ namespace HeartFlame.Permissions
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveMod(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == Users[0].Guild.Id)
                 {
@@ -129,12 +130,12 @@ namespace HeartFlame.Permissions
 
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveAdmin(SocketGuildUser User)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == User.Guild.Id)
                 {
@@ -147,12 +148,12 @@ namespace HeartFlame.Permissions
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveAdmin(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == Users[0].Guild.Id)
                 {
@@ -172,7 +173,7 @@ namespace HeartFlame.Permissions
 
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
     }

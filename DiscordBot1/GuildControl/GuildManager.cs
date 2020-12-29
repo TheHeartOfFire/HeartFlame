@@ -1,93 +1,70 @@
 ﻿using Discord.WebSocket;
 using HeartFlame.Misc;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HeartFlame.GuildControl
 {
     public class GuildManager
     {
-        private const string blobString = "permissions";
-
-        public static List<GuildData> Guilds;
-
-        public static async void OnpreProcessing()
-        {
-            await Constructor();
-        }
-
-        private static async Task<int> Constructor()
-        {
-            CloudStorageAccount account = CloudStorageAccount.Parse(Configuration.Configuration.storageConnectionString);
-            CloudBlobClient serviceClient = account.CreateCloudBlobClient();
-            var container = serviceClient.GetContainerReference(ModuleControl.BotName);
-            await container.CreateIfNotExistsAsync().ConfigureAwait(false);
-            CloudBlockBlob blob = container.GetBlockBlobReference(blobString);
-            string json;
-            try
-            {
-                json = await blob.DownloadTextAsync().ConfigureAwait(true);
-            }
-            catch (StorageException)
-            {
-                Guilds = new List<GuildData>();
-                json = JsonConvert.SerializeObject(Guilds, Formatting.Indented);
-                blob.UploadTextAsync(json).Wait();
-                return -1;
-            }
-            var data = JsonConvert.DeserializeObject<List<GuildData>>(json);
-            Guilds = data;
-            return -1;
-        }
-
-        public static void SaveChangesToJson()
-        {
-            CloudStorageAccount account = CloudStorageAccount.Parse(Configuration.Configuration.storageConnectionString);
-            CloudBlobClient serviceClient = account.CreateCloudBlobClient();
-
-            var container = serviceClient.GetContainerReference(ModuleControl.BotName);
-            container.CreateIfNotExistsAsync();
-            CloudBlockBlob blob = container.GetBlockBlobReference(blobString);
-
-            string json = JsonConvert.SerializeObject(Guilds, Formatting.Indented);
-            blob.UploadTextAsync(json).Wait();
-        }
-
         public static void AddGuild(SocketGuild guild)
         {
-            foreach(var Guild in Guilds)
+            foreach(var Guild in PersistentData.Data.Guilds)
             {
                 if(Guild.GuildID == guild.Id)
                     return;
             }
 
-            Guilds.Add(new GuildData(guild.Id, guild.Users as List<SocketGuildUser>));
-            SaveChangesToJson();
+            PersistentData.Data.Guilds.Add(new GuildData(guild));
+            PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveGuild(ulong GuildID)
         {
-            foreach(var Guild in Guilds)
+            foreach(var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == GuildID)
-                    Guilds.Remove(Guild);
+                    PersistentData.Data.Guilds.Remove(Guild);
             }
-            SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
 
         public static GuildData GetGuild(ulong GuildID)
         {
-            foreach(var Guild in Guilds)
+            foreach(var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == GuildID)
                     return Guild;
             }
             return null;
         }
+
+        public static GuildData GetGuild(SocketGuild Guild)
+        {
+            return GetGuild(Guild.Id);
+        }
+
+        public static GuildData GetGuild(SocketGuildUser User)
+        {
+            return GetGuild(User.Guild);
+        }
+
+        public static GuildData GetGuild(SocketUser User)
+        {
+            return GetGuild((SocketGuildUser)User);
+        }
+
+        public static void UpdateGuildName(SocketGuild Guild)
+        {
+            foreach(var BotGuild in PersistentData.Data.Guilds)
+            {
+                if (Guild.Id == BotGuild.GuildID)
+                    if (!BotGuild.Name.Equals(Guild.Name))
+                    {
+                        BotGuild.Name = Guild.Name;
+                        PersistentData.SaveChangesToJson();
+                        return;
+                    }
+            }
+        }
+
     }
 }

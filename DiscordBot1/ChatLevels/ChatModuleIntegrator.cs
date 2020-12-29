@@ -1,8 +1,10 @@
 ﻿using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 using System.Timers;
 
 namespace HeartFlame.ChatLevels
@@ -59,11 +61,12 @@ namespace HeartFlame.ChatLevels
                         "banner.png", 
                         $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}").ConfigureAwait(false);
             }
+            PersistentData.SaveChangesToJson();
         }
 
-        public static void ChatDelayElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        public static void ChatDelayElapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 foreach (var User in Guild.Users)
                 {
@@ -82,7 +85,7 @@ namespace HeartFlame.ChatLevels
                     }
                 }
             }
-            GuildManager.SaveChangesToJson();
+            PersistentData.SaveChangesToJson();
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeartFlame.Compendium
-{
+{//level 5
     public class SocialData
     {
         public string Youtube { get; set; }
@@ -13,6 +13,7 @@ namespace HeartFlame.Compendium
         public string SnapChat { get; set; }
         public string Instagram { get; set; }
         public string Patreon { get; set; }
+        public string TikTok { get; set; }
 
         public SocialData()
         {
@@ -24,6 +25,7 @@ namespace HeartFlame.Compendium
             SnapChat = "Not Listed";
             Instagram = "Not Listed";
             Patreon = "Not Listed";
+            TikTok = "Not Listed";
         }
     }
 }

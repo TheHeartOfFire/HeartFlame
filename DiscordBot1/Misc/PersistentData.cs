@@ -1,29 +1,26 @@
-﻿using HeartFlame.Misc;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace HeartFlame.Configuration
+namespace HeartFlame.Misc
 {
-    public class Configuration
+    public class PersistentData
     {
-        private static readonly string containerString = ModuleControl.BotName;
-        private const string blobString = "config";
+        public static readonly string BotName = "heartflame";
+        private const string blobString = "botdata";
 
-        public const string storageConnectionString = "" +
-            "DefaultEndpointsProtocol=https;" +
-            "AccountName=aimbotdata;" +
-            "AccountKey=didJFE0mtpW1vDGWbEe+So8rp9Om2NXbdG4lRp5oBzo7aORz8Rb2tjhbljHiof37QJUlutyEHT8AwcHxXtXEiA==;" +
-            "EndpointSuffix=core.windows.net";
+        public static readonly string storageConnectionString = Properties.Resources.StorageToken;
 
-        public static Configuration_DataType bot;
-
+        public static PersistentDataType Data;
         public static async Task<int> Constructor()
         {
             CloudStorageAccount account = CloudStorageAccount.Parse(storageConnectionString);
             CloudBlobClient serviceClient = account.CreateCloudBlobClient();
-            var container = serviceClient.GetContainerReference(containerString);
+            var container = serviceClient.GetContainerReference(BotName);
             await container.CreateIfNotExistsAsync();
             CloudBlockBlob blob = container.GetBlockBlobReference(blobString);
             string json = "";
@@ -33,13 +30,13 @@ namespace HeartFlame.Configuration
             }
             catch (StorageException)
             {
-                bot = new Configuration_DataType();
-                json = JsonConvert.SerializeObject(bot, Formatting.Indented);
+                Data = new PersistentDataType();
+                json = JsonConvert.SerializeObject(Data, Formatting.Indented);
                 blob.UploadTextAsync(json).Wait();
                 return -1;
             }
-            var data = JsonConvert.DeserializeObject<Configuration_DataType>(json);
-            bot = data;
+            var data = JsonConvert.DeserializeObject<PersistentDataType>(json);
+            Data = data;
             return -1;
         }
 
@@ -48,11 +45,11 @@ namespace HeartFlame.Configuration
             CloudStorageAccount account = CloudStorageAccount.Parse(storageConnectionString);
             CloudBlobClient serviceClient = account.CreateCloudBlobClient();
 
-            var container = serviceClient.GetContainerReference(containerString);
+            var container = serviceClient.GetContainerReference(BotName);
             container.CreateIfNotExistsAsync();
             CloudBlockBlob blob = container.GetBlockBlobReference(blobString);
 
-            string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(Data, Formatting.Indented);
             blob.UploadTextAsync(json).Wait();
         }
     }

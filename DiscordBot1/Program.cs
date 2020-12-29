@@ -2,6 +2,8 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
+using HeartFlame.Moderation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -24,10 +26,11 @@ namespace HeartFlame
 
         private async Task MainAsync()
         {
-            await Configuration.Configuration.Constructor();
-            Token = Configuration.Configuration.bot.Token;
-            Game = Configuration.Configuration.bot.Game;
-            Prefix = Configuration.Configuration.bot.CommandPrefix;
+            await PersistentData.Constructor();
+            var Config = PersistentData.Data.Config;
+            Token = Config.Token;
+            Game = Config.Game;
+            Prefix = Config.CommandPrefix;
 
             Client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -99,14 +102,27 @@ namespace HeartFlame
         private async Task Client_MessageReceived(SocketMessage arg)
         {
             var Message = arg as SocketUserMessage;
+            if (Message is null)
+                return;
+
             var Context = new SocketCommandContext(Client, Message);
+            GuildManager.UpdateGuildName(Context.Guild);
 
             if (Context.Message == null || Context.Message.Content == "") return; //dont want empty messages
             if (Context.User.IsBot) return;//dont want messages from bot
-
             int argpos = 0;
 
+            if (GuildManager.GetGuild(Context.Guild).GetUser(Context.User).Moderation.isMuted()) await arg.DeleteAsync();
+
             if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos))) return; //only want messages with prefix or @bot mention
+
+            if (Message.Content.ToLowerInvariant().Equals(Prefix + GuildManager.GetGuild(Context.Guild.Id).Moderation.JoinCommand))//Handle Join Message
+            {
+                if (!ModerationManager.JoinCommand(Message))
+                    await Context.Channel.SendMessageAsync(Properties.Resources.NoJoinRole);
+
+                await arg.DeleteAsync();
+            }
 
             var Result = await Commands.ExecuteAsync(Context, argpos, Service).ConfigureAwait(false);
 
@@ -114,6 +130,8 @@ namespace HeartFlame
             {
                 Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
             }
+
+            ModuleControl.MessageTunnel(arg);
         }
     }
 }

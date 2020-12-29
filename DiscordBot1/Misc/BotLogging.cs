@@ -8,7 +8,7 @@ namespace HeartFlame.Misc
     {
         public static async void PrintLogMessage(string Source, string Action, string Message, ulong GuildID, SocketGuildUser User = null)
         {
-            foreach(var Guild in GuildManager.Guilds)
+            foreach(var Guild in PersistentData.Data.Guilds)
             {
                 if(Guild.GuildID == GuildID)
                 {
@@ -18,7 +18,7 @@ namespace HeartFlame.Misc
                     };
                     Embed.WithAuthor("Log");
                     Embed.WithDescription($"Source: {Source}\n\nAction: {Action}");
-                    string Actor = ModuleControl.BotName;
+                    string Actor = PersistentData.BotName;
                     if (User != null)
                         Actor = User.Username;
                     Embed.AddField(Message, $"This action was taken by: {Actor}");

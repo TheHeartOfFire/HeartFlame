@@ -22,14 +22,14 @@ namespace HeartFlame.Compendium
                 return;
             }
 
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Username Help", "Username_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames Help", "Usernames_Help", 0);
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);
             }
         }
 
-        [Command("Get"),  Summary("Get the username for the user. Input: string \"Xbox, Playstation, Activision etc\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        [Command("Get"), Summary("Get the username for the user. Input: string \"Xbox, Playstation, Activision etc\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
         public async Task UsernameGet(string Platform, SocketGuildUser User = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -42,10 +42,12 @@ namespace HeartFlame.Compendium
                 return;
             }
 
+            Platform = CompendiumManager.Normalizer(Platform);
+
             var Name = CompendiumManager.GetUsername(Platform, (SocketGuildUser)Context.User);
             if (User is null)
             {
-                if(Name is null)
+                if (Name is null)
                 {
                     await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
                     return;
@@ -63,6 +65,7 @@ namespace HeartFlame.Compendium
             await ReplyAsync($"{GUser.Name}'s {Platform} username is: {Name}");
 
         }
+
 
         [Command("Set"), Summary("Set the username for the user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
         public async Task UsernameSet(string Platform, string Username, SocketGuildUser User = null)
@@ -89,11 +92,12 @@ namespace HeartFlame.Compendium
                 return;
             }
 
-            if (!GUser.Perms.Mod)
-            {
-                await ReplyAsync(Properties.Resources.NotMod);
-                return;
-            }
+            if (BotGuild.ModuleControl.IncludePermissions)
+                if (!GSender.Perms.Mod)
+                {
+                    await ReplyAsync(Properties.Resources.NotMod);
+                    return;
+                }
 
             if (!CompendiumManager.SetUsername(Platform, Username, User))
             {
@@ -103,64 +107,83 @@ namespace HeartFlame.Compendium
             await ReplyAsync($"{GUser.Name}'s {NormPlat} username has been set to: {Username}");
 
         }
-
-        [Command("All"), Summary("Get all of the usernames for a platform. Input: string \"Xbox, Playstation, Activision etc\""), Priority(2)]
-        public async Task UsernameAll(string Platform)
+        [Group("All")]
+        public class CompendiumAllCommands : ModuleBase<SocketCommandContext>
         {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Username All Group"), Remarks("Usernames_All_Help")]
+            public async Task UsernameHelp()
+            {
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                if (!BotGuild.ModuleControl.IncludeCompendium)
+                {
+                    await ReplyAsync(Properties.Resources.NotComp);
+                    return;
+                }
 
-            if (!BotGuild.ModuleControl.IncludeCompendium)
-            {
-                await ReplyAsync(Properties.Resources.NotComp);
-                return;
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames All Help", "Usernames_All_Help", 1);
+                foreach (var embed in embeds)
+                {
+                    await ReplyAsync("", false, embed);
+                }
             }
-            var Embeds = CompendiumManager.GetUsernamesForPlatform(Platform, (SocketGuildUser)Context.User);
-           
-            foreach(var Embed in Embeds)
+
+            [Command("Platform"), Alias("plat", "console", "game"), Summary("Get all of the usernames for a platform. Input: string \"Xbox, Playstation, Activision etc\""), Priority(1)]
+            public async Task UsernameAll(string Platform)
             {
-                await ReplyAsync("",false, Embed);
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+
+                if (!BotGuild.ModuleControl.IncludeCompendium)
+                {
+                    await ReplyAsync(Properties.Resources.NotComp);
+                    return;
+                }
+                var Embeds = CompendiumManager.GetUsernamesForPlatform(Platform, (SocketGuildUser)Context.User);
+
+                foreach (var Embed in Embeds)
+                {
+                    await ReplyAsync("", false, Embed);
+                }
+            }
+
+            [Command("User"), Summary("Get all of the usernames for a user. Input: SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            public async Task UsernameAll(SocketGuildUser User = null)
+            {
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+
+                if (!BotGuild.ModuleControl.IncludeCompendium)
+                {
+                    await ReplyAsync(Properties.Resources.NotComp);
+                    return;
+                }
+
+                if (User is null) User = (SocketGuildUser)Context.User;
+
+                var Embed = CompendiumManager.GetUsernamesForUser(User);
+
+                await ReplyAsync("", false, Embed);
             }
         }
-
-        [Command("All"), Summary("Get all of the usernames for a user. Input: SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
-        public async Task UsernameAll(SocketGuildUser User = null)
-        {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-
-            if (!BotGuild.ModuleControl.IncludeCompendium)
-            {
-                await ReplyAsync(Properties.Resources.NotComp);
-                return;
-            }
-
-            var Embed = CompendiumManager.GetUsernamesForUser(User);
-
-            if (User is null)
-                Embed = CompendiumManager.GetUsernamesForUser((SocketGuildUser)Context.User);
-            
-            await ReplyAsync("", false, Embed);
-        }
+        
 
         private static string BadPlatform(string Platform, SocketGuildUser User)
         {
-            string Output = ":x: Uh oh, it appears that you have tried to get a username for an unsupported platform. Below are the supported playforms. Please check your spelling and try again!";
+            string Output = ":x: Uh oh, it appears that you have tried to get a username for an unsupported platform. Below are the supported platforms. Please check your spelling and try again!";
 
             var Guild = GuildManager.GetGuild(User.Guild.Id);
+            var GUser = Guild.GetUser(User);
 
-            foreach (var GUser in Guild.Users)
+            Output += "\nGaming platforms:";
+            foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
             {
-                Output += "\n Gaming platforms:";
-                foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
-                {
-                    Output += "\n" + Prop.Name;
-                }
-
-                Output += "\n\n Social platforms:";
-                foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
-                {
-                    Output += "\n" + Prop.Name;
-                }
+                Output += "\n" + Prop.Name;
             }
+
+            Output += "\n\nSocial platforms:";
+            foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
+            {
+                Output += "\n" + Prop.Name;
+            }
+            
             return Output;
         }
     }

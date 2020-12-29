@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using ImageProcessor;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
@@ -71,14 +72,12 @@ namespace HeartFlame.ChatLevels
             return output;
         }
 
-        public static async Task<Image> GetBannerAsync(string ImageName)
+        public static async Task<Image> GetBannerAsync(string ImageName = "default")
         {
-            string IName = "1";
-            if (ImageName != null && !ImageName.Equals("default"))
-                IName = ImageName;
+            if (ImageName is null) ImageName = "default";
 
             WebClient wc = new WebClient();
-            Uri imageUri = (await DownloadBanner(IName).ConfigureAwait(false)).PrimaryUri;
+            Uri imageUri = (await DownloadBanner(ImageName).ConfigureAwait(false)).PrimaryUri;
             byte[] bytes = wc.DownloadData(imageUri.OriginalString);
             MemoryStream ms = new MemoryStream(bytes);
             wc.Dispose();
@@ -89,11 +88,11 @@ namespace HeartFlame.ChatLevels
 
         public static async Task<StorageUri> DownloadBanner(string imageName)
         {
-            CloudStorageAccount account = CloudStorageAccount.Parse(Configuration.Configuration.storageConnectionString);
+            CloudStorageAccount account = CloudStorageAccount.Parse(Properties.Resources.StorageToken);
             CloudBlobClient serviceClient = account.CreateCloudBlobClient();
             var container = serviceClient.GetContainerReference("images");
             await container.CreateIfNotExistsAsync().ConfigureAwait(false);
-            CloudBlockBlob blob = container.GetBlockBlobReference("faitie/" + imageName);
+            CloudBlockBlob blob = container.GetBlockBlobReference(PersistentData.BotName + "/" + imageName);
 
             return blob.StorageUri;
         }

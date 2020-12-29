@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BadDuration" xml:space="preserve">
+    <value>:x: Unfortunately I'm not sure how long that is. I can support Seconds, Minutes, Hours, Days, Weeks, Months and Years. Please check your spelling and try again.</value>
+    <comment>Error message for bad duration</comment>
+  </data>
+  <data name="CreatorID" xml:space="preserve">
+    <value>264555514510311424</value>
+    <comment>HeartFire's User ID</comment>
+  </data>
+  <data name="NoJoinRole" xml:space="preserve">
+    <value>:x:Hmm. Is seems this Server has deleted their Join Role or has not set it up. Please set the Join role to a valid Discord Role.</value>
+    <comment>Error Message if Join Role Bad/Missing</comment>
+  </data>
   <data name="NotAdmin" xml:space="preserve">
     <value>:x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command.</value>
     <comment>Error message if user is not an Admin</comment>
@@ -137,6 +149,9 @@
     <value>:x:Uh oh! You do not have permission to do that. You must be at least a mod for the bot to use this command.</value>
     <comment>Error message if user is not a mod</comment>
   </data>
+  <data name="NotModeration" xml:space="preserve">
+    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
+  </data>
   <data name="NotOwner" xml:space="preserve">
     <value>:x:You must either be the owner of the Discord server or the maker of the bot to use this permission.</value>
     <comment>Error message if not Bot/Server Owner</comment>
@@ -148,5 +163,9 @@
   <data name="NotSelf" xml:space="preserve">
     <value>:x:Hmm. The self assign module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
     <comment>Error Message if self assign is not enabled.</comment>
+  </data>
+  <data name="StorageToken" xml:space="preserve">
+    <value>DefaultEndpointsProtocol=https;AccountName=aimbotdata;AccountKey=didJFE0mtpW1vDGWbEe+So8rp9Om2NXbdG4lRp5oBzo7aORz8Rb2tjhbljHiof37QJUlutyEHT8AwcHxXtXEiA==;EndpointSuffix=core.windows.net</value>
+    <comment>Azure storage token </comment>
   </data>
 </root>

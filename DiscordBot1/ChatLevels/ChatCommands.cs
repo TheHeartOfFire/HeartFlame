@@ -51,7 +51,7 @@ namespace HeartFlame.ChatLevels
                 await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
         }
 
-        [Command("Ranking"), Alias("Top", "Leaders", "LeaderBoard", "Leader Board"), Summary("Get the top 10 chat levels.")]
+        [Command("Ranking"),Alias("Top", "Leaders", "LeaderBoard", "Leader Board", "rank", "r"), Summary("Get the top 10 chat levels.")]
         public async Task GetRankings()
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -110,7 +110,7 @@ namespace HeartFlame.ChatLevels
                 }
             }
 
-            [Command("Banner"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name[Blank = default]\""), Priority(1)]
+            [Command("Banner"),Alias("b"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name[Blank = default]\""), Priority(1)]
             public async Task BannerSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -128,7 +128,7 @@ namespace HeartFlame.ChatLevels
                 }
 
                 GUser.Banner.BannerImage = name;
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -161,7 +161,7 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Profile"), Summary("Set the user's profile image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Profile Image Name[Blank = default]\""), Priority(1)]
+            [Command("Profile"),Alias("avatar"), Summary("Set the user's profile image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Profile Image Name[Blank = default]\""), Priority(1)]
             public async Task ProfileSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -172,14 +172,15 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.Perms.Admin)
+                if (BotGuild.ModuleControl.IncludePermissions)
+                    if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
                 GUser.Banner.BannerImage = name;
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -212,7 +213,7 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Background"), Summary("Toggle the user's text background. Input: SocketGuildUser \"Mentioned Discord User\" Bool \"Background Active?\""), Priority(1)]
+            [Command("Background"), Alias("back"), Summary("Toggle the user's text background. Input: SocketGuildUser \"Mentioned Discord User\" Bool \"Background Active?\""), Priority(1)]
             public async Task BackgroundSet(SocketGuildUser User, bool Active = true)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -223,14 +224,15 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.Perms.Admin)
+                if (BotGuild.ModuleControl.IncludePermissions)
+                    if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
                 GUser.Banner.TextBackground = Active;
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -267,7 +269,7 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Greyscale"), Summary("Set the user's text background greyscale value. Input: SocketGuildUser \"Mentioned Discord User\" int \"Greyscale value 0-255[Default = 227]\""), Priority(1)]
+            [Command("Greyscale"),Alias("grey"), Summary("Set the user's text background greyscale value. Input: SocketGuildUser \"Mentioned Discord User\" int \"Greyscale value 0-255[Default = 227]\""), Priority(1)]
             public async Task grayscaleSet(SocketGuildUser User, int Greyscale = 227)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -278,14 +280,15 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (!GUser.Perms.Admin)
+                if (BotGuild.ModuleControl.IncludePermissions)
+                    if (!GUser.Perms.Admin)
                 {
                     await ReplyAsync(Properties.Resources.NotAdmin);
                     return;
                 }
 
                 GUser.Banner.Greyscale = Greyscale;
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 System.Drawing.Image img = null;
 
@@ -351,9 +354,8 @@ namespace HeartFlame.ChatLevels
                 }
 
                 var DisUser = User;
-                if (User is null)
-                    DisUser = (SocketGuildUser)Context.User;
-                else if (!GUser.Perms.Mod)
+                if (User is null) DisUser = (SocketGuildUser)Context.User;
+                else if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -369,7 +371,7 @@ namespace HeartFlame.ChatLevels
 
 
                 GUser.Banner.SetColor(ColorTranslator.FromHtml("#" + hex));
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
@@ -446,7 +448,7 @@ namespace HeartFlame.ChatLevels
                 }
 
                 GUser.Banner.SetColor(System.Drawing.Color.FromArgb(R, G, B));
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
@@ -523,7 +525,7 @@ namespace HeartFlame.ChatLevels
                 }
 
                 GUser.Banner.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {
@@ -548,7 +550,7 @@ namespace HeartFlame.ChatLevels
                 }
 
                 GUser.Banner.SetColor((System.Drawing.Color)ColorInfo.GetValue(colorType));
-                GuildManager.SaveChangesToJson();
+                PersistentData.SaveChangesToJson();
 
                 if (BotGuild.Configuration.UseChatChannel)
                 {

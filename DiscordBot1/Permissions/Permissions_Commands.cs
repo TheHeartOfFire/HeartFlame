@@ -84,7 +84,7 @@ namespace HeartFlame.Permissions
         }
 
         [Command("Admin"), Alias("a"), Summary("Set the admin state for the user. Input: SocketGuildUser \"Mentioned Discord User\" bool \"TRUE / FALSE\""), Priority(1)]
-        public async Task PermissionsAfmin(SocketGuildUser User, bool MakeAdmin = true)
+        public async Task PermissionsAdmin(SocketGuildUser User, bool MakeAdmin = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);

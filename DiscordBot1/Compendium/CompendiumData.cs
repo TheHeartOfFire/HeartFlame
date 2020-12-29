@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace HeartFlame.Compendium
-{
+{//level 4
     public class CompendiumData
     {
         public GamingData Games { get; set; }

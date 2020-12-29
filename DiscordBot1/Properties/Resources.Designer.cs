@@ -61,6 +61,33 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: Unfortunately I&apos;m not sure how long that is. I can support Seconds, Minutes, Hours, Days, Weeks, Months and Years. Please check your spelling and try again..
+        /// </summary>
+        internal static string BadDuration {
+            get {
+                return ResourceManager.GetString("BadDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 264555514510311424.
+        /// </summary>
+        internal static string CreatorID {
+            get {
+                return ResourceManager.GetString("CreatorID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. Is seems this Server has deleted their Join Role or has not set it up. Please set the Join role to a valid Discord Role..
+        /// </summary>
+        internal static string NoJoinRole {
+            get {
+                return ResourceManager.GetString("NoJoinRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x:Uh oh! You do not have permission to do that. You must be at least an admin for the bot to use this command..
         /// </summary>
         internal static string NotAdmin {
@@ -106,6 +133,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error..
+        /// </summary>
+        internal static string NotModeration {
+            get {
+                return ResourceManager.GetString("NotModeration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x:You must either be the owner of the Discord server or the maker of the bot to use this permission..
         /// </summary>
         internal static string NotOwner {
@@ -129,6 +165,15 @@ namespace HeartFlame.Properties {
         internal static string NotSelf {
             get {
                 return ResourceManager.GetString("NotSelf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DefaultEndpointsProtocol=https;AccountName=aimbotdata;AccountKey=didJFE0mtpW1vDGWbEe+So8rp9Om2NXbdG4lRp5oBzo7aORz8Rb2tjhbljHiof37QJUlutyEHT8AwcHxXtXEiA==;EndpointSuffix=core.windows.net.
+        /// </summary>
+        internal static string StorageToken {
+            get {
+                return ResourceManager.GetString("StorageToken", resourceCulture);
             }
         }
     }

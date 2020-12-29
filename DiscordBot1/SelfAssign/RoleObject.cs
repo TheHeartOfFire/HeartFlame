@@ -5,6 +5,7 @@ using System.Text;
 
 namespace HeartFlame.SelfAssign
 {
+    //level 4
     public class RoleObject : IEquatable<RoleObject>, IComparable<RoleObject>
     {
         public ulong RoleID { get; set; }

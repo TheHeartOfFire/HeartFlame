@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HeartFlame.ChatLevels
+﻿namespace HeartFlame.ChatLevels
 {
     public class ChatData
-    {
+    {//level 4
         public int ChatLevel { get; set; }
         public int ChatExp { get; set; }
         public int MessagesSent { get; set; }

@@ -2,35 +2,50 @@
 using HeartFlame.ChatLevels;
 using HeartFlame.Configuration;
 using HeartFlame.Misc;
+using HeartFlame.Moderation;
 using HeartFlame.Permissions;
 using HeartFlame.SelfAssign;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace HeartFlame.GuildControl
 {
     public class GuildData
-    {
-        public ulong GuildID { get; }
+    {//level 1
+        public ulong GuildID { get; set; }
+        public string Name { get; set; }
+        public ModerationData Moderation { get; set; }
         public ModuleControlData ModuleControl { get; set; }
         public AllRoles SelfAssign { get; set; }
         public GuildConfigurationData Configuration { get; set; }
         public List<GuildUser> Users { get; set; }
 
-        public GuildData(ulong guildID, List<SocketGuildUser> users)
+        public GuildData(SocketGuild guild)
         {
-            GuildID = guildID;
+            if (guild is null)
+                return;
+            guild.DownloadUsersAsync();
+            Name = guild.Name;
+            GuildID = guild.Id;
+            Moderation = new ModerationData();
             ModuleControl = new ModuleControlData();
             SelfAssign = new AllRoles();
             Configuration = new GuildConfigurationData();
             Users = new List<GuildUser>();
-            AddUsers(users);
+            AddUsers(guild.Users);
+        }
+        [JsonConstructor]
+        public GuildData()
+        {
+
         }
 
-        private void AddUsers(List<SocketGuildUser> users)
+        private void AddUsers(IReadOnlyCollection<SocketGuildUser> users)
         {
             foreach(var User in users)
             {
-                Users.Add(new GuildUser(User));
+                if(!User.IsBot)
+                    Users.Add(new GuildUser(User));
             }
         }
 
@@ -61,6 +76,7 @@ namespace HeartFlame.GuildControl
 
         public GuildUser GetUser(SocketGuildUser User)
         {
+            if (User is null) return null;
             foreach(var GUser in Users)
             {
                 if(GUser.DiscordID == User.Id)
@@ -70,6 +86,18 @@ namespace HeartFlame.GuildControl
             }
             return null;
         }
-        
+
+        public GuildUser GetUser(SocketUser User)
+        {
+
+            foreach (var GUser in Users)
+            {
+                if (GUser.DiscordID == User.Id)
+                {
+                    return GUser;
+                }
+            }
+            return null;
+        }
     }
 }

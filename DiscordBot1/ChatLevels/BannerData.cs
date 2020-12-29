@@ -3,13 +3,20 @@
 namespace HeartFlame.ChatLevels
 {
     public class BannerData
-    {
-        private int[] ColorARGB { get; set; }
+    {//level 4
+        public int[] ColorARGB { get; set; }
         public string ProfileImage { get; set; }
         public string BannerImage { get; set; }
         public bool TextBackground { get; set; }
         public int Greyscale { get; set; }
 
+        public BannerData()
+        {
+            SetColor(Color.Red);
+            ProfileImage = "default";
+            BannerImage = "default";
+            Greyscale = 150;
+        }
         private Color ParseColor(int[] input)
         {
             return Color.FromArgb(input[0], input[1], input[2], input[3]);

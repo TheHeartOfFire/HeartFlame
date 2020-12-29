@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace HeartFlame.SelfAssign
-{
+{//level 3
     public class RoleCategory<t>
     {
         public ulong MsgID { get; set; }

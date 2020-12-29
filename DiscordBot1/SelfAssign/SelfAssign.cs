@@ -20,7 +20,7 @@ namespace HeartFlame.SelfAssign
 
         public static async Task<Embed> PrefabConsoleAsync(ulong GuildID)
         { 
-            foreach(var BotGuild in GuildManager.Guilds)
+            foreach(var BotGuild in PersistentData.Data.Guilds)
             {
                 if(BotGuild.GuildID == GuildID)
                 {
@@ -63,7 +63,7 @@ namespace HeartFlame.SelfAssign
 
         public static async Task<Embed> PrefabTimeAsync(ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
@@ -108,7 +108,7 @@ namespace HeartFlame.SelfAssign
 
         public static void AddConsole(string Name, string Emoji, int Position, ulong RoleID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
@@ -127,14 +127,14 @@ namespace HeartFlame.SelfAssign
                     });
 
                     BotGuild.SelfAssign.Consoles.Roles.Sort();
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }
 
         public static void AddTime(string Name, string Emoji, int Position, ulong RoleID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
@@ -155,14 +155,14 @@ namespace HeartFlame.SelfAssign
                     });
 
                     BotGuild.SelfAssign.TimeZones.Roles.Sort();
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }
 
         public static Embed ConsoleEmbed(ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
@@ -182,7 +182,7 @@ namespace HeartFlame.SelfAssign
 
         public static Embed TimeEmbed(ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
@@ -202,48 +202,48 @@ namespace HeartFlame.SelfAssign
 
         public static void SetConsoleMessageID(ulong MessageID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
                     BotGuild.SelfAssign.Consoles.MsgID = MessageID;
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }
 
         public static void SetTimeMessageID(ulong MessageID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
                     BotGuild.SelfAssign.TimeZones.MsgID = MessageID;
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }
 
         public static void SetConsoleDivider(ulong RoleID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
                     BotGuild.SelfAssign.Consoles.DividerRoleID = RoleID;
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }
 
         public static void SetTimeDivider(ulong RoleID, ulong GuildID)
         {
-            foreach (var BotGuild in GuildManager.Guilds)
+            foreach (var BotGuild in PersistentData.Data.Guilds)
             {
                 if (BotGuild.GuildID == GuildID)
                 {
                     BotGuild.SelfAssign.TimeZones.DividerRoleID = RoleID;
-                    GuildManager.SaveChangesToJson();
+                    PersistentData.SaveChangesToJson();
                 }
             }
         }

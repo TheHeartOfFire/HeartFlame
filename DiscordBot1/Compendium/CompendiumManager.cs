@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,21 +18,21 @@ namespace HeartFlame.Compendium
             if (Platform is null)
                 return null;
 
-            foreach (var GUser in Guild.Users)
-            {
-                foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
-                {
-                    if (Prop.Name.ToLower().Equals(Platform))
-                        return (string)Prop.GetValue(GUser.Usernames.Games);
-                    
-                }
+            var GUser = Guild.GetUser(User);
 
-                foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
-                {
-                    if (Prop.Name.ToLower().Equals(Platform))
-                       return (string)Prop.GetValue(GUser.Usernames.Social);
-                }
+            foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
+            {
+                if (Prop.Name.ToLower().Equals(Platform))
+                    return (string)Prop.GetValue(GUser.Usernames.Games);
+
             }
+
+            foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
+            {
+                if (Prop.Name.ToLower().Equals(Platform))
+                    return (string)Prop.GetValue(GUser.Usernames.Social);
+            }
+            
 
             return null;
         }
@@ -50,27 +51,29 @@ namespace HeartFlame.Compendium
             if (Platform is null)
                 return false;
 
-            foreach (var GUser in Guild.Users)
-            {
-                foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
-                {
-                    if (Prop.Name.ToLower().Equals(Platform))
-                    {
-                        Prop.SetValue(GUser.Usernames.Games, Username);
-                        return true;
-                    }
+            var GUser = Guild.GetUser(User);
 
+            foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
+            {
+                if (Prop.Name.ToLower().Equals(Platform))
+                {
+                    Prop.SetValue(GUser.Usernames.Games, Username);
+                    PersistentData.SaveChangesToJson();
+                    return true;
                 }
 
-                foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
+            }
+
+            foreach (var Prop in GUser.Usernames.Social.GetType().GetProperties())
+            {
+                if (Prop.Name.ToLower().Equals(Platform))
                 {
-                    if (Prop.Name.ToLower().Equals(Platform))
-                    {
-                        Prop.SetValue(GUser.Usernames.Social, Username);
-                        return true;
-                    }
+                    Prop.SetValue(GUser.Usernames.Social, Username);
+                    PersistentData.SaveChangesToJson();
+                    return true;
                 }
             }
+            
             return false;
         }
 
@@ -85,7 +88,7 @@ namespace HeartFlame.Compendium
             var Output = new List<Embed>();
             EmbedBuilder Embed = new EmbedBuilder();
 
-            foreach(var GUser in Guild.Users)
+            foreach (var GUser in Guild.Users)
             {
                 foreach (var Prop in GUser.Usernames.Games.GetType().GetProperties())
                 {
@@ -117,6 +120,7 @@ namespace HeartFlame.Compendium
                     }
                 }
             }
+            
             Output.Add(Embed.Build());
             return Output;
         }
@@ -152,7 +156,7 @@ namespace HeartFlame.Compendium
 
             if (Platform.Equals("youtube") || Platform.Equals("yt"))
                 return "youtube";
-            if (Platform.Equals("twitch"))
+            if (Platform.Equals("twitch") || Platform.Equals("ttv"))
                 return "twitch";
             if (Platform.Equals("facebook") || Platform.Equals("fb"))
                 return "facebook";
@@ -174,11 +178,11 @@ namespace HeartFlame.Compendium
                 return "steam";
             if (Platform.Equals("activision") || Platform.Equals("cod") || Platform.Equals("mw") || Platform.Equals("warzone") || Platform.Equals("cw"))
                 return "activision";
-            if (Platform.Equals("epic") || Platform.Equals("fortnite"))
+            if (Platform.Equals("epic") || Platform.Equals("fortnite") || Platform.Equals("rocketleague"))
                 return "epic";
             if (Platform.Equals("runescape") || Platform.Equals("rs"))
                 return "runescape";
-            if (Platform.Equals("wow"))
+            if (Platform.Equals("worldofwarcraft") || Platform.Equals("wow"))
                 return "worldofwarcraft";
             if (Platform.Equals("mojang") || Platform.Equals("minecraft") || Platform.Equals("mc"))
                 return "mojang";
@@ -188,6 +192,8 @@ namespace HeartFlame.Compendium
                 return "bethesda";
             if (Platform.Equals("ubisoft") || Platform.Equals("kingdomhearts"))
                 return "ubisoft";
+            if (Platform.Equals("tiktok"))
+                return "tiktok";
 
             return null;
 

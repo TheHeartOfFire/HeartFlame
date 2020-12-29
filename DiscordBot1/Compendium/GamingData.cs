@@ -2,7 +2,7 @@
 namespace HeartFlame.Compendium
 {
     public class GamingData
-    {
+    {//level 5
         public string Xbox { get; set; }
         public string PlayStation { get; set; }
         public string Nintendo { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,7 +46,7 @@ namespace HeartFlame.ChatLevels
 
         public static Embed Top10(ulong GuildID)
         {
-            foreach (var Guild in GuildManager.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (Guild.GuildID == GuildID)
                 {
