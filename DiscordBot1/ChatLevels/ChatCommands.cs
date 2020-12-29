@@ -224,13 +224,15 @@ namespace HeartFlame.ChatLevels
                     return;
                 }
 
-                if (BotGuild.ModuleControl.IncludePermissions)
-                    if (!GUser.Perms.Admin)
-                {
-                    await ReplyAsync(Properties.Resources.NotAdmin);
-                    return;
-                }
 
+                if (BotGuild.ModuleControl.IncludePermissions)
+                    if (!GUser.Perms.Admin && User.Id != Context.User.Id)
+                    {
+                        await ReplyAsync(Properties.Resources.NotAdmin);
+                        return;
+                    }
+
+                if (User.Id != Context.User.Id) GUser = BotGuild.GetUser(User);
                 GUser.Banner.TextBackground = Active;
                 PersistentData.SaveChangesToJson();
 
@@ -281,11 +283,13 @@ namespace HeartFlame.ChatLevels
                 }
 
                 if (BotGuild.ModuleControl.IncludePermissions)
-                    if (!GUser.Perms.Admin)
-                {
-                    await ReplyAsync(Properties.Resources.NotAdmin);
-                    return;
-                }
+                    if (!GUser.Perms.Admin && User.Id != Context.User.Id)
+                    {
+                        await ReplyAsync(Properties.Resources.NotAdmin);
+                        return;
+                    }
+
+                if (User.Id != Context.User.Id) GUser = BotGuild.GetUser(User);
 
                 GUser.Banner.Greyscale = Greyscale;
                 PersistentData.SaveChangesToJson();
