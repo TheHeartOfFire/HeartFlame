@@ -363,7 +363,7 @@ namespace HeartFlame.ChatLevels
                     DisUser = (SocketGuildUser)Context.User;
                     GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 } 
-                else if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
+                else if (BotGuild.ModuleControl.IncludePermissions && !BotGuild.GetUser((SocketGuildUser)Context.User).Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -440,7 +440,7 @@ namespace HeartFlame.ChatLevels
                     DisUser = (SocketGuildUser)Context.User;
                     GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 }
-                else if (!GUser.Perms.Mod)
+                else if (BotGuild.ModuleControl.IncludePermissions && !BotGuild.GetUser((SocketGuildUser)Context.User).Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
@@ -519,7 +519,7 @@ namespace HeartFlame.ChatLevels
                     DisUser = (SocketGuildUser)Context.User;
                     GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
                 }
-                else if (!GUser.Perms.Mod)
+                else if (BotGuild.ModuleControl.IncludePermissions && !BotGuild.GetUser((SocketGuildUser)Context.User).Perms.Mod)
                 {
                     await ReplyAsync(Properties.Resources.NotMod);
                     return;
