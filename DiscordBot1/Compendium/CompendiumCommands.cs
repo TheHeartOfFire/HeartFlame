@@ -106,6 +106,13 @@ namespace HeartFlame.Compendium
             }
             await ReplyAsync($"{GUser.Name}'s {NormPlat} username has been set to: {Username}");
 
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                    "CompendiumCommands.UsernameSet(string Platform, string Username, SocketGuildUser User = null)",
+                    "Set the username for the user.",
+                    $"{User.Username}'s {Platform} username has been set to {Username}.",
+                    Context.Guild.Id,
+                    (SocketGuildUser)Context.User);
         }
         [Group("All")]
         public class CompendiumAllCommands : ModuleBase<SocketCommandContext>

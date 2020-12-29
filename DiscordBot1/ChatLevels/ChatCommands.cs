@@ -505,6 +505,7 @@ namespace HeartFlame.ChatLevels
             [Command("name"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
             public async Task SetColorByName(string name, SocketGuildUser User = null)
             {
+
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser(User);
                 if (!BotGuild.ModuleControl.IncludeChat)

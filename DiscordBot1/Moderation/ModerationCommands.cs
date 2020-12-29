@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using System.Threading.Tasks;
 
 namespace HeartFlame.Moderation
@@ -49,7 +50,15 @@ namespace HeartFlame.Moderation
                 return;
             }
 
-            await ReplyAsync(Properties.Resources.BadDuration);
+            await ReplyAsync(Properties.Resources.BadDuration); 
+            
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                    "ModerationCommands.ModerationMute(SocketGuildUser User, int Incriment, string Duration)",
+                    "Mute a user.",
+                    $"{User.Username} has been muted by {BotGuild.GetUser(Context.User).Name} for {Incriment}.",
+                    Context.Guild.Id,
+                    (SocketGuildUser)Context.User);
         }
 
         [Command("Unmute"), Summary("Unmute a user. Input: SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
@@ -73,6 +82,13 @@ namespace HeartFlame.Moderation
             GUser.Moderation.UnMute();
             await ReplyAsync($"{BotGuild.GetUser(Context.User).Name} has unmuted {GUser.Name}");
 
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                    "ModerationCommands.ModerationUnmute(SocketGuildUser User)",
+                    "Unmute a user.",
+                    $"{User.Username} has unmuted by {BotGuild.GetUser(Context.User).Name}.",
+                    Context.Guild.Id,
+                    (SocketGuildUser)Context.User);
         }
     }
 }

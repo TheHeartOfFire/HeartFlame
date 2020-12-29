@@ -164,6 +164,10 @@
     <value>:x:Hmm. The self assign module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
     <comment>Error Message if self assign is not enabled.</comment>
   </data>
+  <data name="PatreonLink" xml:space="preserve">
+    <value>https://www.patreon.com/heartflamebot</value>
+    <comment>Link to patreon</comment>
+  </data>
   <data name="StorageToken" xml:space="preserve">
     <value>DefaultEndpointsProtocol=https;AccountName=aimbotdata;AccountKey=didJFE0mtpW1vDGWbEe+So8rp9Om2NXbdG4lRp5oBzo7aORz8Rb2tjhbljHiof37QJUlutyEHT8AwcHxXtXEiA==;EndpointSuffix=core.windows.net</value>
     <comment>Azure storage token </comment>

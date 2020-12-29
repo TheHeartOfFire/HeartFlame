@@ -169,6 +169,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://www.patreon.com/heartflamebot.
+        /// </summary>
+        internal static string PatreonLink {
+            get {
+                return ResourceManager.GetString("PatreonLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DefaultEndpointsProtocol=https;AccountName=aimbotdata;AccountKey=didJFE0mtpW1vDGWbEe+So8rp9Om2NXbdG4lRp5oBzo7aORz8Rb2tjhbljHiof37QJUlutyEHT8AwcHxXtXEiA==;EndpointSuffix=core.windows.net.
         /// </summary>
         internal static string StorageToken {
