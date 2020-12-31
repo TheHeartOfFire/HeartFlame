@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
+using HeartFlame.ModuleControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,18 +11,12 @@ using System.Threading.Tasks;
 namespace HeartFlame.Permissions
 {
     [Group("Permissions"), Alias("perms")]
+    [RequireModule(Modules.PERMISSIONS)]
     public class Permissions_Command : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("Permissions_Help")]
         public async Task PermissionsHelp()
         {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludePermissions)
-            {
-                await ReplyAsync(Properties.Resources.NotPerms);
-                return;
-            }
-
             var embeds = Configuration.Configuration_Command.HelpEmbed("Permissions Help", "Permissions_Help", 0);
             foreach (var embed in embeds)
             {
@@ -30,21 +25,11 @@ namespace HeartFlame.Permissions
         }
 
         [Command("Mod"), Alias("m"), Summary("Set the mod state for the user. Input: SocketGuildUser \"Mentioned Discord User\" bool \"TRUE / FALSE\""), Priority(1)]
+        [RequirePermission(Roles.ADMIN)]
         public async Task PermissionsMod(SocketGuildUser User, bool MakeMod = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);
-            if (!BotGuild.ModuleControl.IncludePermissions)
-            {
-                await ReplyAsync(Properties.Resources.NotPerms);
-                return;
-            }
-
-            if (!GUser.Perms.Admin)
-            {
-                await ReplyAsync(Properties.Resources.NotAdmin);
-                return;
-            }
             if (User is null) return;
             if (MakeMod)
             {
@@ -84,21 +69,12 @@ namespace HeartFlame.Permissions
         }
 
         [Command("Admin"), Alias("a"), Summary("Set the admin state for the user. Input: SocketGuildUser \"Mentioned Discord User\" bool \"TRUE / FALSE\""), Priority(1)]
+        [RequirePermission(Roles.OWNER)]
         public async Task PermissionsAdmin(SocketGuildUser User, bool MakeAdmin = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);
-            if (!BotGuild.ModuleControl.IncludePermissions)
-            {
-                await ReplyAsync(Properties.Resources.NotPerms);
-                return;
-            }
 
-            if ((Context.Guild.OwnerId != Context.User.Id) && (Context.User.Id != 264555514510311424))
-            {
-                await ReplyAsync(Properties.Resources.NotOwner);
-                return;
-            }
             if (User is null) return;
 
             if (MakeAdmin)

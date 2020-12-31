@@ -3,7 +3,7 @@ using HeartFlame.ChatLevels;
 using HeartFlame.Configuration;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
-using HeartFlame.Permissions;
+using HeartFlame.ModuleControl;
 using HeartFlame.SelfAssign;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace HeartFlame.GuildControl
         public ulong GuildID { get; set; }
         public string Name { get; set; }
         public ModerationData Moderation { get; set; }
-        public ModuleControlData ModuleControl { get; set; }
+        public ModuleData ModuleControl { get; set; }
         public AllRoles SelfAssign { get; set; }
         public GuildConfigurationData Configuration { get; set; }
         public List<GuildUser> Users { get; set; }
@@ -28,7 +28,7 @@ namespace HeartFlame.GuildControl
             Name = guild.Name;
             GuildID = guild.Id;
             Moderation = new ModerationData();
-            ModuleControl = new ModuleControlData();
+            ModuleControl = new ModuleData();
             SelfAssign = new AllRoles();
             Configuration = new GuildConfigurationData();
             Users = new List<GuildUser>();

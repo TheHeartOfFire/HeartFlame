@@ -3,6 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
+using HeartFlame.ModuleControl;
+using HeartFlame.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,12 +43,12 @@ namespace HeartFlame.Configuration
             await Context.Channel.SendMessageAsync($"Command Prefix has been set to {Prefix}");
 
             if (BotGuild.ModuleControl.IncludeLogging)
-                    BotLogging.PrintLogMessage(
-                    "Configuration.Configuration_Command.SetPrefix(string Prefix)",
-                    "Set the command prefix for the bot.",
-                    $"Bot commands must now begin with \"{Prefix} \"",
-                        Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                BotLogging.PrintLogMessage(
+                "Configuration.Configuration_Command.SetPrefix(string Prefix)",
+                "Set the command prefix for the bot.",
+                $"Bot commands must now begin with \"{Prefix} \"",
+                    Context.Guild.Id,
+                (SocketGuildUser)Context.User);
         }
 
         [Command("Game"), Alias("g"), Summary("Set the game that discord shows the bot to be playing. Input: string \"name\""), Priority(1)]
@@ -65,30 +67,18 @@ namespace HeartFlame.Configuration
             await Context.Channel.SendMessageAsync($"Animyst Bot is now playing {Game}");
 
             if (BotGuild.ModuleControl.IncludeLogging)
-                    BotLogging.PrintLogMessage(
-                    "Configuration.Configuration_Command.SetGame(string Game)",
-                    "Set the game that discord displays the bot to be playing.",
-                    $"The bot is now playing {Game}",
-                        Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                BotLogging.PrintLogMessage(
+                "Configuration.Configuration_Command.SetGame(string Game)",
+                "Set the game that discord displays the bot to be playing.",
+                $"The bot is now playing {Game}",
+                    Context.Guild.Id,
+                (SocketGuildUser)Context.User);
         }
 
-        [Command("Log"), Summary("Add a Channel used for log messages. Input: Discord Channel \"Mentioned Discord channel\""), Priority(1)]
+        [Command("Log"), Summary("Add a Channel used for log messages. Input: Discord Channel \"Mentioned Discord channel\""), Priority(1), RequireModule(Modules.LOGGING), RequirePermission(Roles.ADMIN)]
         public async Task AddLogChannel(IChannel channel = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-            if (!BotGuild.ModuleControl.IncludeLogging)
-            {
-                await ReplyAsync(Properties.Resources.NotLogging);
-            }
-
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
-            {
-                await ReplyAsync(Properties.Resources.NotAdmin);
-                return;
-            }
-
             string chnl;
             if (channel is null)
             {
@@ -104,29 +94,18 @@ namespace HeartFlame.Configuration
 
             await Context.Channel.SendMessageAsync($"The bot's log channels has been set to {chnl}.");
 
-                BotLogging.PrintLogMessage(
-                "Configuration.Configuration_Command.SetLogChannel(IChannel channel = null)",
-                "Change the bot's Log channel.",
-                $"The bot's log channel has been changed to {chnl}",
-                        Context.Guild.Id,
-                (SocketGuildUser)Context.User);
+            BotLogging.PrintLogMessage(
+            "Configuration.Configuration_Command.SetLogChannel(IChannel channel = null)",
+            "Change the bot's Log channel.",
+            $"The bot's log channel has been changed to {chnl}",
+                    Context.Guild.Id,
+            (SocketGuildUser)Context.User);
         }
 
-        [Command("Chat"), Summary("Add a Channel used for Chat Level messages. Input: Discord Channel \"Mentioned Discord channel\""), Priority(1)]
+        [Command("Chat"), Summary("Add a Channel used for Chat Level messages. Input: Discord Channel \"Mentioned Discord channel\""), Priority(1), RequireModule(Modules.CHAT), RequirePermission(Roles.ADMIN)]
         public async Task AddChatChannel(IChannel channel = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-            if (!BotGuild.ModuleControl.IncludeChat)
-            {
-                await ReplyAsync(Properties.Resources.NotChat);
-            }
-
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
-            {
-                await ReplyAsync(Properties.Resources.NotAdmin);
-                return;
-            }
 
             string chnl;
             if (channel is null)
@@ -152,22 +131,14 @@ namespace HeartFlame.Configuration
                 (SocketGuildUser)Context.User);
         }
 
-        [Command("UseChatChannel"), Summary("Choose whether or not Chat Level messages are limited to a determined Channel. Input: Discord Channel \"Mentioned Discord channel\""), Priority(1)]
+        [Command("UseChatChannel")]
+        [Summary("Choose whether or not Chat Level messages are limited to a determined Channel. Input: Discord Channel \"Mentioned Discord channel\"")]
+        [Priority(1)]
+        [RequireModule(Modules.CHAT)]
+        [RequirePermission(Roles.ADMIN)]
         public async Task UseChatChannel(bool use = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-            if (!BotGuild.ModuleControl.IncludeChat)
-            {
-                await ReplyAsync(Properties.Resources.NotChat);
-            }
-
-            if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Admin)
-            {
-                await ReplyAsync(Properties.Resources.NotAdmin);
-                return;
-            }
-
             if (use && BotGuild.Configuration.ChatChannel.Count <= 0)
             {
                 await ReplyAsync($"There is no channel specified. Please use `{PersistentData.Data.Config.CommandPrefix}Configuration Chat` to select a channel for this purpose.");

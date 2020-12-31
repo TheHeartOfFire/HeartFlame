@@ -2,11 +2,12 @@
 using Discord.WebSocket;
 using HeartFlame.ChatLevels;
 using HeartFlame.GuildControl;
+using HeartFlame.Misc;
 using HeartFlame.Reporting;
 
-namespace HeartFlame.Misc
+namespace HeartFlame.ModuleControl
 {
-    public static class ModuleControl
+    public static class ModuleManager
     {
         public static void MessageTunnel(SocketMessage arg)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HeartFlame.Misc;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,10 +24,12 @@ namespace HeartFlame.Moderation
         public void Mute(TimeSpan Duration)
         {
             MuteTimer = DateTimeOffset.UtcNow.Add(Duration).ToString();
+            PersistentData.SaveChangesToJson();
         }
         public void UnMute()
         {
             MuteTimer = DateTimeOffset.UtcNow.ToString();
+            PersistentData.SaveChangesToJson();
         }
     }
 }

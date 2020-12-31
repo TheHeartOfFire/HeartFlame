@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
+using HeartFlame.ModuleControl;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,16 +16,10 @@ namespace HeartFlame.ChatLevels
     [Group("Level"), Alias("lv", "lvl")]
     public class ChatCommands : ModuleBase<SocketCommandContext>
     {
-        [Command(""), Summary("Get the user's current chat level. Optionally mention another user to get their level. Input: SocketGuildUser \"Mentioned Discord User\" ")]
+        [Command, Summary("Get the user's current chat level. Optionally mention another user to get their level. Input: SocketGuildUser \"Mentioned Discord User\" "), RequireModule(Modules.CHAT)]
         public async Task GetLevel(SocketGuildUser User = null)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludeChat)
-            {
-                await ReplyAsync(Properties.Resources.NotChat);
-                return;
-            }
-
             var DisUser = (SocketGuildUser)Context.User;
             if (User != null)
                 DisUser = User;
@@ -51,16 +46,10 @@ namespace HeartFlame.ChatLevels
                 await Context.Channel.SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
         }
 
-        [Command("Ranking"),Alias("Top", "Leaders", "LeaderBoard", "Leader Board", "rank", "r"), Summary("Get the top 10 chat levels.")]
+        [Command("Ranking"),Alias("Top", "Leaders", "LeaderBoard", "Leader Board", "rank", "r"), Summary("Get the top 10 chat levels."), RequireModule(Modules.CHAT)]
         public async Task GetRankings()
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludeChat)
-            {
-                await ReplyAsync(Properties.Resources.NotChat);
-                return;
-            }
-
             if (BotGuild.Configuration.UseChatChannel)
             {
                 var IDs = BotGuild.Configuration.ChatChannel;
@@ -73,16 +62,9 @@ namespace HeartFlame.ChatLevels
                 await Context.Channel.SendMessageAsync("", false, LevelManagement.Top10(Context.Guild.Id));
         }
 
-        [Command("Help"), Alias("h", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("ChatCommandHelp"), Priority(1)]
+        [Command("Help"), Alias("h", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("ChatCommandHelp"), Priority(1), RequireModule(Modules.CHAT)]
         public async Task ChatCommandsHelp()
         {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludeChat)
-            {
-                await ReplyAsync(Properties.Resources.NotChat);
-                return;
-            }
-
             var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Help", "ChatCommandHelp", 0);
             foreach (var embed in embeds)
             {
@@ -93,16 +75,9 @@ namespace HeartFlame.ChatLevels
         [Group("Image"), Alias("img")]
         public class ChatCommandsImage : ModuleBase<SocketCommandContext>
         {
-            [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the ChatImage Group"), Remarks("ChatCommandImageHelp")]
+            [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the ChatImage Group"), Remarks("ChatCommandImageHelp"), RequireModule(Modules.CHAT)]
             public async Task ChatCommandImageHelp()
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
                 var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Image Help", "ChatCommandImageHelp", 1);
                 foreach (var embed in embeds)
                 {
@@ -110,16 +85,11 @@ namespace HeartFlame.ChatLevels
                 }
             }
 
-            [Command("Banner"),Alias("b"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name[Blank = default]\""), Priority(1)]
+            [Command("Banner"),Alias("b"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name[Blank = default]\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task BannerSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
 
                 if (!GUser.Perms.Admin)
                 {
@@ -161,23 +131,18 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Profile"),Alias("avatar"), Summary("Set the user's profile image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Profile Image Name[Blank = default]\""), Priority(1)]
+            [Command("Profile"),Alias("avatar"), Summary("Set the user's profile image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Profile Image Name[Blank = default]\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task ProfileSet(SocketGuildUser User, string name = "default")
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
 
                 if (BotGuild.ModuleControl.IncludePermissions)
                     if (!GUser.Perms.Admin)
-                {
-                    await ReplyAsync(Properties.Resources.NotAdmin);
-                    return;
-                }
+                    {
+                        await ReplyAsync(Properties.Resources.NotAdmin);
+                        return;
+                    }
 
                 GUser.Banner.BannerImage = name;
                 PersistentData.SaveChangesToJson();
@@ -213,17 +178,11 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Background"), Alias("back"), Summary("Toggle the user's text background. Input: SocketGuildUser \"Mentioned Discord User\" Bool \"Background Active?\""), Priority(1)]
+            [Command("Background"), Alias("back"), Summary("Toggle the user's text background. Input: SocketGuildUser \"Mentioned Discord User\" Bool \"Background Active?\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task BackgroundSet(SocketGuildUser User, bool Active = true)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
 
                 if (BotGuild.ModuleControl.IncludePermissions)
                     if (!GUser.Perms.Admin && User.Id != Context.User.Id)
@@ -271,16 +230,11 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Greyscale"),Alias("grey"), Summary("Set the user's text background greyscale value. Input: SocketGuildUser \"Mentioned Discord User\" int \"Greyscale value 0-255[Default = 227]\""), Priority(1)]
+            [Command("Greyscale"),Alias("grey"), Summary("Set the user's text background greyscale value. Input: SocketGuildUser \"Mentioned Discord User\" int \"Greyscale value 0-255[Default = 227]\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task grayscaleSet(SocketGuildUser User, int Greyscale = 227)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
 
                 if (BotGuild.ModuleControl.IncludePermissions)
                     if (!GUser.Perms.Admin && User.Id != Context.User.Id)
@@ -329,16 +283,9 @@ namespace HeartFlame.ChatLevels
         [Group("Color")]
         public class ChatCommandsColor : ModuleBase<SocketCommandContext>
         {
-            [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the Chat Color Group"), Remarks("ChatCommandColorHelp")]
+            [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the Chat Color Group"), Remarks("ChatCommandColorHelp"), RequireModule(Modules.CHAT)]
             public async Task ChatCommandColorHelp()
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
                 var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Color Help", "ChatCommandColorHelp", 1);
                 foreach (var embed in embeds)
                 {
@@ -346,17 +293,11 @@ namespace HeartFlame.ChatLevels
                 }
             }
 
-            [Command("hex"), Alias("h"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:String \"Color Hex Code i.e. FF00FF\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("hex"), Alias("h"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:String \"Color Hex Code i.e. FF00FF\" SocketGuildUser \"Mentioned Discord User\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task SetColor(string hex, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser(User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
                 var DisUser = User;
                 if (User is null) 
                 {
@@ -423,17 +364,11 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task SetColorByARGB(int R, int G, int B, SocketGuildUser User = null)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser(User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
                 var DisUser = User;
                 if (User is null)
                 {
@@ -502,18 +437,12 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("name"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("name"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1), RequireModule(Modules.CHAT)]
             public async Task SetColorByName(string name, SocketGuildUser User = null)
             {
 
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
                 var GUser = BotGuild.GetUser(User);
-                if (!BotGuild.ModuleControl.IncludeChat)
-                {
-                    await ReplyAsync(Properties.Resources.NotChat);
-                    return;
-                }
-
                 var DisUser = User;
                 if (User is null)
                 {
@@ -587,7 +516,7 @@ namespace HeartFlame.ChatLevels
                         (SocketGuildUser)Context.User);
             }
 
-            [Command("Chart"), Summary("Display a color codes chart"), Priority(1)]
+            [Command("Chart"), Summary("Display a color codes chart"), Priority(1), RequireModule(Modules.CHAT)]
             public async Task ColorChart()
             {
                 EmbedBuilder embed = new EmbedBuilder();

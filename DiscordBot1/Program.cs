@@ -61,7 +61,7 @@ namespace HeartFlame
             Client.UserLeft += Client_UserLeft;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
-            ModuleControl.InitializeModules();
+            ModuleManager.InitializeModules();
             await Task.Delay(-1);
         }
 
@@ -93,13 +93,13 @@ namespace HeartFlame
 
         private async Task Client_ReactionRemoved(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            Misc.ModuleControl.OnReactionRemoved(Cache, Channel, Reaction);
+            Misc.ModuleManager.OnReactionRemoved(Cache, Channel, Reaction);
             await Task.CompletedTask;
         }
 
         private async Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            Misc.ModuleControl.OnReactionAdded(Cache, Channel, Reaction);
+            Misc.ModuleManager.OnReactionAdded(Cache, Channel, Reaction);
             await Task.CompletedTask;
         }
 
@@ -147,7 +147,7 @@ namespace HeartFlame
                 Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
             }
 
-            ModuleControl.MessageTunnel(arg);
+            ModuleManager.MessageTunnel(arg);
         }
     }
 }

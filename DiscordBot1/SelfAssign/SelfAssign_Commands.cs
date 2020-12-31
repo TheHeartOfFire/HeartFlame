@@ -3,6 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
+using HeartFlame.ModuleControl;
+using HeartFlame.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,18 +13,12 @@ using System.Threading.Tasks;
 namespace HeartFlame.SelfAssign
 {
     [Group("SelfAssign"), Alias("Self Assign", "Self", "sa", "s a")]
+    [RequireModule(Modules.SELFASSIGN)]
     public class SelfAssign_Commands : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Group"), Remarks("SelfAssign_Help")]
         public async Task SelfAssignHelp()
         {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludeSelfAssign)
-            {
-                await ReplyAsync(Properties.Resources.NotSelf);
-                return;
-            }
-
             var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Help", "SelfAssign_Help", 0);
             foreach (var embed in embeds)
             {
@@ -36,13 +32,6 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Console Group"), Remarks("SelfAssign_Console_Help")]
             public async Task SelfAssignHelp()
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                if (!BotGuild.ModuleControl.IncludeSelfAssign)
-                {
-                    await ReplyAsync(Properties.Resources.NotSelf);
-                    return;
-                }
-
                 var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Console Help", "SelfAssign_Console_Help", 1);
                 foreach (var embed in embeds)
                 {
@@ -51,21 +40,10 @@ namespace HeartFlame.SelfAssign
             }
 
             [Command("Prefab"), Alias("default", "pre"), Summary("Generate the prefabricated Console Self Assign."), Priority(1)]
+            [RequirePermission(Roles.MOD)]
             public async Task SelfAssignConsoles()
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeSelfAssign)
-                {
-                    await ReplyAsync(Properties.Resources.NotSelf);
-                    return;
-                }
-
-                if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
-                {
-                    await ReplyAsync(Properties.Resources.NotMod);
-                    return;
-                }
 
                 if (BotGuild.SelfAssign.Consoles.MsgID > 0)
                 {
@@ -103,13 +81,6 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Time Group"), Remarks("SelfAssign_Time_Help")]
             public async Task SelfAssignHelp()
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                if (!BotGuild.ModuleControl.IncludeSelfAssign)
-                {
-                    await ReplyAsync(Properties.Resources.NotSelf);
-                    return;
-                }
-
                 var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Time Help", "SelfAssign_Time_Help", 1);
                 foreach (var embed in embeds)
                 {
@@ -118,22 +89,10 @@ namespace HeartFlame.SelfAssign
             }
 
             [Command("Prefab"), Alias("default", "pre"), Summary("Generate the prefabricated TimeZone Self Assign."), Priority(1)]
+            [RequirePermission(Roles.MOD)]
             public async Task SelfAssignTime()
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var GUser = BotGuild.GetUser((SocketGuildUser)Context.User);
-                if (!BotGuild.ModuleControl.IncludeSelfAssign)
-                {
-                    await ReplyAsync(Properties.Resources.NotSelf);
-                    return;
-                }
-
-                if (BotGuild.ModuleControl.IncludePermissions && !GUser.Perms.Mod)
-                {
-                    await ReplyAsync(Properties.Resources.NotMod);
-                    return;
-                }
-
                 if (BotGuild.SelfAssign.TimeZones.MsgID > 0)
                 {
                     foreach (var chnl in Context.Guild.Channels)

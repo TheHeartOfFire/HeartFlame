@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
+using HeartFlame.ModuleControl;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,18 +11,12 @@ using System.Threading.Tasks;
 namespace HeartFlame.Compendium
 {
     [Group("Usernames"), Alias("User", "Username", "Users")]
+    [RequireModule(Modules.COMPENDIUM)]
     public class CompendiumCommands : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Username Group"), Remarks("Usernames_Help")]
         public async Task UsernameHelp()
         {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            if (!BotGuild.ModuleControl.IncludeCompendium)
-            {
-                await ReplyAsync(Properties.Resources.NotComp);
-                return;
-            }
-
             var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames Help", "Usernames_Help", 0);
             foreach (var embed in embeds)
             {
@@ -35,12 +30,6 @@ namespace HeartFlame.Compendium
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);
             var GSender = BotGuild.GetUser((SocketGuildUser)Context.User);
-
-            if (!BotGuild.ModuleControl.IncludeCompendium)
-            {
-                await ReplyAsync(Properties.Resources.NotComp);
-                return;
-            }
 
             Platform = CompendiumManager.Normalizer(Platform);
 
@@ -73,12 +62,6 @@ namespace HeartFlame.Compendium
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);
             var GSender = BotGuild.GetUser((SocketGuildUser)Context.User);
-
-            if (!BotGuild.ModuleControl.IncludeCompendium)
-            {
-                await ReplyAsync(Properties.Resources.NotComp);
-                return;
-            }
 
             var NormPlat = CompendiumManager.Normalizer(Platform);
             if (User is null)
@@ -120,13 +103,6 @@ namespace HeartFlame.Compendium
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Username All Group"), Remarks("Usernames_All_Help")]
             public async Task UsernameHelp()
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                if (!BotGuild.ModuleControl.IncludeCompendium)
-                {
-                    await ReplyAsync(Properties.Resources.NotComp);
-                    return;
-                }
-
                 var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames All Help", "Usernames_All_Help", 1);
                 foreach (var embed in embeds)
                 {
@@ -137,13 +113,6 @@ namespace HeartFlame.Compendium
             [Command("Platform"), Alias("plat", "console", "game"), Summary("Get all of the usernames for a platform. Input: string \"Xbox, Playstation, Activision etc\""), Priority(1)]
             public async Task UsernameAll(string Platform)
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-
-                if (!BotGuild.ModuleControl.IncludeCompendium)
-                {
-                    await ReplyAsync(Properties.Resources.NotComp);
-                    return;
-                }
                 var Embeds = CompendiumManager.GetUsernamesForPlatform(Platform, (SocketGuildUser)Context.User);
 
                 foreach (var Embed in Embeds)
@@ -155,14 +124,6 @@ namespace HeartFlame.Compendium
             [Command("User"), Summary("Get all of the usernames for a user. Input: SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
             public async Task UsernameAll(SocketGuildUser User = null)
             {
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-
-                if (!BotGuild.ModuleControl.IncludeCompendium)
-                {
-                    await ReplyAsync(Properties.Resources.NotComp);
-                    return;
-                }
-
                 if (User is null) User = (SocketGuildUser)Context.User;
 
                 var Embed = CompendiumManager.GetUsernamesForUser(User);

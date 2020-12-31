@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HeartFlame.Misc
+namespace HeartFlame.ModuleControl
 {//level 2
-    public class ModuleControlData
+    public class ModuleData
     {
         public bool IncludePermissions { get; set; }
         public bool IncludeLogging { get; set; }
@@ -13,7 +13,7 @@ namespace HeartFlame.Misc
         public bool IncludeCompendium { get; set; }
         public bool IncludeModeration { get; set; }
     
-        public ModuleControlData()
+        public ModuleData()
         {
             IncludeChat = true;
             IncludeLogging = true;

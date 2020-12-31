@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.Misc;
+using HeartFlame.Permissions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,17 +10,12 @@ using System.Threading.Tasks;
 namespace HeartFlame.Reporting
 {
     [Group("Reporting")]
+    [RequirePermission(Roles.CREATOR)]
     public class ReportingCommands : ModuleBase<SocketCommandContext>
     {
         [Command("Set")]
         public async Task SetPrimaryReport()
         {
-            if (Context.Guild.Id != PersistentData.Data.Config.Reporting.GuildID)
-                return;
-
-            if (!((SocketGuildUser)Context.User).GuildPermissions.Administrator)
-                return;
-
             if (PersistentData.Data.Config.Reporting.MessageID != 0)
                 ReportingManager.RemovePrimaryReport();
 
@@ -32,12 +28,6 @@ namespace HeartFlame.Reporting
         [Command("Remove")]
         public async Task RemovePrimaryReport()
         {
-            if (Context.Guild.Id != PersistentData.Data.Config.Reporting.GuildID)
-                return;
-
-            if (!((SocketGuildUser)Context.User).GuildPermissions.Administrator)
-                return;
-
             if (PersistentData.Data.Config.Reporting.MessageID != 0)
                 ReportingManager.RemovePrimaryReport();
 
@@ -48,12 +38,9 @@ namespace HeartFlame.Reporting
         [Command("Guild")]
         public async Task SetGuild()
         {
-            if (!Context.User.Id.ToString().Equals(Properties.Resources.CreatorID))
-                return;
-
             PersistentData.Data.Config.Reporting.GuildID = Context.Guild.Id;
 
-            await ReplyAsync("This guild has been set at the guild for reporting.");
+            await ReplyAsync("This guild has been set as the guild for reporting.");
         }
     }
 }

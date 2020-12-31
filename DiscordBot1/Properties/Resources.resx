@@ -138,8 +138,16 @@
     <comment>Error Message if chat is not enabled.</comment>
   </data>
   <data name="NotComp" xml:space="preserve">
-    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
+    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the username feature if this is in error.</value>
     <comment>Error Message if compendium is not enabled.</comment>
+  </data>
+  <data name="NotCreator" xml:space="preserve">
+    <value>:x:You must be the creator of this bot to use this command.</value>
+    <comment>Error Message if not Creator</comment>
+  </data>
+  <data name="NotGuildAdmin" xml:space="preserve">
+    <value>:x:Uh oh! You do not have permission to do that. You must have the admin server permission to use this command.</value>
+    <comment>Error Message is user is not guild admin</comment>
   </data>
   <data name="NotLogging" xml:space="preserve">
     <value>:x:Hmm. The bot logging module has not been enabled. Please contact the bot developer to enable the logging feature if this is in error.</value>
@@ -150,11 +158,11 @@
     <comment>Error message if user is not a mod</comment>
   </data>
   <data name="NotModeration" xml:space="preserve">
-    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
+    <value>:x:Hmm. The moderation module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error.</value>
   </data>
   <data name="NotOwner" xml:space="preserve">
-    <value>:x:You must either be the owner of the Discord server or the maker of the bot to use this permission.</value>
-    <comment>Error message if not Bot/Server Owner</comment>
+    <value>:x:You must be the owner of the Discord server to use this command.</value>
+    <comment>Error message if not Server Owner</comment>
   </data>
   <data name="NotPerms" xml:space="preserve">
     <value>:x:Hmm. The permissions module has not been enabled. Please contact the bot developer to enable the permissions feature if this is in error.</value>

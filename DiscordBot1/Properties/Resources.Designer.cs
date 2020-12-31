@@ -106,11 +106,29 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the username feature if this is in error..
         /// </summary>
         internal static string NotComp {
             get {
                 return ResourceManager.GetString("NotComp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:You must be the creator of this bot to use this command..
+        /// </summary>
+        internal static string NotCreator {
+            get {
+                return ResourceManager.GetString("NotCreator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:Uh oh! You do not have permission to do that. You must have the admin server permission to use this command..
+        /// </summary>
+        internal static string NotGuildAdmin {
+            get {
+                return ResourceManager.GetString("NotGuildAdmin", resourceCulture);
             }
         }
         
@@ -133,7 +151,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The moderation module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error..
         /// </summary>
         internal static string NotModeration {
             get {
@@ -142,7 +160,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:You must either be the owner of the Discord server or the maker of the bot to use this permission..
+        ///   Looks up a localized string similar to :x:You must be the owner of the Discord server to use this command..
         /// </summary>
         internal static string NotOwner {
             get {
