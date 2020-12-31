@@ -14,7 +14,7 @@ namespace HeartFlame.Misc
             if (!Context.User.Id.ToString().Equals(Properties.Resources.CreatorID))
                 return;
 
-            GuildManager.GetGuild(arg).RemoveUser(arg);
+            GuildManager.GetGuild(arg).AddUser(arg);
             PersistentData.SaveChangesToJson();
         }
     }
