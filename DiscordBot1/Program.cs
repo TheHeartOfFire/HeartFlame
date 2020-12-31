@@ -57,10 +57,24 @@ namespace HeartFlame
             Client.ReactionRemoved += Client_ReactionRemoved;
             Client.JoinedGuild += Client_JoinedGuild;
             Client.LeftGuild += Client_LeftGuild;
+            Client.UserJoined += Client_UserJoined;
+            Client.UserLeft += Client_UserLeft;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
-            Misc.ModuleControl.InitializeModules();
+            ModuleControl.InitializeModules();
             await Task.Delay(-1);
+        }
+
+        private async Task Client_UserLeft(SocketGuildUser arg)
+        {
+            GuildManager.GetGuild(arg).RemoveUser(arg);
+            await Task.CompletedTask;
+        }
+
+        private async Task Client_UserJoined(SocketGuildUser arg)
+        {
+            GuildManager.GetGuild(arg).AddUser(arg);
+            await Task.CompletedTask;
         }
 
         private async Task Client_LeftGuild(SocketGuild arg)
