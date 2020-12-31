@@ -68,12 +68,14 @@ namespace HeartFlame
         private async Task Client_UserLeft(SocketGuildUser arg)
         {
             GuildManager.GetGuild(arg).RemoveUser(arg);
+            PersistentData.SaveChangesToJson();
             await Task.CompletedTask;
         }
 
         private async Task Client_UserJoined(SocketGuildUser arg)
         {
             GuildManager.GetGuild(arg).AddUser(arg);
+            PersistentData.SaveChangesToJson();
             await Task.CompletedTask;
         }
 
