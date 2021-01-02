@@ -5,9 +5,9 @@
     <UserSecretsId>499811ab-1399-4510-b5e8-a81c3b2ecf90</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="Discord.Net" Version="2.3.0-dev-20201223.7" />
     <PackageReference Include="ImageProcessor" Version="2.9.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>

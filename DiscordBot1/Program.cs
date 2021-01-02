@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
+using HeartFlame.ModuleControl;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -59,10 +60,19 @@ namespace HeartFlame
             Client.LeftGuild += Client_LeftGuild;
             Client.UserJoined += Client_UserJoined;
             Client.UserLeft += Client_UserLeft;
+            Client.GuildMemberUpdated += Client_GuildMemberUpdated;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
             ModuleManager.InitializeModules();
             await Task.Delay(-1);
+        }
+
+        private async Task Client_GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
+        {
+            var channel = arg2.GetOrCreateDMChannelAsync();
+
+            if(!(bool)arg1.IsPending && (bool)arg2.IsPending)
+            await channel.Result.SendMessageAsync("This is a test.");
         }
 
         private async Task Client_UserLeft(SocketGuildUser arg)
@@ -93,13 +103,13 @@ namespace HeartFlame
 
         private async Task Client_ReactionRemoved(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            Misc.ModuleManager.OnReactionRemoved(Cache, Channel, Reaction);
+            ModuleManager.OnReactionRemoved(Cache, Channel, Reaction);
             await Task.CompletedTask;
         }
 
         private async Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            Misc.ModuleManager.OnReactionAdded(Cache, Channel, Reaction);
+            ModuleManager.OnReactionAdded(Cache, Channel, Reaction);
             await Task.CompletedTask;
         }
 
