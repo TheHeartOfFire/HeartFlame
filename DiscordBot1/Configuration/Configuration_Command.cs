@@ -131,6 +131,26 @@ namespace HeartFlame.Configuration
                 (SocketGuildUser)Context.User);
         }
 
+        [Command("SetJoinRole"), Summary("Sets the role awarded to user when they join the server. Input: Discord Role \"Mentioned Discord Role\""), Priority(1)]
+        [RequirePermission(Roles.OWNER)]
+        public async Task SetJoinRole(SocketRole Role)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild);
+            BotGuild.Moderation.JoinRole = Role.Id;
+            PersistentData.SaveChangesToJson();
+
+            await ReplyAsync($"The join role has been set to {Role.Mention}");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                "Configuration.Configuration_Command.SetJoinRole(SocketRole Role)",
+                "Sets the role awarded to user when they join the server.",
+                $"The join role has been set to {Role.Mention}",
+                        Context.Guild.Id,
+                (SocketGuildUser)Context.User);
+
+        }
+
         [Command("UseChatChannel")]
         [Summary("Choose whether or not Chat Level messages are limited to a determined Channel. Input: Discord Channel \"Mentioned Discord channel\"")]
         [Priority(1)]

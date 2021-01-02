@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Net;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
@@ -69,10 +70,14 @@ namespace HeartFlame
 
         private async Task Client_GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
         {
-            var channel = arg2.GetOrCreateDMChannelAsync();
+            var Guild = GuildManager.GetGuild(arg2);
 
-            if(!(bool)arg1.IsPending && (bool)arg2.IsPending)
-            await channel.Result.SendMessageAsync("This is a test.");
+            if ((bool)arg1.IsPending && !(bool)arg2.IsPending)
+                if (Guild.Moderation.JoinRole != 0)
+                {
+                        var role = arg2.Guild.GetRole(Guild.Moderation.JoinRole);
+                        await arg2.AddRoleAsync(role);
+                }
         }
 
         private async Task Client_UserLeft(SocketGuildUser arg)
@@ -132,7 +137,6 @@ namespace HeartFlame
                 return;
 
             var Context = new SocketCommandContext(Client, Message);
-            GuildManager.UpdateGuildName(Context.Guild);
 
             if (Context.Message == null || Context.Message.Content == "") return; //dont want empty messages
             if (Context.User.IsBot) return;//dont want messages from bot
@@ -156,7 +160,7 @@ namespace HeartFlame
             {
                 Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
             }
-
+            GuildManager.UpdateGuildName(Context.Guild);
             ModuleManager.MessageTunnel(arg);
         }
     }

@@ -3,6 +3,10 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>499811ab-1399-4510-b5e8-a81c3b2ecf90</UserSecretsId>
+    <StartupObject>HeartFlame.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.3.0-dev-20201223.7" />
