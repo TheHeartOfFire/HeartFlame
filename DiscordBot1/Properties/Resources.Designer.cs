@@ -70,6 +70,28 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The wasn&apos;t the right kind of data.\n
+        ///Please make sure to use a hexadecimal color code like FFFFFF.\n
+        ///If you typed #FFFFFF please omit the #..
+        /// </summary>
+        internal static string BadHex {
+            get {
+                return ResourceManager.GetString("BadHex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That wasn&apos;t the right king of data.\n
+        ///Please make sure to type an rgb color code like 255 255 255.\n
+        ///Make sure to leave a space between each value..
+        /// </summary>
+        internal static string BadRGB {
+            get {
+                return ResourceManager.GetString("BadRGB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 264555514510311424.
         /// </summary>
         internal static string CreatorID {

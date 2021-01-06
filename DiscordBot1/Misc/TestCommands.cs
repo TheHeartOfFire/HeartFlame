@@ -3,18 +3,19 @@ using Discord.WebSocket;
 using HeartFlame.ChatLevels;
 using HeartFlame.GuildControl;
 using HeartFlame.Permissions;
+using System.Drawing.Imaging;
 using System.Threading.Tasks;
 
 namespace HeartFlame.Misc
 {
+    [Group("Test")]
+    [RequirePermission(Roles.CREATOR)]
     public class TestCommands : ModuleBase<SocketCommandContext>
     {
-        [Command("Test")]
-        [RequirePermission(Roles.CREATOR)]
-        public async Task Test(SocketGuildUser arg)
+        [Command]
+        public async Task Test()
         {
-            GuildManager.GetGuild(arg).AddUser(arg);
-            PersistentData.SaveChangesToJson();
+            await Context.Channel.SendFileAsync(BannerMaker.ToStream(await BannerMaker.Testing((SocketGuildUser)Context.User), ImageFormat.Png), "Test.png");
         }
     }
 }

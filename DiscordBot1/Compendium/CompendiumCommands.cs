@@ -3,8 +3,10 @@ using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
+using HeartFlame.Permissions;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,79 +26,81 @@ namespace HeartFlame.Compendium
             }
         }
 
-        [Command("Get"), Summary("Get the username for the user. Input: string \"Xbox, Playstation, Activision etc\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
-        public async Task UsernameGet(string Platform, SocketGuildUser User = null)
+        [Command("Get"), Summary("Get the username for the user. Input: string \"Xbox, Playstation, Activision etc\""), Priority(1)]
+        public async Task UsernameGet(string Platform)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GSender = BotGuild.GetUser((SocketGuildUser)Context.User);
+
+            var Name = CompendiumManager.GetUsername(ref Platform, (SocketGuildUser)Context.User);
+            if (Name is null)
+            {
+                await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
+                return;
+            }
+            await ReplyAsync($"{GSender.Name}'s {Platform} username is: {Name}");
+
+        }
+
+        [Command("Get"), Summary("Get the username for the mentioned user. Input: string \"Xbox, Playstation, Activision etc\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        public async Task UsernameGet(string Platform, SocketGuildUser User)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             var GUser = BotGuild.GetUser(User);
-            var GSender = BotGuild.GetUser((SocketGuildUser)Context.User);
+            var Name = CompendiumManager.GetUsername(ref Platform, User);
 
-            Platform = CompendiumManager.Normalizer(Platform);
-
-            var Name = CompendiumManager.GetUsername(Platform, (SocketGuildUser)Context.User);
-            if (User is null)
-            {
-                if (Name is null)
-                {
-                    await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
-                    return;
-                }
-                await ReplyAsync($"{GSender.Name}'s {Platform} username is: {Name}");
-                return;
-            }
-
-            Name = CompendiumManager.GetUsername(Platform, User);
             if (Name is null)
             {
                 await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
                 return;
             }
             await ReplyAsync($"{GUser.Name}'s {Platform} username is: {Name}");
-
         }
 
-
-        [Command("Set"), Summary("Set the username for the user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
-        public async Task UsernameSet(string Platform, string Username, SocketGuildUser User = null)
+        [Command("Set"), Summary("Set the username for the user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\""), Priority(1)]
+        public async Task UsernameSet(string Platform, string Username)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-            var GUser = BotGuild.GetUser(User);
             var GSender = BotGuild.GetUser((SocketGuildUser)Context.User);
 
-            var NormPlat = CompendiumManager.Normalizer(Platform);
-            if (User is null)
-            {
-                if (!CompendiumManager.SetUsername(Platform, Username, (SocketGuildUser)Context.User))
-                {
-                    await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
-                    return;
-                }
-                await ReplyAsync($"{GSender.Name}'s {NormPlat} username has been set to: {Username}");
-                return;
-            }
-
-            if (BotGuild.ModuleControl.IncludePermissions)
-                if (!GSender.Perms.Mod)
-                {
-                    await ReplyAsync(Properties.Resources.NotMod);
-                    return;
-                }
-
-            if (!CompendiumManager.SetUsername(Platform, Username, User))
+            if (!CompendiumManager.SetUsername(ref Platform, Username, (SocketGuildUser)Context.User))
             {
                 await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
                 return;
             }
-            await ReplyAsync($"{GUser.Name}'s {NormPlat} username has been set to: {Username}");
+
+            await ReplyAsync($"{GSender.Name}'s {Platform} username has been set to: {Username}");
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                    "CompendiumCommands.UsernameSet(string Platform, string Username, SocketGuildUser User = null)",
-                    "Set the username for the user.",
-                    $"{User.Username}'s {Platform} username has been set to {Username}.",
-                    Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                        MethodBase.GetCurrentMethod(),
+                    $"{GSender.Name}'s {Platform} username has been set to {Username}.",
+                    Context);
         }
+
+        [Command("Set"), Summary("Set the username for the mentioned user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        [RequirePermission(Roles.MOD)]
+        public async Task UsernameSet(string Platform, string Username, SocketGuildUser User)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            var GUser = BotGuild.GetUser(User);
+
+
+            if (!CompendiumManager.SetUsername(ref Platform, Username, User))
+            {
+                await ReplyAsync(BadPlatform(Platform, (SocketGuildUser)Context.User));
+                return;
+            }
+
+            await ReplyAsync($"{GUser.Name}'s {Platform} username has been set to: {Username}");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod(),
+                    $"{GUser.Name}'s {Platform} username has been set to {Username}.",
+                    Context);
+        }
+
         [Group("All")]
         public class CompendiumAllCommands : ModuleBase<SocketCommandContext>
         {

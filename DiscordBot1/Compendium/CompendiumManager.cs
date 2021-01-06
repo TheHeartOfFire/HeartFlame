@@ -10,7 +10,7 @@ namespace HeartFlame.Compendium
 {
     public class CompendiumManager
     {
-        public static string GetUsername(string Platform, SocketGuildUser User)
+        public static string GetUsername(ref string Platform, SocketGuildUser User)
         {
             var Guild = GuildManager.GetGuild(User.Guild.Id);
 
@@ -43,7 +43,7 @@ namespace HeartFlame.Compendium
         /// <param name="Username"></param>
         /// <param name="User"></param>
         /// <returns></returns>
-        public static bool SetUsername(string Platform, string Username, SocketGuildUser User)
+        public static bool SetUsername(ref string Platform, string Username, SocketGuildUser User)
         {
             var Guild = GuildManager.GetGuild(User.Guild.Id);
 

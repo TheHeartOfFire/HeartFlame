@@ -4,6 +4,7 @@ using HeartFlame.GuildControl;
 using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
 using HeartFlame.Permissions;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace HeartFlame.Moderation
@@ -23,7 +24,7 @@ namespace HeartFlame.Moderation
             }
         }
 
-        [Command("Mute"), Summary("Mute a user. Input: SocketGuildUser \"Mentioned Discord User\" int \"Duration i.e. 4\" string \"Duration i.e. days\""), Priority(1)]
+        [Command("Mute"), Summary("Mute a user."), Priority(1)]
         [RequirePermission(Roles.MOD)]
         public async Task ModerationMute(SocketGuildUser User, int Incriment, string Duration)
         {
@@ -40,14 +41,12 @@ namespace HeartFlame.Moderation
             
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                    "ModerationCommands.ModerationMute(SocketGuildUser User, int Incriment, string Duration)",
-                    "Mute a user.",
+                        MethodBase.GetCurrentMethod(),
                     $"{User.Username} has been muted by {BotGuild.GetUser(Context.User).Name} for {Incriment}.",
-                    Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                    Context);
         }
 
-        [Command("Unmute"), Summary("Unmute a user. Input: SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        [Command("Unmute"), Summary("Unmute a user."), Priority(1)]
         [RequirePermission(Roles.MOD)]
         public async Task ModerationUnmute(SocketGuildUser User)
         {
@@ -59,11 +58,9 @@ namespace HeartFlame.Moderation
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                    "ModerationCommands.ModerationUnmute(SocketGuildUser User)",
-                    "Unmute a user.",
+                        MethodBase.GetCurrentMethod(),
                     $"{User.Username} has been unmuted by {BotGuild.GetUser(Context.User).Name}.",
-                    Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                    Context);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using HeartFlame.ChatLevels;
 using HeartFlame.Configuration;
 using HeartFlame.Misc;
@@ -98,6 +100,17 @@ namespace HeartFlame.GuildControl
                 }
             }
             return null;
+        }
+        public IMessageChannel GetChatChannel(SocketCommandContext Context)
+        {
+            return GetChatChannel(Context.Channel);
+        }
+
+        public IMessageChannel GetChatChannel(IMessageChannel MessageChannel)
+        {
+            if (Configuration.UseChatChannel)
+                return Program.Client.GetChannel(Configuration.ChatChannel) as ISocketMessageChannel;
+            return MessageChannel;
         }
     }
 }

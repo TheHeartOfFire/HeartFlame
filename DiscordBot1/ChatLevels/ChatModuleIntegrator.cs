@@ -34,33 +34,24 @@ namespace HeartFlame.ChatLevels
             GUser.Chat.MessagesSent++;
             GUser.UpdateName(user);
 
-            if (GUser.Chat.LevelPending)
+            if (!GUser.Chat.LevelPending)
             {
-                GUser.Chat.LevelPending = false;
-                GUser.Chat.ChatLevel = LevelManagement.GetLevelAtExp(GUser.Chat.ChatExp);
-
-
-                if (BotGuild.Configuration.UseChatChannel)
-                {
-                    var IDs = BotGuild.Configuration.ChatChannel;
-                    foreach (var id in IDs)
-                    {
-                        await (Program.Client.GetChannel(id) as ISocketMessageChannel).SendFileAsync(
-                            BannerMaker.ToStream(
-                                await BannerMaker.BuildBannerAsync(user, false), 
-                            System.Drawing.Imaging.ImageFormat.Png), 
-                            "banner.png", 
-                            $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}");
-                    }
-                }
-                else
-                    await arg.Channel.SendFileAsync(
-                        BannerMaker.ToStream(
-                            await BannerMaker.BuildBannerAsync(user, false), 
-                            System.Drawing.Imaging.ImageFormat.Png), 
-                        "banner.png", 
-                        $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}").ConfigureAwait(false);
+                PersistentData.SaveChangesToJson();
+                return;
             }
+
+
+            GUser.Chat.LevelPending = false;
+            GUser.Chat.ChatLevel = LevelManagement.GetLevelAtExp(GUser.Chat.ChatExp);
+
+
+            await BotGuild.GetChatChannel(arg.Channel).SendFileAsync(
+                BannerMaker.ToStream(
+                    await BannerMaker.BuildBannerAsync(user, false),
+                    System.Drawing.Imaging.ImageFormat.Png),
+                "banner.png",
+                $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}");
+            
             PersistentData.SaveChangesToJson();
         }
 

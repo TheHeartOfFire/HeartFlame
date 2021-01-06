@@ -7,6 +7,7 @@ using HeartFlame.ModuleControl;
 using HeartFlame.Permissions;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,11 +68,9 @@ namespace HeartFlame.SelfAssign
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                    "SelfAssign.SelfAssign_Commands.SelfAssign_Console_Commands.SelfAssignConsoles()",
-                    "Generated the prefabricated Console Self Assign.",
+                        MethodBase.GetCurrentMethod(),
                     $"A Console Self Assign prefab was generated in {Context.Channel.Name}",
-                        Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                        Context);
             }
         }
 
@@ -115,11 +114,9 @@ namespace HeartFlame.SelfAssign
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                    "SelfAssign.SelfAssign_Commands.SelfAssignTime()",
-                    "Generated the prefabricated TimeZone Self Assign.",
+                        MethodBase.GetCurrentMethod(),
                     $"A TimeZone Self Assign prefab was generated in {Context.Channel.Name}",
-                        Context.Guild.Id,
-                    (SocketGuildUser)Context.User);
+                        Context);
             }
         }
     }

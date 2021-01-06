@@ -5,6 +5,7 @@ using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace HeartFlame.Permissions
             }
         }
 
-        [Command("Mod"), Alias("m"), Summary("Set the mod state for the user. Input: SocketGuildUser \"Mentioned Discord User\" bool \"TRUE / FALSE\""), Priority(1)]
+        [Command("Mod"), Alias("m"), Summary("Set the mod state for the user."), Priority(1)]
         [RequirePermission(Roles.ADMIN)]
         public async Task PermissionsMod(SocketGuildUser User, bool MakeMod = true)
         {
@@ -41,11 +42,9 @@ namespace HeartFlame.Permissions
                     await ReplyAsync($"{User.Username} is now a mod for the bot!");
                     if (BotGuild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
-                        "Permissions.Permissions_Command.PermissionsMod(SocketGuildUser User, bool MakeMod = true)",
-                        "Set the mod status of a user",
+                        MethodBase.GetCurrentMethod(),
                         $"{User.Username} is now a mod.",
-                        Context.Guild.Id,
-                        (SocketGuildUser)Context.User);
+                        Context);
                 }
             }
             else
@@ -59,16 +58,14 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                            "Permissions.Permissions_Command.PermissionsMod(SocketGuildUser User, bool MakeMod = true)",
-                            "Set the mod status of a user",
+                        MethodBase.GetCurrentMethod(),
                             $"{User.Username} is no longer a mod.",
-                        Context.Guild.Id,
-                            (SocketGuildUser)Context.User);
+                        Context);
                 }
             }
         }
 
-        [Command("Admin"), Alias("a"), Summary("Set the admin state for the user. Input: SocketGuildUser \"Mentioned Discord User\" bool \"TRUE / FALSE\""), Priority(1)]
+        [Command("Admin"), Alias("a"), Summary("Set the admin state for the user."), Priority(1)]
         [RequirePermission(Roles.OWNER)]
         public async Task PermissionsAdmin(SocketGuildUser User, bool MakeAdmin = true)
         {
@@ -88,11 +85,9 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                            "Permissions.Permissions_Command.PermissionsAfmin(SocketGuildUser User, bool MakeAdmin = true)",
-                            "Set the admin status of a user",
+                        MethodBase.GetCurrentMethod(),
                             $"{User.Username} is now an admin.",
-                        Context.Guild.Id,
-                            (SocketGuildUser)Context.User);
+                        Context);
                 }
             }
             else
@@ -106,11 +101,9 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                            "Permissions.Permissions_Command.PermissionsAfmin(SocketGuildUser User, bool MakeAdmin = true)",
-                            "Set the admin status of a user",
+                        MethodBase.GetCurrentMethod(),
                             $"{User.Username} is no longer an admin.",
-                        Context.Guild.Id,
-                            (SocketGuildUser)Context.User);
+                        Context);
                 }
             }
         }

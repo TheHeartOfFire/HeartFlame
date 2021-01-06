@@ -19,6 +19,20 @@ namespace HeartFlame.ChatLevels
 {
     public class BannerMaker
     {
+        private static readonly Point Buffer = new Point(25, 25);
+        private static readonly Size TotalSize = new Size(512, 192);
+        private static readonly Size InnerSize = new Size(TotalSize.Width - (2 * Buffer.X), TotalSize.Height - (2 * Buffer.X));
+        private static readonly int GreyAlpha = 215;
+        private static readonly Point AvatarLocation = new Point(Buffer.X + 8, Buffer.X + 8);
+        private static readonly Size AvatarSize = new Size(128, 128);
+
+
+
+        public static async Task<Image> BuildBannerAsync(SocketUser User, bool LevelUp)
+        {
+            return await BuildBannerAsync((SocketGuildUser)User, LevelUp);
+        }
+
         public static async Task<Image> BuildBannerAsync(SocketGuildUser user, bool levelUp)
         {
             var Guild = GuildManager.GetGuild(user.Guild.Id);
@@ -206,6 +220,86 @@ namespace HeartFlame.ChatLevels
 
             stream.Position = 0;
             return stream;
+        }
+
+        public static async Task<Image> Testing(SocketGuildUser User)
+        {
+            var image = GetBannerAsync("testbackground2").Result;
+            var imf = new ImageFactory();
+            imf.Load(image);
+
+
+            if ((float)image.Height / (float)image.Width > 1f)
+                imf.Rotate(270);
+
+            imf.Flip(true);
+
+
+            var res = new ResizeLayer(TotalSize)
+            {
+                ResizeMode = ResizeMode.Stretch
+            };
+            var rec = new Rectangle(Buffer, InnerSize);
+
+            imf.Resize(res);
+            SolidBrush RecColor = new SolidBrush(Color.FromArgb(GreyAlpha, 150, 150, 150));
+            imf.Format(new PngFormat());
+            Graphics.FromImage(imf.Image).FillRectangle(RecColor, rec);
+            imf.Overlay(await GetTestAvatarAsync(User));
+
+            RecColor.Dispose();
+            Image output = imf.Image;
+            return output;
+        }
+
+        public static async Task<ImageLayer> GetTestAvatarAsync(SocketGuildUser user)
+        {
+            var Guild = GuildManager.GetGuild(user.Guild.Id);
+            byte[] bytes = new byte[1];
+            using (WebClient client = new WebClient())
+            {
+                string url = user.GetAvatarUrl();
+                if (user.AvatarId == null)
+                    url = user.GetDefaultAvatarUrl();
+                url = url.Substring(0, url.IndexOf("png") + 3);
+                try
+                {
+                    bytes = client.DownloadData(url);
+                }
+                catch (WebException e)
+                {
+                    Console.WriteLine(e.Message);
+                    url = user.GetDefaultAvatarUrl();
+                    bytes = client.DownloadData(url);
+                }
+            }
+
+            MemoryStream ms = new MemoryStream(bytes);
+            var imf = new ImageFactory();
+            imf.Load(Image.FromStream(ms));
+            imf.RoundedCorners(AvatarSize.Height);
+            imf.Format(new PngFormat());
+
+            ImageLayer il = new ImageLayer
+            {
+                Image = imf.Image,
+                Position = AvatarLocation,
+                Size = AvatarSize
+            };
+
+            ms.Dispose();
+            return il;
+        }
+
+        public static TextLayer RankAndLevel()
+        {
+            var RankLabel = new TextLayer();
+            RankLabel.RightToLeft = false;
+            RankLabel.Text = "Rank";
+            RankLabel.FontSize = 20;
+            RankLabel.FontColor = Color.White;
+
+
         }
     }
 }

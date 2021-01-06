@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using HeartFlame.Misc;
 
 namespace HeartFlame.GuildControl
@@ -64,6 +66,17 @@ namespace HeartFlame.GuildControl
                         return;
                     }
             }
+        }
+        public static IMessageChannel GetChatChannel(SocketCommandContext Context, GuildData Guild)
+        {
+            return GetChatChannel(Context.Channel, Guild);
+        }
+
+        public static IMessageChannel GetChatChannel(IMessageChannel MessageChannel, GuildData Guild)
+        {
+            if (Guild.Configuration.UseChatChannel)
+                return Program.Client.GetChannel(Guild.Configuration.ChatChannel) as ISocketMessageChannel;
+            return MessageChannel;
         }
 
     }
