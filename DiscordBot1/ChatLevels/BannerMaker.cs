@@ -298,7 +298,7 @@ namespace HeartFlame.ChatLevels
             RankLabel.Text = "Rank";
             RankLabel.FontSize = 20;
             RankLabel.FontColor = Color.White;
-
+            return RankLabel;
 
         }
     }
