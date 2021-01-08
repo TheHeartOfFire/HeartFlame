@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.Misc;
+using System;
 
 namespace HeartFlame.GuildControl
 {
@@ -67,6 +68,7 @@ namespace HeartFlame.GuildControl
                     }
             }
         }
+
         public static IMessageChannel GetChatChannel(SocketCommandContext Context, GuildData Guild)
         {
             return GetChatChannel(Context.Channel, Guild);

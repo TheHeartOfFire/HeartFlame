@@ -28,21 +28,23 @@ namespace HeartFlame.ChatLevels
 
             [Command("Banner"), Alias("b"), Summary("Set the user's banner image. Input: SocketGuildUser \"Mentioned Discord User\" String \"Banner Image Name\""), Priority(1)]
             [RequirePermission(Roles.CREATOR)]
-            public async Task BannerSet(string name, SocketGuildUser User)
+            public async Task BannerSet(string BannerName, bool FlipHorizontally, bool FlipVertically, SocketGuildUser User)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild);
                 var GUser = BotGuild.GetUser(User);
 
-                GUser.Banner.BannerImage = name;
+                GUser.Banner.BannerImage = BannerName;
+                GUser.Banner.VerticalFlip = FlipVertically;
+                GUser.Banner.HorizontalFlip = FlipHorizontally;
                 PersistentData.SaveChangesToJson();
 
                 var img = await BannerMaker.BuildBannerAsync(User, false);
-                await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
+                await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
                         MethodBase.GetCurrentMethod(),
-                        $"{GUser.Name}'s banner has been set to {name}.",
+                        $"{GUser.Name}'s banner has been set to {BannerName}.",
                         Context);
             }
 

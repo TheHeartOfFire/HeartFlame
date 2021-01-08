@@ -9,6 +9,8 @@ namespace HeartFlame.ChatLevels
         public string BannerImage { get; set; }
         public bool TextBackground { get; set; }
         public int Greyscale { get; set; }
+        public bool VerticalFlip { get; set; }
+        public bool HorizontalFlip { get; set; }
 
         public BannerData()
         {

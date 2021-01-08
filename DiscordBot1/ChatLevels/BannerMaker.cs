@@ -23,9 +23,13 @@ namespace HeartFlame.ChatLevels
         private static readonly Size TotalSize = new Size(512, 192);
         private static readonly Size InnerSize = new Size(TotalSize.Width - (2 * Buffer.X), TotalSize.Height - (2 * Buffer.X));
         private static readonly int GreyAlpha = 215;
+        private static readonly int TestGreyScale = 50;
         private static readonly Point AvatarLocation = new Point(Buffer.X + 8, Buffer.X + 8);
         private static readonly Size AvatarSize = new Size(128, 128);
-
+        private static readonly Size ExpBarSize = new Size(300, 16);
+        private static readonly Point ExpBarLocation = new Point(AvatarLocation.X + AvatarSize.Width + 12, (TotalSize.Height / 2) + 12);
+        private static readonly Point ExpLocation = new Point(TotalSize.Width - Buffer.X - 13, (TotalSize.Height / 2) - 10);
+        private static readonly Point MessagesLocation = new Point(AvatarLocation.X + AvatarSize.Width - 12, TotalSize.Height - Buffer.Y - 10);
 
 
         public static async Task<Image> BuildBannerAsync(SocketUser User, bool LevelUp)
@@ -36,59 +40,66 @@ namespace HeartFlame.ChatLevels
         public static async Task<Image> BuildBannerAsync(SocketGuildUser user, bool levelUp)
         {
             var Guild = GuildManager.GetGuild(user.Guild.Id);
-            var User = Guild.GetUser(user);
-
-            var color = User.Banner.GetColor();
-
-            Image image = await GetBannerAsync(User.Banner.BannerImage);
-            ImageFactory imf = new ImageFactory();//get banner
-            imf.Load(image);
-            image.Dispose();
-
-            ImageLayer iL = await GetUserAvatarAsync(user);
-            imf.Overlay(iL);//add avatar
-            iL.Dispose();
-
-            if (User.Banner.TextBackground)
-            {
-                int greyscale = User.Banner.Greyscale;
-                SolidBrush bgColor = new SolidBrush(System.Drawing.Color.FromArgb(215, greyscale, greyscale, greyscale));
-                Graphics.FromImage(imf.Image).FillRectangle(bgColor, GetTextBackground());//add background for text
-                bgColor.Dispose();
-            }
-
-            string overlayText = user.Username;//build display string
-            if (user.Nickname != null)
-                overlayText = user.Nickname;
-
-            if (levelUp)
-            {
-                overlayText += $" has just advanced to level {User.Chat.ChatLevel}. Congratulations!\n" +
-                    $"Total Messages: {User.Chat.MessagesSent}\n" +
-                    $"Current Experience: {User.Chat.ChatExp}/{LevelManagement.GetExpAtLevel(User.Chat.ChatLevel)}";
-            }
-            else
-            {
-                overlayText += $"\nLevel: {User.Chat.ChatLevel}\n" +
-                    $"Total Messages: {User.Chat.MessagesSent}\n" +
-                    $"Current Experience: {User.Chat.ChatExp}/{LevelManagement.GetExpAtLevel(User.Chat.ChatLevel)}";
-            }
-
-            TextLayer tl = GetTextLayer(overlayText, color);
-            imf.Watermark(tl);//add text
-            tl.Dispose();
-
-            SolidBrush ExpBarColor = new SolidBrush(color);
-            Graphics.FromImage(imf.Image).FillRectangle(ExpBarColor, GetExpBar(GetExpLength(User)));//add exp bar
-            ExpBarColor.Dispose();
-            imf.Format(new PngFormat());
+            var User = Guild.GetUser(user); 
+            
+            
+            var imf = new ImageFactory();
+            GetBackground(ref imf, User);//user's banner image
+            GetOverlay(ref imf, User);//semitransparent content area
+            imf.Overlay(AvatarMask());//semitransparent avatar backing
+            imf.Overlay(await GetAvatarAsync(user));//Masked avatar image
+            RankAndLevel(user, ref imf);//Rank and level
+            imf.Watermark(GetName(User));//User's Name
+            imf.Overlay(GetExpBar(User, false));//Exp bar Background
+            imf.Overlay(GetExpBar(User, true));//Exp Bar actual Exp
+            imf.Watermark(GetExp(User));//current exp / xp to next level
+            imf.Watermark(GetMessages(User));//User's message count
             Image output = imf.Image;
             return output;
+
         }
 
-        public static async Task<Image> GetBannerAsync(string ImageName = "default")
+        private static void GetBackground(ref ImageFactory imf, GuildUser User)
         {
-            if (ImageName is null) ImageName = "default";
+            var image = GetBannerAsync(User.Banner.BannerImage).Result;
+            imf.Load(image);
+
+            if ((float)image.Height / (float)image.Width > 1f)
+                imf.Rotate(270);
+            if(User.Banner.HorizontalFlip)
+                imf.Flip();
+            if (User.Banner.VerticalFlip)
+                imf.Flip(true);
+            var res = new ResizeLayer(TotalSize)
+            {
+                ResizeMode = ResizeMode.Stretch
+            };
+            imf.Resize(res);
+        }
+
+        private static void GetOverlay(ref ImageFactory imf, GuildUser User)
+        {
+            var rec = new Rectangle(Buffer, InnerSize);
+            SolidBrush RecColor = new SolidBrush(Color.FromArgb(GreyAlpha, TestGreyScale, TestGreyScale, TestGreyScale));
+            imf.Format(new PngFormat());
+            Graphics.FromImage(imf.Image).FillRectangle(RecColor, rec);
+        }
+
+        private static TextLayer GetName(GuildUser User)
+        {
+            return new TextLayer()
+            {
+                Text = User.Name,
+                FontColor = User.Banner.GetColor(),
+                FontFamily = new FontFamily("Arial"),
+                Position = new Point(AvatarLocation.X + AvatarSize.Width + 10, TotalSize.Height / 2 - TextManagement.SmallNormalCharacter.Height - 5),
+                FontSize = 30
+            };
+        }
+
+        private static async Task<Image> GetBannerAsync(string ImageName = "default")
+        {
+            if (ImageName is null || ImageName.Equals("default")) return DefaultImage();
 
             WebClient wc = new WebClient();
             Uri imageUri = (await DownloadBanner(ImageName).ConfigureAwait(false)).PrimaryUri;
@@ -100,7 +111,26 @@ namespace HeartFlame.ChatLevels
             return img;
         }
 
-        public static async Task<StorageUri> DownloadBanner(string imageName)
+        private static Image DefaultImage()
+        {
+            var Bit = new Bitmap(TotalSize.Width, TotalSize.Height); 
+            for (int x = 0; x < Bit.Width; x++)
+            {
+                for (int y = 0; y < Bit.Height; y++)
+                {
+                    Bit.SetPixel(x, y, Color.Black);
+                }
+            }
+
+            var Stream = new MemoryStream();
+            Bit.Save(Stream, ImageFormat.Png);
+
+
+            return Image.FromStream(Stream);
+
+        }
+
+        private static async Task<StorageUri> DownloadBanner(string imageName)
         {
             CloudStorageAccount account = CloudStorageAccount.Parse(Properties.Resources.StorageToken);
             CloudBlobClient serviceClient = account.CreateCloudBlobClient();
@@ -111,96 +141,9 @@ namespace HeartFlame.ChatLevels
             return blob.StorageUri;
         }
 
-        public static async Task<ImageLayer> GetUserAvatarAsync(SocketGuildUser user)
+        private static int GetExpLength(GuildUser User)
         {
-            var Guild = GuildManager.GetGuild(user.Guild.Id);
-            var User = Guild.GetUser(user);
-            if (User.Banner.ProfileImage != null && !User.Banner.ProfileImage.Equals("default"))
-            {
-                WebClient wc = new WebClient();
-                Uri ImageUri = (await DownloadBanner(User.Banner.ProfileImage)).PrimaryUri;
-                byte[] byteS = wc.DownloadData(ImageUri.OriginalString);
-                MemoryStream MS = new MemoryStream(byteS);
-                wc.Dispose();
-                ImageLayer IL = new ImageLayer
-                {
-                    Image = System.Drawing.Image.FromStream(MS),
-                    Position = new Point(12, 12),
-                    Size = new Size(96, 96)
-                };
-                MS.Dispose();
-                return IL;
-            }
-
-            byte[] bytes = new byte[1];
-            using (WebClient client = new WebClient())
-            {
-                string url = user.GetAvatarUrl();
-                if (user.AvatarId == null)
-                    url = user.GetDefaultAvatarUrl();
-                url = url.Substring(0, url.IndexOf("png") + 3);
-                try
-                {
-                    bytes = client.DownloadData(url);
-                }
-                catch (WebException e)
-                {
-                    Console.WriteLine(e.Message);
-                    url = user.GetDefaultAvatarUrl();
-                    bytes = client.DownloadData(url);
-                }
-            }
-
-            MemoryStream ms = new MemoryStream(bytes);
-            ImageLayer il = new ImageLayer
-            {
-                Image = System.Drawing.Image.FromStream(ms),
-                Position = new Point(12, 12),
-                Size = new Size(96, 96)
-            };
-            ms.Dispose();
-            return il;
-        }
-
-        public static Rectangle GetTextBackground()
-        {
-            Rectangle bg = new Rectangle
-            {
-                Height = 100,
-                Width = 300,
-                X = 120,
-                Y = 10
-            };
-
-            return bg;
-        }
-
-        public static TextLayer GetTextLayer(string text, System.Drawing.Color color)
-        {
-            TextLayer tl = new TextLayer();
-            tl.FontColor = color;
-            tl.FontFamily = FontFamily.GenericSansSerif;
-            tl.FontSize = 20;
-            tl.Text = text;
-            tl.Position = new Point(128, 12);
-
-            return tl;
-        }
-
-        public static Rectangle GetExpBar(int length)
-        {
-            Rectangle bar = new Rectangle();
-            bar.Height = 10;
-            bar.Width = length;
-            bar.X = 34;
-            bar.Y = 113;
-
-            return bar;
-        }
-
-        public static int GetExpLength(GuildUser User)
-        {
-            float maxW = 450;
+            float maxW = ExpBarSize.Width;
             int userLevel = User.Chat.ChatLevel;
             if (userLevel == 0)
                 userLevel++;
@@ -221,84 +164,217 @@ namespace HeartFlame.ChatLevels
             stream.Position = 0;
             return stream;
         }
-
-        public static async Task<Image> Testing(SocketGuildUser User)
+        
+        private static async Task<byte[]> DownloadAvatar(SocketGuildUser User)
         {
-            var image = GetBannerAsync("testbackground2").Result;
-            var imf = new ImageFactory();
-            imf.Load(image);
+            var GUser = GuildManager.GetGuild(User).GetUser(User);
+            var DownloadString = User.GetAvatarUrl();
+            if (User.AvatarId == null)
+                DownloadString = User.GetDefaultAvatarUrl();
+            DownloadString = DownloadString.Substring(0, DownloadString.IndexOf("png") + 3);
 
-
-            if ((float)image.Height / (float)image.Width > 1f)
-                imf.Rotate(270);
-
-            imf.Flip(true);
-
-
-            var res = new ResizeLayer(TotalSize)
+            if(GUser.Banner.ProfileImage != null && !GUser.Banner.ProfileImage.Equals("default"))
             {
-                ResizeMode = ResizeMode.Stretch
-            };
-            var rec = new Rectangle(Buffer, InnerSize);
-
-            imf.Resize(res);
-            SolidBrush RecColor = new SolidBrush(Color.FromArgb(GreyAlpha, 150, 150, 150));
-            imf.Format(new PngFormat());
-            Graphics.FromImage(imf.Image).FillRectangle(RecColor, rec);
-            imf.Overlay(await GetTestAvatarAsync(User));
-
-            RecColor.Dispose();
-            Image output = imf.Image;
-            return output;
-        }
-
-        public static async Task<ImageLayer> GetTestAvatarAsync(SocketGuildUser user)
-        {
-            var Guild = GuildManager.GetGuild(user.Guild.Id);
-            byte[] bytes = new byte[1];
-            using (WebClient client = new WebClient())
-            {
-                string url = user.GetAvatarUrl();
-                if (user.AvatarId == null)
-                    url = user.GetDefaultAvatarUrl();
-                url = url.Substring(0, url.IndexOf("png") + 3);
-                try
-                {
-                    bytes = client.DownloadData(url);
-                }
-                catch (WebException e)
-                {
-                    Console.WriteLine(e.Message);
-                    url = user.GetDefaultAvatarUrl();
-                    bytes = client.DownloadData(url);
-                }
+                Uri uri = (await DownloadBanner(GUser.Banner.ProfileImage)).PrimaryUri;
+                DownloadString = uri.OriginalString;
             }
 
+            byte[] bytes;
+            using WebClient client = new WebClient();
+            try
+            {
+                bytes = client.DownloadData(DownloadString);
+            }
+            catch (WebException e)
+            {
+                Console.WriteLine(e.Message);
+                DownloadString = User.GetDefaultAvatarUrl();
+                bytes = client.DownloadData(DownloadString);
+            }
+            client.Dispose();
+            return bytes;
+        }
+
+        private static async Task<ImageLayer> GetAvatarAsync(SocketGuildUser user)
+        {
+
+            byte[] bytes = await DownloadAvatar(user);
+            
             MemoryStream ms = new MemoryStream(bytes);
             var imf = new ImageFactory();
             imf.Load(Image.FromStream(ms));
-            imf.RoundedCorners(AvatarSize.Height);
+            imf.Resize(new ResizeLayer(AvatarSize) {ResizeMode = ResizeMode.Stretch });
             imf.Format(new PngFormat());
-
+            imf.Mask(AvatarMask());
             ImageLayer il = new ImageLayer
             {
                 Image = imf.Image,
                 Position = AvatarLocation,
                 Size = AvatarSize
             };
-
             ms.Dispose();
             return il;
         }
 
-        public static TextLayer RankAndLevel()
+        private static void RankAndLevel(SocketGuildUser User, ref ImageFactory imf)
         {
-            var RankLabel = new TextLayer();
-            RankLabel.RightToLeft = false;
-            RankLabel.Text = "Rank";
-            RankLabel.FontSize = 20;
-            RankLabel.FontColor = Color.White;
-            return RankLabel;
+            var Guild = GuildManager.GetGuild(User);
+            var GUser = Guild.GetUser(User);
+            var Rank = Guild.Users.IndexOf(GUser) + 1;
+            if (Reporting.ReportingManager.HighestChat().User.Equals(GUser))
+                Rank = 0;
+            //Rank = 0;
+            var RankDisplay = Rank.ToString();
+            if (Rank == 0)
+                RankDisplay = "1";
+            GetRnLLayers(GUser, true, -1, GUser.Chat.ChatLevel.ToString(), new Point(TotalSize.Width - Buffer.X - 8, Buffer.Y), ref imf, out Point LevelValue);
+            GetRnLLayers(GUser, false, -1, "Level", new Point(LevelValue.X - 5, Buffer.Y + LevelValue.Y + 4), ref imf, out Point LevelLabel);
+            GetRnLLayers(GUser, true, Rank, $"#{RankDisplay}", new Point(LevelLabel.X - 10, Buffer.Y), ref imf, out Point RankValue); 
+            GetRnLLayers(GUser, false, Rank, $"Rank", new Point(RankValue.X - 5, Buffer.Y + RankValue.Y + 4), ref imf, out _);
+
+        }
+
+        private static void GetRnLLayers(GuildUser User, bool Big, int Rank, string Text, Point Offset, ref ImageFactory imf, out Point Location)
+        {
+            int Size = 20;
+            int Y = 0;
+            if (Big)
+                Size = 40;
+
+            var Layer = new TextLayer()
+            {
+                Text = Text,
+                FontSize = Size,
+                FontColor = Color.White,
+                FontFamily = new FontFamily("Arial")
+            };
+            if (!Big)
+                Y = TextManagement.GetSize(Layer).Height;
+
+            if (Rank < 0)
+                Layer.FontColor = User.Banner.GetColor();
+            else
+                GetRankColor(Rank, ref Layer);
+
+
+            Layer.Position = new Point(Offset.X - TextManagement.GetSize(Layer).Width, Offset.Y - Y);
+            imf.Watermark(Layer);
+
+            Location = Layer.Position.Value;
+        }
+
+
+        private static void GetRankColor(int Rank, ref TextLayer Layer)
+        {
+            if (Rank == 0)
+                Layer.FontColor = Color.RoyalBlue;
+            if (Rank == 1)
+                Layer.FontColor = Color.Goldenrod;
+            if (Rank == 2)
+                Layer.FontColor = Color.FromArgb(255, 145, 145, 145);
+            if (Rank == 3)
+                Layer.FontColor = Color.FromArgb(255, 164, 102, 40);
+        }
+
+        private static ImageLayer AvatarMask()
+        {
+            var bit = new Bitmap(AvatarSize.Width, AvatarSize.Height, PixelFormat.Format32bppPArgb);
+            var offset = AvatarSize.Width / 2;
+            for(int x = 0; x < AvatarSize.Width; x++)
+            {
+                for(int y = 0; y < AvatarSize.Height; y++)
+                {
+                    if (Square(x - offset) + Square(y - offset) <= Square(offset))
+                        bit.SetPixel(x, y, Color.FromArgb(100, 0, 0, 0));
+                    else
+                        bit.SetPixel(x,y,Color.Empty);
+                }
+            }
+            var stream = new MemoryStream();
+            bit.Save(stream, ImageFormat.Png);
+
+            ImageFactory imf = new ImageFactory();
+            var img = Image.FromStream(stream);
+            stream.Dispose();
+            imf.Load(img);
+            imf.Format(new PngFormat());
+            var il = new ImageLayer
+            {
+                Image = imf.Image,
+                Position = AvatarLocation
+            };
+            return il;
+
+            
+        }
+
+        private static float Square(int NumToSquare)
+        {
+            return (float)NumToSquare * (float)NumToSquare;
+        }
+
+        private static ImageLayer GetExpBar(GuildUser User, bool fore)
+        {
+            var Background = new Rectangle(0,0, ExpBarSize.Width, ExpBarSize.Height);
+            var width = ExpBarSize.Width;
+            if (fore)
+                width = GetExpLength(User);
+
+
+            var Bit = new Bitmap(width, ExpBarSize.Height, PixelFormat.Format32bppArgb); 
+            for (int x = 0; x < Bit.Width; x++)
+            {
+                for (int y = 0; y < Bit.Height; y++)
+                {
+                    Bit.SetPixel(x, y, Color.Black);
+                }
+            }
+
+            var Stream = new MemoryStream();
+            Bit.Save(Stream, ImageFormat.Png);
+
+
+            var imf = new ImageFactory();
+            imf.Load(Image.FromStream(Stream));
+            Stream.Dispose();
+            var Brush = new SolidBrush(Color.Gray);
+            if(fore)
+                Brush = new SolidBrush(User.Banner.GetColor());
+            Graphics.FromImage(imf.Image).FillRectangle(Brush, Background);
+            Brush.Dispose();
+            imf.RoundedCorners(7);
+            var il = new ImageLayer() { Image = imf.Image, Position = ExpBarLocation };
+
+            return il;
+        }
+
+        private static TextLayer GetExp(GuildUser User)
+        {
+            var Output = new TextLayer
+            {
+                Text = $"{User.Chat.ChatExp}/{LevelManagement.GetExpAtLevel(User.Chat.ChatLevel)}",
+                FontColor = Color.White,
+                FontFamily = new FontFamily("Arial"),
+                Position = ExpLocation,
+                FontSize = 20
+            };
+            Output.Position = new Point(Output.Position.Value.X - TextManagement.GetSize(Output).Width, ExpLocation.Y);
+            return Output;
+
+        }
+
+        private static TextLayer GetMessages(GuildUser User)
+        {
+            var Output = new TextLayer
+            {
+                Text = $"Messages: {User.Chat.MessagesSent}",
+                FontColor = Color.White,
+                FontFamily = new FontFamily("Arial"),
+                Position = MessagesLocation,
+                FontSize = 20
+            };
+            Output.Position = new Point(Output.Position.Value.X, MessagesLocation.Y - TextManagement.GetSize(Output).Height);
+            return Output;
 
         }
     }

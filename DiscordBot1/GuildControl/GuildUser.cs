@@ -52,5 +52,6 @@ namespace HeartFlame.GuildControl
             if (other is null) return false;
             return DiscordID == other.DiscordID;
         }
+
     }
 }

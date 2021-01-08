@@ -13,9 +13,9 @@ namespace HeartFlame.Misc
     public class TestCommands : ModuleBase<SocketCommandContext>
     {
         [Command]
-        public async Task Test()
+        public async Task Test(SocketGuildUser User = null)
         {
-            await Context.Channel.SendFileAsync(BannerMaker.ToStream(await BannerMaker.Testing((SocketGuildUser)Context.User), ImageFormat.Png), "Test.png");
+            await Context.Channel.SendFileAsync(BannerMaker.ToStream(await BannerMaker.BuildBannerAsync(User ?? (SocketGuildUser)Context.User, false), ImageFormat.Png), "Test.png");
         }
     }
 }
