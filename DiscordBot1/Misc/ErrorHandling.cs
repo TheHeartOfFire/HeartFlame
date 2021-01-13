@@ -26,6 +26,11 @@ namespace HeartFlame.Misc
                     $"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Error}");
         }
 
-        
+        public static void GlobalErrorLogging(string Error, string Source)
+        {
+            if (PersistentData.Data.Config.Reporting.ErrorChannel > 0)
+                PersistentData.Data.Config.Reporting.GlobalErrorChannel().SendMessageAsync(
+                    $"{DateTime.Now} at {Source}: {Error}");
+        }
     }
 }

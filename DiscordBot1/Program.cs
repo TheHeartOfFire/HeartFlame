@@ -118,6 +118,9 @@ namespace HeartFlame
         private async Task Client_Log(LogMessage arg)
         {
             Console.WriteLine($"{DateTime.Now} at {arg.Source}: {arg.Message}");//debug log message formatting
+            if (arg.Severity == LogSeverity.Critical || arg.Severity == LogSeverity.Error)
+                ErrorHandling.GlobalErrorLogging(arg.Message, arg.Source); ;
+
             await Task.CompletedTask;
         }
 
