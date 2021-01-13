@@ -209,6 +209,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The server logging module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error..
+        /// </summary>
+        internal static string NotServerLogging {
+            get {
+                return ResourceManager.GetString("NotServerLogging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.patreon.com/heartflamebot.
         /// </summary>
         internal static string PatreonLink {

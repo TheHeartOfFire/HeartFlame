@@ -65,32 +65,29 @@ namespace HeartFlame
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
             ModuleManager.InitializeModules();
+
             await Task.Delay(-1);
         }
+
 
         private async Task Client_GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
         {
             var Guild = GuildManager.GetGuild(arg2);
 
             if ((bool)arg1.IsPending && !(bool)arg2.IsPending)
-                if (Guild.Moderation.JoinRole != 0)
-                {
-                        var role = arg2.Guild.GetRole(Guild.Moderation.JoinRole);
-                        await arg2.AddRoleAsync(role);
-                }
+                ModerationManager.GiveJoinRole(Guild, arg2);
+
         }
 
         private async Task Client_UserLeft(SocketGuildUser arg)
         {
-            GuildManager.GetGuild(arg).RemoveUser(arg);
-            PersistentData.SaveChangesToJson();
+            ModuleManager.OnUserLeft(arg);
             await Task.CompletedTask;
         }
 
         private async Task Client_UserJoined(SocketGuildUser arg)
         {
-            GuildManager.GetGuild(arg).AddUser(arg);
-            PersistentData.SaveChangesToJson();
+            ModuleManager.OnUserJoined(arg);
             await Task.CompletedTask;
         }
 
@@ -142,10 +139,21 @@ namespace HeartFlame
             if (Context.User.IsBot) return;//dont want messages from bot
             int argpos = 0;
 
-            if (GuildManager.GetGuild(Context.Guild).GetUser(Context.User).Moderation.isMuted()) await arg.DeleteAsync();
+            if (GuildManager.GetUser(Context.User).Moderation.isMuted()) await arg.DeleteAsync();
 
-            if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos))) return; //only want messages with prefix or @bot mention
+            bool HasPfx = false;
 
+            if (GuildManager.GetGuild(Context.User).Configuration.Prefixes.Count > 0)
+                foreach (var prefix in GuildManager.GetGuild(Context.User).Configuration.Prefixes)
+                {
+                    if (Message.HasStringPrefix(prefix, ref argpos))
+                        HasPfx = true;
+                }
+
+            if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos) || HasPfx)) return;
+            //only want messages with prefix or @bot mention, or guild specific prefix
+
+            
             if (Message.Content.ToLowerInvariant().Equals(Prefix + GuildManager.GetGuild(Context.Guild.Id).Moderation.JoinCommand))//Handle Join Message
             {
                 if (!ModerationManager.JoinCommand(Message))

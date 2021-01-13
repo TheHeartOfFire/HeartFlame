@@ -4,8 +4,9 @@ using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using System.Reflection;
 using System.Linq;
+using HeartFlame.Misc;
 
-namespace HeartFlame.Misc
+namespace HeartFlame.Logging
 {
     public class BotLogging
     {

@@ -37,10 +37,7 @@ namespace HeartFlame.GuildControl
             AddUsers(guild.Users);
         }
         [JsonConstructor]
-        public GuildData()
-        {
-
-        }
+        public GuildData() { }
 
         private void AddUsers(IReadOnlyCollection<SocketGuildUser> users)
         {

@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
 using System;

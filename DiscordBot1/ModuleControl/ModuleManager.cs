@@ -2,7 +2,9 @@
 using Discord.WebSocket;
 using HeartFlame.ChatLevels;
 using HeartFlame.GuildControl;
+using HeartFlame.Logging;
 using HeartFlame.Misc;
+using HeartFlame.Moderation;
 using HeartFlame.Reporting;
 
 namespace HeartFlame.ModuleControl
@@ -50,6 +52,34 @@ namespace HeartFlame.ModuleControl
         internal static void InitializeModules()
         {
             ChatModuleIntegrator.OnpreProcessing();
+        }
+
+        public static void OnUserJoined(SocketGuildUser User)
+        {
+            var Guild = GuildManager.GetGuild(User);
+            Guild.AddUser(User);
+            PersistentData.SaveChangesToJson();
+
+            if ((bool)!User.IsPending)
+                ModerationManager.GiveJoinRole(Guild, User);
+
+            if (Guild.ModuleControl.IncludeServerLogging)
+                ServerLogging.UserJoined(User);
+        }
+
+        public static void OnUserLeft(SocketGuildUser User)
+        {
+            var Guild = GuildManager.GetGuild(User);
+            Guild.RemoveUser(User);
+            PersistentData.SaveChangesToJson();
+
+            if (Guild.ModuleControl.IncludeServerLogging)
+                ServerLogging.UserLeft(User);
+        }
+
+        public static void OnMessageDeleted(Cacheable<IMessage, ulong> CachedMessage, ISocketMessageChannel Channel)
+        {
+
         }
     }
 }

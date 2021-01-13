@@ -45,7 +45,6 @@ namespace HeartFlame.ModuleControl
                         else
                             return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotPerms));
 
-
                     case Modules.SELFASSIGN:
                         if (mods.IncludeSelfAssign)
                             return Task.FromResult(PreconditionResult.FromSuccess());
@@ -57,6 +56,12 @@ namespace HeartFlame.ModuleControl
                             return Task.FromResult(PreconditionResult.FromSuccess());
                         else
                             return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotModeration));
+
+                    case Modules.SERVERLOGGING:
+                        if (mods.IncludeServerLogging)
+                            return Task.FromResult(PreconditionResult.FromSuccess());
+                        else
+                            return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotServerLogging));
                 }
             }
 

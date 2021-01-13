@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
 using HeartFlame.Permissions;
@@ -17,8 +18,7 @@ namespace HeartFlame.Configuration
     [Group("Configuration"), Alias("Config")]
     public class Configuration_Command : ModuleBase<SocketCommandContext>
     {
-        [Command("Help"), Alias("", "?"), Remarks("Config_Help"), Summary("Get all of the commands in the Configuration Group.")]
-        [RequirePermission(Roles.CREATOR)]
+        [Command("Help"), Alias("", "?"), Remarks("Config_Help"), Summary("Get all of the commands in the Global Configuration Group.")]
         public async Task ConfigHelp()
         {
             var embeds = HelpEmbed("Config Help", "Config_Help", 0);
@@ -26,40 +26,6 @@ namespace HeartFlame.Configuration
             {
                 await ReplyAsync("", false, embed);
             }
-        }
-
-        [Command("Prefix"), Alias("pfx"), Summary("Set the prefix for all commands. A space is added to the end by default."), Priority(1)]
-        [RequirePermission(Roles.CREATOR)]
-        public async Task SetPrefix(string Prefix)
-        {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-
-            PersistentData.Data.Config.CommandPrefix = Prefix + " ";
-            PersistentData.SaveChangesToJson();
-            await Context.Channel.SendMessageAsync($"Command Prefix has been set to {Prefix}");
-
-            if (BotGuild.ModuleControl.IncludeLogging)
-                BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
-                        $"Bot commands must now begin with \"{Prefix} \"",
-                        Context);
-        }
-
-        [Command("Game"), Alias("g"), Summary("Set the game that discord shows the bot to be playing. Input: string \"name\""), Priority(1)]
-        [RequirePermission(Roles.CREATOR)]
-        public async Task SetGame(string Game)
-        {
-            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-
-            PersistentData.Data.Config.Game = Game;
-            PersistentData.SaveChangesToJson();
-            await Context.Channel.SendMessageAsync($"{PersistentData.BotName} is now playing {Game}");
-
-            if (BotGuild.ModuleControl.IncludeLogging)
-                BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
-                        $"The bot is now playing {Game}",
-                        Context);
         }
 
         [Command("Log"), Summary("Add a Channel used for log messages."), Priority(1), RequireModule(Modules.LOGGING), RequirePermission(Roles.ADMIN)]
@@ -86,6 +52,44 @@ namespace HeartFlame.Configuration
                         $"The bot's log channel has been changed to {chnl}",
                         Context);
         }
+
+        [Command("Prefix"), Alias("pfx"), Summary("Adds an additional prefix option for running commands."), Priority(1)]
+        [RequirePermission(Roles.OWNER)]
+        public async Task AddPrefix(string prefix)
+        {
+            var Guild = GuildManager.GetGuild(Context.Guild);
+            Guild.Configuration.Prefixes.Add(prefix);
+            await ReplyAsync($"`{prefix}` has been added as a prefix for this server."); 
+            
+            if (Guild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod(),
+                        $"`{prefix}` has been added as a prefix for this server by {Guild.GetUser(Context.User).Name}.",
+                        Context);
+        }
+
+        [Command("UnPrefix"), Alias("upfx"), Summary("Removes a prefix option for running commands."), Priority(1)]
+        [RequirePermission(Roles.OWNER)]
+        public async Task RemovePrefix(string prefix)
+        {
+            var Guild = GuildManager.GetGuild(Context.Guild);
+
+            if(Guild.Configuration.Prefixes.Contains(prefix))
+            {
+                await ReplyAsync($"`{prefix}` is not currently a prefix for this server.");
+                return;
+            }
+
+            Guild.Configuration.Prefixes.Remove(prefix);
+            await ReplyAsync($"`{prefix}` has been removed as a prefix for this server.");
+
+            if (Guild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod(),
+                        $"`{prefix}` has been removed as a prefix for this server by {Guild.GetUser(Context.User).Name}.",
+                        Context);
+        }
+
 
         [Command("Chat"), Summary("Add a Channel used for Chat Level messages."), Priority(1), RequireModule(Modules.CHAT), RequirePermission(Roles.ADMIN)]
         public async Task AddChatChannel(IChannel channel = null)

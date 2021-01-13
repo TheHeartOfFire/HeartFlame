@@ -184,6 +184,10 @@ Make sure to leave a space between each value.</value>
     <value>:x:Hmm. The self assign module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
     <comment>Error Message if self assign is not enabled.</comment>
   </data>
+  <data name="NotServerLogging" xml:space="preserve">
+    <value>:x:Hmm. The server logging module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error.</value>
+    <comment>Error Message if server logging is not enabled.</comment>
+  </data>
   <data name="PatreonLink" xml:space="preserve">
     <value>https://www.patreon.com/heartflamebot</value>
     <comment>Link to patreon</comment>

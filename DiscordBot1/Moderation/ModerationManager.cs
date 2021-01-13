@@ -89,5 +89,14 @@ namespace HeartFlame.Moderation
                 return "year";
             return null;
         }
+
+        public static async void GiveJoinRole(GuildData Guild, SocketGuildUser User)
+        {
+            if (Guild.Moderation.JoinRole != 0)
+            {
+                var role = User.Guild.GetRole(Guild.Moderation.JoinRole);
+                await User.AddRoleAsync(role);
+            }
+        }
     }
 }

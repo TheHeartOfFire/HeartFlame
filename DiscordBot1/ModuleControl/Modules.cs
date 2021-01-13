@@ -11,6 +11,7 @@ namespace HeartFlame.ModuleControl
         PERMISSIONS,
         SELFASSIGN,
         COMPENDIUM,
-        MODERATION
+        MODERATION,
+        SERVERLOGGING
     }
 }

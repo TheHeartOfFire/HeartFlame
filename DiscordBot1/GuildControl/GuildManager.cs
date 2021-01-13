@@ -81,5 +81,14 @@ namespace HeartFlame.GuildControl
             return MessageChannel;
         }
 
+        public static GuildUser GetUser(SocketGuildUser User)
+        {
+            return GetGuild(User).GetUser(User);
+        }
+
+        public static GuildUser GetUser(SocketUser User)
+        {
+            return GetUser((SocketGuildUser)User);
+        }
     }
 }
