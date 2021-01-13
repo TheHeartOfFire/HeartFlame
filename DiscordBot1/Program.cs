@@ -166,6 +166,7 @@ namespace HeartFlame
 
             if (!Result.IsSuccess)
             {
+                ErrorHandling.DotNetCommandException((CommandError)Result.Error, Context);
                 Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
             }
             GuildManager.UpdateGuildName(Context.Guild);

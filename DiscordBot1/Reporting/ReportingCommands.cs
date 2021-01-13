@@ -42,5 +42,13 @@ namespace HeartFlame.Reporting
 
             await ReplyAsync("This guild has been set as the guild for reporting.");
         }
+
+        [Command("Error")]
+        public async Task SetErrorChannel()
+        {
+            PersistentData.Data.Config.Reporting.ErrorChannel = Context.Channel.Id;
+
+            await ReplyAsync("This channel has been set as the channel for error logging.");
+        }
     }
 }
