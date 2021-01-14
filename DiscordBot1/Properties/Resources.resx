@@ -127,6 +127,10 @@ Please make sure to use a hexadecimal color code like FFFFFF.\n
 If you typed #FFFFFF please omit the #.</value>
     <comment>error for malformed hex</comment>
   </data>
+  <data name="BadModule" xml:space="preserve">
+    <value>:x: I'm not sure which module that is. Please try again with a valid module.</value>
+    <comment>Error message for bad module</comment>
+  </data>
   <data name="BadRGB" xml:space="preserve">
     <value>That wasn't the right king of data.\n
 Please make sure to type an rgb color code like 255 255 255.\n

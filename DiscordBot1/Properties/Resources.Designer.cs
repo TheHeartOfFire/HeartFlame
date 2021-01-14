@@ -81,6 +81,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: I&apos;m not sure which module that is. Please try again with a valid module..
+        /// </summary>
+        internal static string BadModule {
+            get {
+                return ResourceManager.GetString("BadModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That wasn&apos;t the right king of data.\n
         ///Please make sure to type an rgb color code like 255 255 255.\n
         ///Make sure to leave a space between each value..

@@ -59,6 +59,7 @@ namespace HeartFlame.Configuration
         {
             var Guild = GuildManager.GetGuild(Context.Guild);
             Guild.Configuration.Prefixes.Add(prefix);
+            PersistentData.SaveChangesToJson();
             await ReplyAsync($"`{prefix}` has been added as a prefix for this server."); 
             
             if (Guild.ModuleControl.IncludeLogging)
@@ -81,6 +82,7 @@ namespace HeartFlame.Configuration
             }
 
             Guild.Configuration.Prefixes.Remove(prefix);
+            PersistentData.SaveChangesToJson();
             await ReplyAsync($"`{prefix}` has been removed as a prefix for this server.");
 
             if (Guild.ModuleControl.IncludeLogging)
@@ -132,6 +134,32 @@ namespace HeartFlame.Configuration
                 BotLogging.PrintLogMessage(
                         MethodBase.GetCurrentMethod(),
                 $"The join role has been set to {Role.Mention}",
+                        Context);
+
+        }
+
+        [Command("Module"), Summary("Sets the role awarded to user when they join the server."), Priority(1)]
+        [RequirePermission(Roles.OWNER)]
+        public async Task ToggleModule(string Module, bool Active = true)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild);
+            
+            if(ModuleManager.UpdateModules(BotGuild, Module, Active))
+            {
+                await ReplyAsync(Properties.Resources.BadModule);
+                return;
+            }
+
+            string Status = "off";
+            if (Active)
+                Status = "on";
+
+            await ReplyAsync($"The {Module} module has been turned {Status}");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod(),
+                $"The {Module} module has been turned {Status} by {BotGuild.GetUser(Context.User).Name}",
                         Context);
 
         }

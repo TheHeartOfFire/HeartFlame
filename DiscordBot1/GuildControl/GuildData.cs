@@ -109,5 +109,7 @@ namespace HeartFlame.GuildControl
                 return Program.Client.GetChannel(Configuration.ChatChannel) as ISocketMessageChannel;
             return MessageChannel;
         }
+
+        
     }
 }

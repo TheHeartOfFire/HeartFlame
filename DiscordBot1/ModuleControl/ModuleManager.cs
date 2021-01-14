@@ -81,5 +81,72 @@ namespace HeartFlame.ModuleControl
         {
 
         }
+        
+        public static void SetModule(GuildData Guild, Modules Module, bool Active = true)
+        {
+            switch (Module)
+            {
+                case Modules.PERMISSIONS:
+                    Guild.ModuleControl.IncludePermissions = Active;
+                    break;
+                case Modules.LOGGING:
+                    Guild.ModuleControl.IncludeLogging = Active;
+                    break;
+                case Modules.CHAT:
+                    Guild.ModuleControl.IncludeLogging = Active;
+                    break;
+                case Modules.SELFASSIGN:
+                    Guild.ModuleControl.IncludeLogging = Active;
+                    break;
+                case Modules.COMPENDIUM:
+                    Guild.ModuleControl.IncludeCompendium = Active;
+                    break;
+                case Modules.MODERATION:
+                    Guild.ModuleControl.IncludeModeration = Active;
+                    break;
+                case Modules.SERVERLOGGING:
+                    Guild.ModuleControl.IncludeServerLogging = Active;
+                    break;
+            }
+        }
+
+        public static Modules? NormalizeModule(string Module)
+        {
+            Module = Module.ToLowerInvariant();
+
+            if (Module.Equals("permissions") || Module.Equals("perms"))
+                return Modules.PERMISSIONS;
+            if (Module.Equals("logging"))
+                return Modules.LOGGING;
+            if (Module.Equals("chat"))
+                return Modules.CHAT;
+            if (Module.Equals("selfassign") || Module.Equals("sa") || Module.Equals("self assign") || Module.Equals("s a"))
+                return Modules.SELFASSIGN;
+            if (Module.Equals("compendium") || Module.Equals("usernames") || Module.Equals("username"))
+                return Modules.COMPENDIUM;
+            if (Module.Equals("moderation") || Module.Equals("mod"))
+                return Modules.MODERATION;
+            if (Module.Equals("serverlogging") || Module.Equals("server logging") || Module.Equals("sl") || Module.Equals("s l"))
+                return Modules.SERVERLOGGING;
+            return null;
+        }
+
+        /// <summary>
+        /// This method automatically calls SaveChangesToJason()
+        /// </summary>
+        /// <param name="Guild"></param>
+        /// <param name="Module"></param>
+        /// <param name="Active"></param>
+        /// <returns>true if bad module</returns>
+        public static bool UpdateModules(GuildData Guild, string Module, bool Active = true)
+        {
+            var EModule = NormalizeModule(Module);
+            if (EModule is null)
+                return false;
+
+            SetModule(Guild, (Modules)EModule, Active);
+            PersistentData.SaveChangesToJson();
+            return true;
+        }
     }
 }

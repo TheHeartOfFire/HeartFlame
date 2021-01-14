@@ -10,6 +10,8 @@ namespace HeartFlame.Misc
     {
         public static void DotNetCommandException(CommandError Error, SocketCommandContext Context)
         {
+            GlobalErrorLogging(Error.ToString(), Context);
+
             switch (Error)
             {
                 case CommandError.UnknownCommand:
@@ -17,20 +19,26 @@ namespace HeartFlame.Misc
                     return;
 
             }
+
         }
 
         public static void GlobalErrorLogging(string Error, SocketCommandContext Context)
         {
             if (PersistentData.Data.Config.Reporting.ErrorChannel > 0)
                 PersistentData.Data.Config.Reporting.GlobalErrorChannel().SendMessageAsync(
-                    $"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Error}");
+                    $"Time: {DateTime.UtcNow.AddHours(-6)}\n" +
+                    $"Location: {Context.Guild.Name}\n" +
+                    $"Text: {Context.Message.Content}\n" +
+                    $"Error: {Error}");
         }
 
         public static void GlobalErrorLogging(string Error, string Source)
         {
             if (PersistentData.Data.Config.Reporting.ErrorChannel > 0)
                 PersistentData.Data.Config.Reporting.GlobalErrorChannel().SendMessageAsync(
-                    $"{DateTime.Now} at {Source}: {Error}");
+                    $"Time: {DateTime.UtcNow.AddHours(-6)}\n" +
+                    $"Location: {Source}\n" +
+                    $"Error: {Error}");
         }
     }
 }
