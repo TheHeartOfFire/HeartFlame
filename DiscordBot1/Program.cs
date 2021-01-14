@@ -72,10 +72,21 @@ namespace HeartFlame
 
         private async Task Client_GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
         {
-            var Guild = GuildManager.GetGuild(arg2);
+            try
+            {
+                var Guild = GuildManager.GetGuild(arg2);
 
-            if ((bool)arg1.IsPending && !(bool)arg2.IsPending)
-                ModerationManager.GiveJoinRole(Guild, arg2);
+                if (arg2.IsPending is null)
+                    return;
+
+                if ((bool)arg1.IsPending && !(bool)arg2.IsPending)
+                    ModerationManager.GiveJoinRole(Guild, arg2);
+            }
+            catch(Exception e)
+            {
+                ErrorHandling.GlobalErrorLogging(e.Message, $"Guild Memeber Updated\nUser Value 1: {arg1.Username} | User Value 2: {arg2.Username}");
+            }
+            await Task.CompletedTask;
 
         }
 
@@ -118,7 +129,7 @@ namespace HeartFlame
         private async Task Client_Log(LogMessage arg)
         {
             Console.WriteLine($"{DateTime.Now} at {arg.Source}: {arg.Message}");//debug log message formatting
-            if (arg.Severity == LogSeverity.Critical || arg.Severity == LogSeverity.Error)
+            if (arg.Severity == LogSeverity.Critical || arg.Severity == LogSeverity.Error || arg.Source.Equals("Gateway"))
                 ErrorHandling.GlobalErrorLogging(arg.Message, arg.Source); ;
 
             await Task.CompletedTask;

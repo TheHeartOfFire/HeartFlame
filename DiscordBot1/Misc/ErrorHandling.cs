@@ -29,7 +29,7 @@ namespace HeartFlame.Misc
                     $"Time: {DateTime.UtcNow.AddHours(-6)}\n" +
                     $"Location: {Context.Guild.Name}\n" +
                     $"Text: {Context.Message.Content}\n" +
-                    $"Error: {Error}");
+                    $"Message: {Error}");
         }
 
         public static void GlobalErrorLogging(string Error, string Source)
@@ -38,7 +38,7 @@ namespace HeartFlame.Misc
                 PersistentData.Data.Config.Reporting.GlobalErrorChannel().SendMessageAsync(
                     $"Time: {DateTime.UtcNow.AddHours(-6)}\n" +
                     $"Location: {Source}\n" +
-                    $"Error: {Error}");
+                    $"Message: {Error}");
         }
     }
 }

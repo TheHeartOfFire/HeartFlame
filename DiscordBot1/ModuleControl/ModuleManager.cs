@@ -60,7 +60,7 @@ namespace HeartFlame.ModuleControl
             Guild.AddUser(User);
             PersistentData.SaveChangesToJson();
 
-            if ((bool)!User.IsPending)
+            if (User.IsPending is null)
                 ModerationManager.GiveJoinRole(Guild, User);
 
             if (Guild.ModuleControl.IncludeServerLogging)
@@ -93,10 +93,10 @@ namespace HeartFlame.ModuleControl
                     Guild.ModuleControl.IncludeLogging = Active;
                     break;
                 case Modules.CHAT:
-                    Guild.ModuleControl.IncludeLogging = Active;
+                    Guild.ModuleControl.IncludeChat = Active;
                     break;
                 case Modules.SELFASSIGN:
-                    Guild.ModuleControl.IncludeLogging = Active;
+                    Guild.ModuleControl.IncludeSelfAssign = Active;
                     break;
                 case Modules.COMPENDIUM:
                     Guild.ModuleControl.IncludeCompendium = Active;

@@ -144,7 +144,7 @@ namespace HeartFlame.Configuration
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild);
             
-            if(ModuleManager.UpdateModules(BotGuild, Module, Active))
+            if(!ModuleManager.UpdateModules(BotGuild, Module, Active))
             {
                 await ReplyAsync(Properties.Resources.BadModule);
                 return;
