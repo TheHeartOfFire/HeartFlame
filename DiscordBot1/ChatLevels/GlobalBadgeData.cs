@@ -8,12 +8,9 @@ namespace HeartFlame.ChatLevels
 {
     public class GlobalBadgeData
     {
-        public bool Rank1 { get; set }
+        public bool Rank1 { get; set; }
         public bool BetaTester { get; set; }
         public bool Patreon { get; set; }
-
-        [JsonConstructor]
-        public GlobalBadgeData() { }
 
     }
 }
