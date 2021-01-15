@@ -65,6 +65,9 @@ namespace HeartFlame.ModuleControl
 
             if (Guild.ModuleControl.IncludeServerLogging)
                 ServerLogging.UserJoined(User);
+
+            if (Program.BetaActive)
+                GuildManager.SetBetaTester(Guild.GetUser(User));
         }
 
         public static void OnUserLeft(SocketGuildUser User)

@@ -13,9 +13,16 @@ namespace HeartFlame.Misc
     public class TestCommands : ModuleBase<SocketCommandContext>
     {
         [Command]
-        public async Task Test(SocketGuildUser User = null)
+        public async Task Test()
         {
-            await Context.Channel.SendFileAsync(BannerMaker.ToStream(await BannerMaker.BuildBannerAsync(User ?? (SocketGuildUser)Context.User, false), ImageFormat.Png), "Test.png");
+            foreach(var User in GuildManager.GetAllUsers())
+            {
+                GuildManager.SetBetaTester(User);
+            }
+
+            await ReplyAsync("Your Patreon status is: " + GuildManager.GetUser(Context.User).Banner.Badges.Global.BetaTester.ToString());
         }
+
+
     }
 }

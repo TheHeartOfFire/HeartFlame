@@ -112,6 +112,7 @@ namespace HeartFlame.Reporting
                     
                 }
             }
+            GuildManager.SetGlobalRank1(Output.User);
             return Output;
         }
 

@@ -18,6 +18,7 @@ namespace HeartFlame
         public static DiscordSocketClient Client;
         public static CommandService Commands;
         private IServiceProvider Service;
+        internal static readonly bool BetaActive;
 
         private string Token = "";
         private string Game = "";
@@ -62,6 +63,7 @@ namespace HeartFlame
             Client.UserJoined += Client_UserJoined;
             Client.UserLeft += Client_UserLeft;
             Client.GuildMemberUpdated += Client_GuildMemberUpdated;
+            Client.Disconnected += Client_Disconnected;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
             ModuleManager.InitializeModules();
@@ -69,6 +71,11 @@ namespace HeartFlame
             await Task.Delay(-1);
         }
 
+        private Task Client_Disconnected(Exception arg)
+        {
+            Console.WriteLine(arg.Message);
+            return Task.CompletedTask; 
+        }
 
         private async Task Client_GuildMemberUpdated(SocketGuildUser arg1, SocketGuildUser arg2)
         {
