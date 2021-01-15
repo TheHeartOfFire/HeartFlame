@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.Misc;
 using System;
+using System.Collections.Generic;
 
 namespace HeartFlame.GuildControl
 {
@@ -89,6 +90,60 @@ namespace HeartFlame.GuildControl
         public static GuildUser GetUser(SocketUser User)
         {
             return GetUser((SocketGuildUser)User);
+        }
+
+        public static List<GuildUser> GetGlobalUser(GuildUser User)
+        {
+            var Users = new List<GuildUser>();
+            foreach(var Guild in PersistentData.Data.Guilds)
+            {
+                foreach(var _user in Guild.Users)
+                {
+                    if (User.DiscordID == _user.DiscordID)
+                        Users.Add(_user);
+                }
+            }
+            return Users;
+        }
+
+        public static void SetGlobalRank1(GuildUser User)
+        {
+            foreach(var Record in GetGlobalUser(User))
+            {
+                Record.Banner.Badges.Global.Rank1 = true;
+            }
+            PersistentData.SaveChangesToJson();
+        }
+
+        public static void SetPatreon(GuildUser User)
+        {
+            foreach (var Record in GetGlobalUser(User))
+            {
+                Record.Banner.Badges.Global.Patreon = true;
+            }
+            PersistentData.SaveChangesToJson();
+        }
+
+        public static void SetBetaTester(GuildUser User)
+        {
+            foreach (var Record in GetGlobalUser(User))
+            {
+                Record.Banner.Badges.Global.BetaTester = true;
+            }
+            PersistentData.SaveChangesToJson();
+        }
+
+        public static List<GuildUser> GetAllUsers()
+        {
+            var UserList = new List<GuildUser>();
+            foreach(var Guild in PersistentData.Data.Guilds)
+            {
+                foreach(var User in Guild.Users)
+                {
+                    UserList.Add(User);
+                }
+            }
+            return UserList;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace HeartFlame.ChatLevels
         public int Greyscale { get; set; }
         public bool VerticalFlip { get; set; }
         public bool HorizontalFlip { get; set; }
+        public BadgeData Badges { get; set; }
 
         public BannerData()
         {
@@ -18,6 +19,7 @@ namespace HeartFlame.ChatLevels
             ProfileImage = "default";
             BannerImage = "default";
             Greyscale = 150;
+            Badges = new BadgeData();
         }
         private Color ParseColor(int[] input)
         {
