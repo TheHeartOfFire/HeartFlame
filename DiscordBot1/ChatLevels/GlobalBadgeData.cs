@@ -12,5 +12,8 @@ namespace HeartFlame.ChatLevels
         public bool BetaTester { get; set; }
         public bool Patreon { get; set; }
 
+        [JsonConstructor]
+        public GlobalBadgeData() { }
+
     }
 }
