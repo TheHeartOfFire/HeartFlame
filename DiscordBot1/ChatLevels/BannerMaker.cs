@@ -57,7 +57,7 @@ namespace HeartFlame.ChatLevels
             imf.Overlay(GetExpBar(User, true));//Exp Bar actual Exp
             imf.Watermark(GetExp(User));//current exp / xp to next level
             imf.Watermark(GetMessages(User));//User's message count
-            //AddBadges(User, imf);
+            AddBadges(User, imf);
             Image output = imf.Image;
             return output;
 
@@ -401,18 +401,18 @@ namespace HeartFlame.ChatLevels
             var output = new List<Image>();
 
             if (User.Banner.Badges.Global.Patreon)
-                output.Add(await GetBannerAsync("goldenglobe24"));
+                output.Add(await GetBannerAsync("patreon24"));
             if (User.Banner.Badges.Global.BetaTester)
-                output.Add(await GetBannerAsync("goldenglobe24"));
+                output.Add(await GetBannerAsync("betatester24"));
             if (User.Banner.Badges.Global.Rank1)
                 output.Add(await GetBannerAsync("goldenglobe24"));
 
             if (User.Banner.Badges.Rank1)
-                output.Add(await GetBannerAsync("goldenglobe24"));
+                output.Add(await GetBannerAsync("goldmedal24"));
             if (User.Banner.Badges.Rank2)
-                output.Add(await GetBannerAsync("goldenglobe24"));
+                output.Add(await GetBannerAsync("silvermedal24"));
             if (User.Banner.Badges.Rank3)
-                output.Add(await GetBannerAsync("goldenglobe24"));
+                output.Add(await GetBannerAsync("bronzemedal24"));
 
             return output;
         }
