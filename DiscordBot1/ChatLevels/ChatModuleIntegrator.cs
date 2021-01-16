@@ -47,7 +47,7 @@ namespace HeartFlame.ChatLevels
 
             await BotGuild.GetChatChannel(arg.Channel).SendFileAsync(
                 BannerMaker.ToStream(
-                    await BannerMaker.BuildBannerAsync(user, false),
+                    await BannerMaker.BuildBannerAsync(user),
                     System.Drawing.Imaging.ImageFormat.Png),
                 "banner.png",
                 $"{user.Mention} Has just advanced to level {GUser.Chat.ChatLevel}");

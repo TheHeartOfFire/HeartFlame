@@ -39,7 +39,7 @@ namespace HeartFlame.ChatLevels
                 GUser.Banner.HorizontalFlip = FlipHorizontally;
                 PersistentData.SaveChangesToJson();
 
-                var img = await BannerMaker.BuildBannerAsync(User, false);
+                var img = await BannerMaker.BuildBannerAsync(User);
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
                 if (BotGuild.ModuleControl.IncludeLogging)
@@ -60,7 +60,7 @@ namespace HeartFlame.ChatLevels
                 GUser.Banner.BannerImage = name;
                 PersistentData.SaveChangesToJson();
 
-                var img = await BannerMaker.BuildBannerAsync(User, false);
+                var img = await BannerMaker.BuildBannerAsync(User);
 
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
@@ -81,7 +81,7 @@ namespace HeartFlame.ChatLevels
                 GUser.Banner.TextBackground = Active;
                 PersistentData.SaveChangesToJson();
 
-                var img = await BannerMaker.BuildBannerAsync(Context.User, false);
+                var img = await BannerMaker.BuildBannerAsync(Context.User);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
@@ -107,7 +107,7 @@ namespace HeartFlame.ChatLevels
                 PersistentData.SaveChangesToJson();
 
 
-                var img = await BannerMaker.BuildBannerAsync(User, false);
+                var img = await BannerMaker.BuildBannerAsync(User);
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
                 string msg = "off";
@@ -131,7 +131,7 @@ namespace HeartFlame.ChatLevels
                 PersistentData.SaveChangesToJson();
 
 
-                var img = await BannerMaker.BuildBannerAsync(Context.User, false);
+                var img = await BannerMaker.BuildBannerAsync(Context.User);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
@@ -153,7 +153,7 @@ namespace HeartFlame.ChatLevels
                 GUser.Banner.Greyscale = Greyscale;
                 PersistentData.SaveChangesToJson();
 
-                var img = await BannerMaker.BuildBannerAsync(User, false);
+                var img = await BannerMaker.BuildBannerAsync(User);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 

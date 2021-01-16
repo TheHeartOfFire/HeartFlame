@@ -26,7 +26,7 @@ namespace HeartFlame.ChatLevels
             if (User != null)
                 DisUser = User;
 
-            var img = await BannerMaker.BuildBannerAsync(DisUser, false);
+            var img = await BannerMaker.BuildBannerAsync(DisUser);
 
             await GuildManager.GetChatChannel(Context, BotGuild).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
         }

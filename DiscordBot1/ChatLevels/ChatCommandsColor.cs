@@ -49,7 +49,7 @@ namespace HeartFlame.ChatLevels
                 await BotGuild.GetChatChannel(Context).SendMessageAsync($"Color set to #{hex}").ConfigureAwait(false);
 
 
-                var img = await BannerMaker.BuildBannerAsync(Context.User, false);
+                var img = await BannerMaker.BuildBannerAsync(Context.User);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
@@ -79,7 +79,7 @@ namespace HeartFlame.ChatLevels
 
                 await BotGuild.GetChatChannel(Context).SendMessageAsync($"Color set to #{hex}").ConfigureAwait(false);
 
-                var img = await BannerMaker.BuildBannerAsync(DisUser, false);
+                var img = await BannerMaker.BuildBannerAsync(DisUser);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png").ConfigureAwait(false);
 
@@ -107,7 +107,7 @@ namespace HeartFlame.ChatLevels
 
                 await BotGuild.GetChatChannel(Context).SendMessageAsync("Color Set").ConfigureAwait(false);
 
-                var img = await BannerMaker.BuildBannerAsync(Context.User, false);
+                var img = await BannerMaker.BuildBannerAsync(Context.User);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
@@ -137,7 +137,7 @@ namespace HeartFlame.ChatLevels
 
                 await BotGuild.GetChatChannel(Context).SendMessageAsync("Color Set").ConfigureAwait(false);
 
-                var img = await BannerMaker.BuildBannerAsync(DisUser, false);
+                var img = await BannerMaker.BuildBannerAsync(DisUser);
 
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
@@ -172,7 +172,7 @@ namespace HeartFlame.ChatLevels
 
                 await BotGuild.GetChatChannel(Context).SendMessageAsync("Color Set");
 
-                var img = await BannerMaker.BuildBannerAsync(Context.User, false);
+                var img = await BannerMaker.BuildBannerAsync(Context.User);
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
                 if (BotGuild.ModuleControl.IncludeLogging)
@@ -208,7 +208,7 @@ namespace HeartFlame.ChatLevels
 
                 await BotGuild.GetChatChannel(Context).SendMessageAsync("Color Set");
 
-                var img = await BannerMaker.BuildBannerAsync(User, false);
+                var img = await BannerMaker.BuildBannerAsync(User);
                 await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
 
                 if (BotGuild.ModuleControl.IncludeLogging)

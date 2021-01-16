@@ -34,7 +34,7 @@ namespace HeartFlame.Misc
 
         public static void GlobalErrorLogging(string Error, string Source)
         {
-            if (PersistentData.Data.Config.Reporting.ErrorChannel > 0)
+            if (PersistentData.Data.Config.Reporting.ErrorChannel > 0 && !(PersistentData.Data.Config.Reporting.GlobalErrorChannel() is null))
                 PersistentData.Data.Config.Reporting.GlobalErrorChannel().SendMessageAsync(
                     $"Time: {DateTime.UtcNow.AddHours(-6)}\n" +
                     $"Location: {Source}\n" +

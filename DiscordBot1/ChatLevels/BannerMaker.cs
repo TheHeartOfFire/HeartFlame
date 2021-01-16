@@ -6,6 +6,7 @@ using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -30,14 +31,16 @@ namespace HeartFlame.ChatLevels
         private static readonly Point ExpBarLocation = new Point(AvatarLocation.X + AvatarSize.Width + 12, (TotalSize.Height / 2) + 12);
         private static readonly Point ExpLocation = new Point(TotalSize.Width - Buffer.X - 13, (TotalSize.Height / 2) - 10);
         private static readonly Point MessagesLocation = new Point(AvatarLocation.X + AvatarSize.Width - 12, TotalSize.Height - Buffer.Y - 10);
+        private static readonly Point BadgesLocation = new Point(TotalSize.Width - Buffer.X, TotalSize.Height - Buffer.Y);
+        private static readonly Size BadgesBuffer = new Size(8, 6);
 
 
-        public static async Task<Image> BuildBannerAsync(SocketUser User, bool LevelUp)
+        public static async Task<Image> BuildBannerAsync(SocketUser User)
         {
-            return await BuildBannerAsync((SocketGuildUser)User, LevelUp);
+            return await BuildBannerAsync((SocketGuildUser)User);
         }
 
-        public static async Task<Image> BuildBannerAsync(SocketGuildUser user, bool levelUp)
+        public static async Task<Image> BuildBannerAsync(SocketGuildUser user)
         {
             var Guild = GuildManager.GetGuild(user.Guild.Id);
             var User = Guild.GetUser(user); 
@@ -54,6 +57,7 @@ namespace HeartFlame.ChatLevels
             imf.Overlay(GetExpBar(User, true));//Exp Bar actual Exp
             imf.Watermark(GetExp(User));//current exp / xp to next level
             imf.Watermark(GetMessages(User));//User's message count
+            //AddBadges(User, imf);
             Image output = imf.Image;
             return output;
 
@@ -254,7 +258,7 @@ namespace HeartFlame.ChatLevels
             if (Rank < 0)
                 Layer.FontColor = User.Banner.GetColor();
             else
-                GetRankColor(Rank, ref Layer);
+                GetRankColor(Rank, User, ref Layer);
 
 
             Layer.Position = new Point(Offset.X - TextManagement.GetSize(Layer).Width, Offset.Y - Y);
@@ -264,16 +268,30 @@ namespace HeartFlame.ChatLevels
         }
 
 
-        private static void GetRankColor(int Rank, ref TextLayer Layer)
+        private static void GetRankColor(int Rank, GuildUser User, ref TextLayer Layer)
         {
             if (Rank == 0)
+            {
                 Layer.FontColor = Color.RoyalBlue;
+                User.Banner.Badges.Global.Rank1 = true;
+                User.Banner.Badges.Rank1 = true;
+            }
             if (Rank == 1)
+            {
                 Layer.FontColor = Color.Goldenrod;
+                User.Banner.Badges.Rank1 = true;
+            }
             if (Rank == 2)
+            {
                 Layer.FontColor = Color.FromArgb(255, 145, 145, 145);
+                User.Banner.Badges.Rank2 = true;
+            }
             if (Rank == 3)
+            {
                 Layer.FontColor = Color.FromArgb(255, 164, 102, 40);
+                User.Banner.Badges.Rank3 = true;
+            }
+            PersistentData.SaveChangesToJson();
         }
 
         private static ImageLayer AvatarMask()
@@ -375,6 +393,49 @@ namespace HeartFlame.ChatLevels
             };
             Output.Position = new Point(Output.Position.Value.X, MessagesLocation.Y - TextManagement.GetSize(Output).Height);
             return Output;
+
+        }
+
+        private static async Task<List<Image>> GetBadges(GuildUser User)
+        {
+            var output = new List<Image>();
+
+            if (User.Banner.Badges.Global.Patreon)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+            if (User.Banner.Badges.Global.BetaTester)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+            if (User.Banner.Badges.Global.Rank1)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+
+            if (User.Banner.Badges.Rank1)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+            if (User.Banner.Badges.Rank2)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+            if (User.Banner.Badges.Rank3)
+                output.Add(await GetBannerAsync("goldenglobe24"));
+
+            return output;
+        }
+
+        private static void AddBadges(GuildUser User, ImageFactory imf)
+        {
+            var Badges = GetBadges(User).Result;
+            if (Badges.Count == 0) return;
+
+            for (var x = Badges.Count; x > 0; x--)
+            {
+                int BadgesOffset = x * Badges[0].Size.Width;
+                int BufferOffset = x * BadgesBuffer.Width;
+                int XCoord = BadgesLocation.X - BadgesOffset - BufferOffset;
+                int YCoord = BadgesLocation.Y - Badges[0].Size.Height;
+
+                var BadgeLayer = new ImageLayer
+                {
+                    Position = new Point(XCoord, YCoord),
+                    Image = Badges[x - 1]
+                };
+                imf.Overlay(BadgeLayer);
+            }
 
         }
     }
