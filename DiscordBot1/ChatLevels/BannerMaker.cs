@@ -421,7 +421,7 @@ namespace HeartFlame.ChatLevels
         {
             var Badges = GetBadges(User).Result;
             if (Badges.Count == 0) return;
-
+            Badges.Reverse();
             for (var x = Badges.Count; x > 0; x--)
             {
                 int BadgesOffset = x * Badges[0].Size.Width;
