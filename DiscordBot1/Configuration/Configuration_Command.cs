@@ -48,7 +48,7 @@ namespace HeartFlame.Configuration
             await Context.Channel.SendMessageAsync($"The bot's log channels has been set to {chnl}.");
 
             BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"The bot's log channel has been changed to {chnl}",
                         Context);
         }
@@ -64,7 +64,7 @@ namespace HeartFlame.Configuration
             
             if (Guild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"`{prefix}` has been added as a prefix for this server by {Guild.GetUser(Context.User).Name}.",
                         Context);
         }
@@ -87,7 +87,7 @@ namespace HeartFlame.Configuration
 
             if (Guild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"`{prefix}` has been removed as a prefix for this server by {Guild.GetUser(Context.User).Name}.",
                         Context);
         }
@@ -115,7 +115,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"The bot's chat level channel has been changed to {chnl}",
                         Context);
         }
@@ -132,7 +132,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                 $"The join role has been set to {Role.Mention}",
                         Context);
 
@@ -158,7 +158,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                 $"The {Module} module has been turned {Status} by {BotGuild.GetUser(Context.User).Name}",
                         Context);
 
@@ -189,7 +189,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{msg}",
                         Context);
         }
@@ -200,7 +200,6 @@ namespace HeartFlame.Configuration
             var Module = Commands.Find(x => x.Remarks == Remarks).Module;
             var ModCommands = Module.Commands.ToList();
             var Children = Module.Submodules.ToList();
-            
             string intermediate = PersistentData.Data.Config.CommandPrefix;
             foreach (var Name in GetParents(Module))
                 intermediate += $" {Name}";

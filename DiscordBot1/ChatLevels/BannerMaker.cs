@@ -57,7 +57,7 @@ namespace HeartFlame.ChatLevels
             imf.Overlay(GetExpBar(User, true));//Exp Bar actual Exp
             imf.Watermark(GetExp(User));//current exp / xp to next level
             imf.Watermark(GetMessages(User));//User's message count
-            AddBadges(User, imf);
+            AddBadges(User, ref imf);
             Image output = imf.Image;
             return output;
 
@@ -151,7 +151,10 @@ namespace HeartFlame.ChatLevels
             int userLevel = User.Chat.ChatLevel;
             if (userLevel == 0)
                 userLevel++;
-            float exp = User.Chat.ChatExp - LevelManagement.GetExpAtLevel(userLevel - 1);
+
+            float exp = 0;
+            if (User.Chat.ChatExp > 0)
+                exp = User.Chat.ChatExp - LevelManagement.GetExpAtLevel(userLevel - 1);
             float nextLv = LevelManagement.GetExpAtLevel(userLevel) - LevelManagement.GetExpAtLevel(userLevel - 1);
             exp /= nextLv;
             exp *= maxW;
@@ -224,6 +227,7 @@ namespace HeartFlame.ChatLevels
         {
             var Guild = GuildManager.GetGuild(User);
             var GUser = Guild.GetUser(User);
+            Guild.Users.Sort();
             var Rank = Guild.Users.IndexOf(GUser) + 1;
             if (Reporting.ReportingManager.HighestChat().User.Equals(GUser))
                 Rank = 0;
@@ -417,7 +421,7 @@ namespace HeartFlame.ChatLevels
             return output;
         }
 
-        private static void AddBadges(GuildUser User, ImageFactory imf)
+        private static void AddBadges(GuildUser User, ref ImageFactory imf)
         {
             var Badges = GetBadges(User).Result;
             if (Badges.Count == 0) return;

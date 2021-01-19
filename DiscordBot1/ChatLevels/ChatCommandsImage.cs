@@ -44,7 +44,7 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{GUser.Name}'s banner has been set to {BannerName}.",
                         Context);
             }
@@ -67,7 +67,7 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{GUser.Name}'s profile has been set to {name}.",
                         Context);
             }
@@ -91,7 +91,7 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{GUser.Name}'s text background has been turned {msg}.",
                         Context);
             }
@@ -116,12 +116,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{GUser.Name}'s text background has been turned {msg}.",
                         Context);
             }
 
-            [Command("Greyscale"), Alias("grey"), Summary("Set the user's text background greyscale value. Input: int \"Greyscale value 0-255[Default = 227]\""), Priority(1)]
+            [Command("Greyscale"), Alias("grey"), Summary("Set the user's text background greyscale value."), Priority(1)]
             public async Task grayscaleSet(int Greyscale = 227)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild);
@@ -137,13 +137,13 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the user's text background greyscale value.",
                         $"{GUser.Name}'s greyscale value has been set to {Greyscale}.",
                         Context);
             }
 
 
-            [Command("Greyscale"), Alias("grey"), Summary("Set the mentioned user's text background greyscale value. Input: int \"Greyscale value 0-255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("Greyscale"), Alias("grey"), Summary("Set the mentioned user's text background greyscale value."), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task grayscaleSet(int Greyscale, SocketGuildUser User)
             {
@@ -159,8 +159,29 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the mentioned user's text background greyscale value.",
                         $"{GUser.Name}'s greyscale value has been set to {Greyscale}.",
+                        Context);
+            }
+
+            [Command("Greyscale"), Alias("grey"), Summary("Set the mentioned user's text background greyscale value to 227."), Priority(1)]
+            [RequirePermission(Roles.MOD)]
+            public async Task grayscaleSet(SocketGuildUser User)
+            {
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+                var GUser = BotGuild.GetUser(User);
+
+                GUser.Banner.Greyscale = 227;
+                PersistentData.SaveChangesToJson();
+
+                var img = await BannerMaker.BuildBannerAsync(User);
+
+                await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
+
+                if (BotGuild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                        "Set the mentioned user's text background greyscale value.",
+                        $"{GUser.Name}'s greyscale value has been set to 227.",
                         Context);
             }
         }

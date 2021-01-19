@@ -18,7 +18,7 @@ namespace HeartFlame
         public static DiscordSocketClient Client;
         public static CommandService Commands;
         private IServiceProvider Service;
-        internal static readonly bool BetaActive;
+        internal static readonly bool BetaActive = true;
 
         private string Token = "";
         private string Game = "";

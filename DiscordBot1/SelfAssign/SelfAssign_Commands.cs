@@ -69,7 +69,7 @@ namespace HeartFlame.SelfAssign
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                     $"A Console Self Assign prefab was generated in {Context.Channel.Name}",
                         Context);
             }
@@ -115,7 +115,7 @@ namespace HeartFlame.SelfAssign
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                     $"A TimeZone Self Assign prefab was generated in {Context.Channel.Name}",
                         Context);
             }

@@ -43,7 +43,7 @@ namespace HeartFlame.Compendium
 
         }
 
-        [Command("Get"), Summary("Get the username for the mentioned user. Input: string \"Xbox, Playstation, Activision etc\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        [Command("Get"), Summary("Get the username for the mentioned user."), Priority(1)]
         public async Task UsernameGet(string Platform, SocketGuildUser User)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -58,7 +58,7 @@ namespace HeartFlame.Compendium
             await ReplyAsync($"{GUser.Name}'s {Platform} username is: {Name}");
         }
 
-        [Command("Set"), Summary("Set the username for the user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\""), Priority(1)]
+        [Command("Set"), Summary("Set the username for the user."), Priority(1)]
         public async Task UsernameSet(string Platform, string Username)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -74,12 +74,12 @@ namespace HeartFlame.Compendium
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the username for the user.",
                     $"{GSender.Name}'s {Platform} username has been set to {Username}.",
                     Context);
         }
 
-        [Command("Set"), Summary("Set the username for the mentioned user. Input: string \"Xbox, Playstation, Activision etc\" string \"username\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+        [Command("Set"), Summary("Set the username for the mentioned user."), Priority(1)]
         [RequirePermission(Roles.MOD)]
         public async Task UsernameSet(string Platform, string Username, SocketGuildUser User)
         {
@@ -97,7 +97,7 @@ namespace HeartFlame.Compendium
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the username for the mentioned user.",
                     $"{GUser.Name}'s {Platform} username has been set to {Username}.",
                     Context);
         }

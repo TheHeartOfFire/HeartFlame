@@ -5,6 +5,8 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HeartFlame.Misc;
+using Discord;
 
 namespace HeartFlame.Moderation
 {
@@ -97,6 +99,36 @@ namespace HeartFlame.Moderation
                 var role = User.Guild.GetRole(Guild.Moderation.JoinRole);
                 await User.AddRoleAsync(role);
             }
+        }
+
+        public static void GivePoints(GuildUser User, int Points)
+        {
+            User.Chat.ChatExp += Points;
+            PersistentData.SaveChangesToJson();
+        }
+
+        public static void KickUser(SocketGuildUser User, string Reason)
+        {
+            if (Reason.Equals(string.Empty))
+                User.KickAsync();
+            else
+                User.KickAsync(Reason);
+
+        }
+
+        public static void BanUser(SocketGuildUser User, int PruningDays, string Reason)
+        {
+            if (Reason.Equals(string.Empty) && PruningDays == 0)
+                User.Guild.AddBanAsync(User);
+            else if (Reason.Equals(string.Empty))
+                User.Guild.AddBanAsync(User, PruningDays);
+            else
+                User.Guild.AddBanAsync(User, PruningDays, Reason);
+        }
+
+        public static void UnBanUser(SocketGuild Guild, ulong UserID)
+        {
+            Guild.RemoveBanAsync(UserID);
         }
     }
 }

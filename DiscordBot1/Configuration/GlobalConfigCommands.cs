@@ -36,7 +36,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"Bot commands must now begin with \"{Prefix} \"",
                         Context);
         }
@@ -52,7 +52,7 @@ namespace HeartFlame.Configuration
 
             if (BotGuild.ModuleControl.IncludeLogging)
                 BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"The bot is now playing {Game}",
                         Context);
         }

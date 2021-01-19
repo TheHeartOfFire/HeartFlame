@@ -13,14 +13,12 @@ namespace HeartFlame.Misc
     public class TestCommands : ModuleBase<SocketCommandContext>
     {
         [Command]
-        public async Task Test()
+        public async Task Test(SocketGuildUser User)
         {
-            foreach(var User in GuildManager.GetAllUsers())
-            {
-                GuildManager.SetBetaTester(User);
-            }
+            GuildManager.GetUser(User).Banner.Badges.Rank1 = false;
+            PersistentData.SaveChangesToJson();
 
-            await ReplyAsync("Your Patreon status is: " + GuildManager.GetUser(Context.User).Banner.Badges.Global.BetaTester.ToString());
+            await ReplyAsync($"User's Rank1 badge has been removed.");
         }
 
 

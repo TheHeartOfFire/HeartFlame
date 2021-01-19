@@ -43,7 +43,7 @@ namespace HeartFlame.Permissions
                     await ReplyAsync($"{User.Username} is now a mod for the bot!");
                     if (BotGuild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                         $"{User.Username} is now a mod.",
                         Context);
                 }
@@ -59,7 +59,7 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                             $"{User.Username} is no longer a mod.",
                         Context);
                 }
@@ -86,7 +86,7 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                             $"{User.Username} is now an admin.",
                         Context);
                 }
@@ -102,7 +102,7 @@ namespace HeartFlame.Permissions
 
                     if (BotGuild.ModuleControl.IncludeLogging)
                             BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
                             $"{User.Username} is no longer an admin.",
                         Context);
                 }

@@ -75,29 +75,32 @@ namespace HeartFlame.GuildControl
 
         public GuildUser GetUser(SocketGuildUser User)
         {
-            if (User is null) return null;
-            foreach(var GUser in Users)
-            {
-                if(GUser.DiscordID == User.Id)
-                {
-                    return GUser;
-                }
-            }
-            return null;
+            return GetUser(User.Id);
         }
 
         public GuildUser GetUser(SocketUser User)
         {
+            return GetUser(User.Id);
+        }
+
+        public GuildUser GetUser(IUser User)
+        {
+            return GetUser(User.Id);
+        }
+
+        public GuildUser GetUser(ulong UserID)
+        {
 
             foreach (var GUser in Users)
             {
-                if (GUser.DiscordID == User.Id)
+                if (GUser.DiscordID == UserID)
                 {
                     return GUser;
                 }
             }
             return null;
         }
+
         public IMessageChannel GetChatChannel(SocketCommandContext Context)
         {
             return GetChatChannel(Context.Channel);

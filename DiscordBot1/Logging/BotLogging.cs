@@ -5,43 +5,45 @@ using HeartFlame.GuildControl;
 using System.Reflection;
 using System.Linq;
 using HeartFlame.Misc;
+using System.Runtime.CompilerServices;
+using System;
 
 namespace HeartFlame.Logging
 {
     public class BotLogging
     {
-        public static void PrintLogMessage(MethodBase Method, string Message, ulong GuildID, SocketGuildUser User)
+        public static void PrintLogMessage(Type Class, string Message, ulong GuildID, SocketGuildUser User, [CallerMemberName] string MethodName = "")
         {
-            PrintLogMessage(Method, Message, GuildID, (SocketUser)User);
+            PrintLogMessage(Class, Message, GuildID, (SocketUser)User, MethodName);
         }
 
-        public static void PrintLogMessage(MethodBase Method, string Message, SocketCommandContext Context)
+        public static void PrintLogMessage(Type Class, string Message, SocketCommandContext Context, [CallerMemberName] string MethodName = "")
         {
-            PrintLogMessage(Method, Message, Context.Guild.Id, Context.User);
+            PrintLogMessage(Class, Message, Context.Guild.Id, Context.User, MethodName);
         }
 
-        public static void PrintLogMessage(MethodBase Method, string Message, ulong GuildID, SocketUser User)
+        public static void PrintLogMessage(Type Class, string Message, ulong GuildID, SocketUser User, [CallerMemberName]string MethodName = "")
         {
-            var Source = GetMethodInfo(Method);
-            var Attributes = Method.GetCustomAttributesData();
+            var Attributes = Class.GetMethod(MethodName).GetCustomAttributesData();
+
             var Attribute = Attributes.First(x => x.AttributeType == typeof(SummaryAttribute));
-            var Action = Attribute.ConstructorArguments[0].Value.ToString();
+            var Action = Attribute.ToString();
 
-            PrintLogMessage(Source, Action, Message, GuildID, GuildManager.GetGuild(User).GetUser(User));
+            PrintLogMessage(MethodName, Action, Message, GuildID, GuildManager.GetUser(User));
         }
 
-        public static void PrintLogMessage(string Source, string Action, string Message, ulong GuildID, SocketUser User)
+        public static void PrintLogMessage(string Action, string Message, ulong GuildID, SocketUser User, [CallerMemberName] string MethodName = "")
         {
-            PrintLogMessage(Source, Action, Message, GuildID, GuildManager.GetGuild(User).GetUser(User));
+            PrintLogMessage(MethodName, Action, Message, GuildID, GuildManager.GetUser(User));
         }
-        public static void PrintLogMessage(string Source, string Action, string Message, ulong GuildID, SocketGuildUser User)
+        public static void PrintLogMessage(string Action, string Message, ulong GuildID, SocketGuildUser User, [CallerMemberName] string MethodName = "")
         {
-            PrintLogMessage(Source, Action, Message, GuildID, GuildManager.GetGuild(User).GetUser(User));
+            PrintLogMessage(MethodName, Action, Message, GuildID, GuildManager.GetUser(User));
         }
 
-        public static void PrintLogMessage(string Source, string Action, string Message, SocketCommandContext Context)
+        public static void PrintLogMessage(string Action, string Message, SocketCommandContext Context, [CallerMemberName] string MethodName = "")
         {
-            PrintLogMessage(Source, Action, Message, Context.Guild.Id, Context.User);
+            PrintLogMessage(MethodName, Action, Message, Context.Guild.Id, GuildManager.GetUser(Context.User));
         }
 
         public static async void PrintLogMessage(string Source, string Action, string Message, ulong GuildID, GuildUser User = null)

@@ -30,7 +30,7 @@ namespace HeartFlame.ChatLevels
                 }
             }
 
-            [Command("hex"), Alias("h"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:String \"Color Hex Code i.e. FF00FF\""), Priority(1)]
+            [Command("hex"), Alias("h"), Summary("Set the user's chat text color."), Priority(1)]
             public async Task SetColor(string hex)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -55,12 +55,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the user's chat text color.",
                         $"{GUser.Name}'s chat color has been set to {hex}.",
                         Context);
             }
 
-            [Command("hex"), Alias("h"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:String \"Color Hex Code i.e. FF00FF\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("hex"), Alias("h"), Summary("Set the mentioned user's chat text color."), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task SetColor(string hex, SocketGuildUser User)
             {
@@ -85,12 +85,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the mentioned user's chat text color.",
                         $"{GUser.Name}'s chat color has been set to {hex}.",
                         Context);
             }
 
-            [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" "), Priority(1)]
+            [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color."), Priority(1)]
             public async Task SetColorByARGB(uint R, uint G, uint B)
             {
                 var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
@@ -113,12 +113,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the user's chat text color.",
                         $"{GUser.Name}'s chat color has been set to {R} {G} {B}.",
                         Context);
             }
 
-            [Command("argb"), Alias("rgb"), Summary("Set the user's chat text color. Optionally mention a user to set their Chat Color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("argb"), Alias("rgb"), Summary("Set the mentioned user's chat text color."), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task SetColorByARGB(uint R, uint G, uint B, SocketGuildUser User = null)
             {
@@ -143,12 +143,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the mentioned user's chat text color.",
                         $"{DisUser.Username}'s chat color has been set to {R} {G} {B}.",
                         Context);
             }
 
-            [Command("name"), Summary("Set the user's chat text color. Input:  String \"Color RGB Code i.e. 255 0 255\""), Priority(1)]
+            [Command("name"), Summary("Set the user's chat text color."), Priority(1)]
             public async Task SetColorByName(string name)
             {
 
@@ -177,13 +177,12 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the user's chat text color.",
                         $"{GUser.Name}'s chat color has been set to {name}.",
-                        Context.Guild.Id,
-                        (SocketGuildUser)Context.User);
+                        Context);
             }
 
-            [Command("name"), Summary("Set the mentioned user's chat text color. Input:  String \"Color RGB Code i.e. 255 0 255\" SocketGuildUser \"Mentioned Discord User\""), Priority(1)]
+            [Command("name"), Summary("Set the mentioned user's chat text color."), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task SetColorByName(string name, SocketGuildUser User)
             {
@@ -213,7 +212,7 @@ namespace HeartFlame.ChatLevels
 
                 if (BotGuild.ModuleControl.IncludeLogging)
                     BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod(),
+                        "Set the mentioned user's chat text color.",
                         $"{GUser.Name}'s chat color has been set to {name}.",
                         Context);
             }
