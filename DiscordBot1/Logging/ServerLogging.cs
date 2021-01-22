@@ -27,6 +27,11 @@ namespace HeartFlame.Logging
             await Channel.SendMessageAsync("", false, GetEmbed(User, false));
         }
 
+        public static async void AuditLog(GuildData Guild, string Event, string Message)
+        {
+            await GetServerLoggingChannel(Guild).SendMessageAsync("", false, GetEmbed(Event, Message));
+        }
+
         public static ISocketMessageChannel GetJoinChannel(GuildData Guild)
         {
             var Client = Program.Client;
@@ -70,6 +75,18 @@ namespace HeartFlame.Logging
 
 
             Embed.AddField(DateTime.UtcNow.ToString(), $"{GUser.Name} has {Type} the server.");
+            return Embed.Build();
+        }
+
+        public static Embed GetEmbed(string Event, string Message)
+        {
+            var Embed = new EmbedBuilder
+            {
+                Color = Color.Orange
+            };
+
+
+            Embed.AddField(DateTime.UtcNow.ToString(), $"{Event}: {Message}");
             return Embed.Build();
         }
     }

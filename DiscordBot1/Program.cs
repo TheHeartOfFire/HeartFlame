@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
+using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
 using HeartFlame.ModuleControl;
@@ -64,11 +65,111 @@ namespace HeartFlame
             Client.UserLeft += Client_UserLeft;
             Client.GuildMemberUpdated += Client_GuildMemberUpdated;
             Client.Disconnected += Client_Disconnected;
+
+            Client.GuildUpdated += Client_GuildUpdated;
+            Client.ChannelCreated += Client_ChannelCreated;
+            Client.ChannelUpdated += Client_ChannelUpdated;
+            Client.ChannelDestroyed += Client_ChannelDestroyed;
+            Client.UserBanned += Client_UserBanned;
+            Client.UserUnbanned += Client_UserUnbanned;
+            Client.RoleCreated += Client_RoleCreated;
+            Client.RoleDeleted += Client_RoleDeleted;
+            Client.RoleUpdated += Client_RoleUpdated;
+            Client.InviteCreated += Client_InviteCreated;
+            Client.InviteDeleted += Client_InviteDeleted;
+            Client.MessageDeleted += Client_MessageDeleted;
+            Client.MessagesBulkDeleted += Client_MessagesBulkDeleted;
+
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
             ModuleManager.InitializeModules();
 
             await Task.Delay(-1);
+        }
+
+        private Task Client_MessagesBulkDeleted(System.Collections.Generic.IReadOnlyCollection<Cacheable<IMessage, ulong>> arg1, ISocketMessageChannel arg2)
+        {
+            var Channel = ((SocketGuildChannel)arg2);
+
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Message Bulk Delete", $"{arg1.Count} messages were deleted from {Channel.Name}");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_MessageDeleted(Cacheable<IMessage, ulong> arg1, ISocketMessageChannel arg2)
+        {
+            var Channel = ((SocketGuildChannel)arg2);
+
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Message Delete", $"A message was deleted from {Channel.Name}");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_InviteDeleted(SocketGuildChannel arg1, string arg2)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Invite Delete", $"An invite with code {arg2} was deleted for channel {arg1.Name}");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_InviteCreated(SocketInvite arg)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg.Guild), "Invite Create", $"An invite with code {arg.Code} was created for channel {arg.Channel.Name} by {GuildManager.GetUser(arg.Inviter).Name}");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_RoleUpdated(SocketRole arg1, SocketRole arg2)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Role Update", $"The {arg2.Name} role has been updated");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_RoleDeleted(SocketRole arg)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg.Guild), "Role Delete", $"The {arg.Name} role was deleted");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_RoleCreated(SocketRole arg)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg.Guild), "Role Create", $"The {arg.Name} role was created");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_UserUnbanned(SocketUser arg1, SocketGuild arg2)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "User Unban", $"{arg1.Username} was unbanned");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_UserBanned(SocketUser arg1, SocketGuild arg2)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "User Ban", $"{arg1.Username} was banned");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_ChannelDestroyed(SocketChannel arg)
+        {
+            var Channel = (SocketGuildChannel)arg;
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Channel Delete", $"{Channel.Name} was deleted");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_ChannelUpdated(SocketChannel arg1, SocketChannel arg2)
+        {
+            var Channel = (SocketGuildChannel)arg2;
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Channel Update", $"{Channel.Name} was updated");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_ChannelCreated(SocketChannel arg)
+        {
+            var Channel = (SocketGuildChannel)arg;
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Channel Create", $"{Channel.Name} was created");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildUpdated(SocketGuild arg1, SocketGuild arg2)
+        {
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "Guild Update", $"{arg2.Name} was updated");
+            return Task.CompletedTask;
         }
 
         private Task Client_Disconnected(Exception arg)
@@ -93,6 +194,9 @@ namespace HeartFlame
             {
                 ErrorHandling.GlobalErrorLogging(e.Message, $"Guild Memeber Updated\nUser Value 1: {arg1.Username} | User Value 2: {arg2.Username}");
             }
+
+            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "User Update", $"{GuildManager.GetUser(arg2).Name} was updated");
+
             await Task.CompletedTask;
 
         }
@@ -111,13 +215,13 @@ namespace HeartFlame
 
         private async Task Client_LeftGuild(SocketGuild arg)
         {
-            GuildManager.RemoveGuild(arg.Id);
+            ModuleManager.OnBotLeaveGuild(arg);
             await Task.CompletedTask;
         }
 
         private async Task Client_JoinedGuild(SocketGuild arg)
         {
-            GuildManager.AddGuild(arg);
+            ModuleManager.OnBotJoinGuild(arg);
             await Task.CompletedTask;
         }
 

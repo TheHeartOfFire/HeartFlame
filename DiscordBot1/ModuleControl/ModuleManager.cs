@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using HeartFlame.ChannelDirector;
 using HeartFlame.ChatLevels;
 using HeartFlame.GuildControl;
 using HeartFlame.Logging;
@@ -78,6 +79,18 @@ namespace HeartFlame.ModuleControl
 
             if (Guild.ModuleControl.IncludeServerLogging)
                 ServerLogging.UserLeft(User);
+        }
+
+        public static void OnBotJoinGuild(SocketGuild Guild)
+        {
+            GuildManager.AddGuild(Guild);
+            Guild.DefaultChannel.SendMessageAsync("", false, ChannelCreation.RequiredChannelsEmbed(Guild, $"`{PersistentData.Data.Config.CommandPrefix}Requirements Create`"));
+        }
+
+        public static void OnBotLeaveGuild(SocketGuild Guild)
+        {
+            GuildManager.RemoveGuild(Guild.Id);
+
         }
 
         public static void OnMessageDeleted(Cacheable<IMessage, ulong> CachedMessage, ISocketMessageChannel Channel)

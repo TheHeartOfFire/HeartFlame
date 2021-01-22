@@ -8,6 +8,7 @@ namespace HeartFlame.Moderation
     {
         public string JoinCommand { get; set; }
         public ulong JoinRole { get; set; }
+        public bool UseJoinCommand { get; set; }
         public ModerationData()
         {
             JoinCommand = "Join";

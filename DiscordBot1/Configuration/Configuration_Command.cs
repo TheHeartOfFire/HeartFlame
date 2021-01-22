@@ -194,6 +194,8 @@ namespace HeartFlame.Configuration
                         Context);
         }
 
+        //TODO: Use Join Role
+
         public static List<Embed> HelpEmbed(string CommandName, string Remarks, int level)
         {
             var Commands = Program.Commands.Commands.ToList();

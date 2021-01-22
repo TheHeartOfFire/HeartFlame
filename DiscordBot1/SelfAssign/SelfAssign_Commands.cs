@@ -51,7 +51,7 @@ namespace HeartFlame.SelfAssign
                 {
                     foreach (var chnl in Context.Guild.Channels)
                     {
-                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(BotGuild.SelfAssign.Consoles.MsgID) != null)
+                        if (CorrectChannel(chnl, BotGuild.SelfAssign.Consoles.MsgID))
                             await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID);
                     }
                 }
@@ -97,7 +97,7 @@ namespace HeartFlame.SelfAssign
                 {
                     foreach (var chnl in Context.Guild.Channels)
                     {
-                        if (chnl is IMessageChannel && await ((IMessageChannel)chnl).GetMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID) != null)
+                        if (CorrectChannel(chnl, BotGuild.SelfAssign.TimeZones.MsgID))
                             await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID);
                     }
                 }
@@ -119,6 +119,11 @@ namespace HeartFlame.SelfAssign
                     $"A TimeZone Self Assign prefab was generated in {Context.Channel.Name}",
                         Context);
             }
+        }
+
+        public static bool CorrectChannel(SocketGuildChannel Channel, ulong MessageID)
+        {
+            return Channel is IMessageChannel && ((IMessageChannel)Channel).GetMessageAsync(MessageID) != null;
         }
     }
 }

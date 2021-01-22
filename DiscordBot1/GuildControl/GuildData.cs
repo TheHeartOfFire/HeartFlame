@@ -18,7 +18,7 @@ namespace HeartFlame.GuildControl
         public string Name { get; set; }
         public ModerationData Moderation { get; set; }
         public ModuleData ModuleControl { get; set; }
-        public AllRoles SelfAssign { get; set; }
+        public SelfAssignData SelfAssign { get; set; }
         public GuildConfigurationData Configuration { get; set; }
         public List<GuildUser> Users { get; set; }
 
@@ -31,7 +31,7 @@ namespace HeartFlame.GuildControl
             GuildID = guild.Id;
             Moderation = new ModerationData();
             ModuleControl = new ModuleData();
-            SelfAssign = new AllRoles();
+            SelfAssign = new SelfAssignData();
             Configuration = new GuildConfigurationData();
             Users = new List<GuildUser>();
             AddUsers(guild.Users);

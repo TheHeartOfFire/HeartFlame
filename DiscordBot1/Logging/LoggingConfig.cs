@@ -12,6 +12,7 @@ namespace HeartFlame.Logging
         [DefaultValue(true)]
         public bool LogLeaves { get; set; }
         public bool SplitJoinLeave { get; set; }
+        public bool SplitServerBotLogging { get; set; }
         public ulong JoinChannel { get; set; }
         public ulong LeaveChannel { get; set; }
         public ulong ServerLoggingChannel { get; set; }
