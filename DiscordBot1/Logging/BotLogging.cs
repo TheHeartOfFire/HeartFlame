@@ -65,6 +65,7 @@ namespace HeartFlame.Logging
 
                     var ID = Guild.Configuration.LogChannel;
 
+                    if(ID > 0)
                     await (Program.Client.GetChannel(ID) as ISocketMessageChannel).SendMessageAsync("", false, Embed.Build());
                     
                 }

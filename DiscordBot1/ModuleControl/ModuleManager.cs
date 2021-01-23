@@ -164,5 +164,17 @@ namespace HeartFlame.ModuleControl
             PersistentData.SaveChangesToJson();
             return true;
         }
+
+        public static void UpdateAllModules(GuildData Guild, bool Active)
+        {
+            SetModule(Guild, Modules.CHAT, Active);
+            SetModule(Guild, Modules.COMPENDIUM, Active);
+            SetModule(Guild, Modules.LOGGING, Active);
+            SetModule(Guild, Modules.MODERATION, Active);
+            SetModule(Guild, Modules.PERMISSIONS, Active);
+            SetModule(Guild, Modules.SELFASSIGN, Active);
+            SetModule(Guild, Modules.SERVERLOGGING, Active);
+            PersistentData.SaveChangesToJson();
+        }
     }
 }

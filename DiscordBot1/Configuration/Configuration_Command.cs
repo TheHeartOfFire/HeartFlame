@@ -60,6 +60,14 @@ namespace HeartFlame.Configuration
             var Guild = GuildManager.GetGuild(Context.Guild);
             Guild.Configuration.Prefixes.Add(prefix);
             PersistentData.SaveChangesToJson();
+
+            if (prefix.Equals(""))
+            {
+                await ReplyAsync($"`{prefix}` has been added as a prefix for this server.");
+
+
+            }
+
             await ReplyAsync($"`{prefix}` has been added as a prefix for this server."); 
             
             if (Guild.ModuleControl.IncludeLogging)
@@ -75,7 +83,7 @@ namespace HeartFlame.Configuration
         {
             var Guild = GuildManager.GetGuild(Context.Guild);
 
-            if(Guild.Configuration.Prefixes.Contains(prefix))
+            if(!Guild.Configuration.Prefixes.Contains(prefix))
             {
                 await ReplyAsync($"`{prefix}` is not currently a prefix for this server.");
                 return;
@@ -138,13 +146,59 @@ namespace HeartFlame.Configuration
 
         }
 
-        [Command("Module"), Summary("Sets the role awarded to user when they join the server."), Priority(1)]
+        [Command("Split Join Leave"), Alias("Splitjoinleave", "split join", "split leave", "splitjoin", "splitleave", "sjl"), Summary("Toggles ig join/leave announcements are in a different channel to other logs"), Priority(1)]
+        [RequirePermission(Roles.OWNER), RequireModule(Modules.SERVERLOGGING)]
+        public async Task ToggleJoinLeaveSplit(bool Active = true)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild);
+            BotGuild.Configuration.Logging.SplitJoinLeave = Active;
+            PersistentData.SaveChangesToJson();
+
+            string Status = "no longer";
+            if (Active)
+                Status = "now";
+
+
+            await ReplyAsync($"The bot will {Status} log when users join or leave the server separately from other server logs.");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The bot will {Status} log when users join or leave the server separately from other server logs.",
+                        Context);
+
+        }
+
+        [Command("Split Server Bot"), Alias("Splitserverbot", "split server", "split bot", "splitserver", "splitbot", "ssb"), Summary("Toggles whether bot logs and server logs are in separate channels."), Priority(1)]
+        [RequirePermission(Roles.OWNER), RequireModule(Modules.SERVERLOGGING)]
+        public async Task ToggleBotServerSplit(bool Active = true)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild);
+            BotGuild.Configuration.Logging.SplitServerBotLogging = Active;
+            PersistentData.SaveChangesToJson();
+
+            string Status = "no longer";
+            if (Active)
+                Status = "now";
+
+
+            await ReplyAsync($"The bot will {Status} log server items separate from bot items.");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The bot will {Status} log server items separate from bot items.",
+                        Context);
+
+        }
+
+        [Command("Module"), Summary("Turns a module on or off."), Priority(1)]
         [RequirePermission(Roles.OWNER)]
         public async Task ToggleModule(string Module, bool Active = true)
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild);
             
-            if(!ModuleManager.UpdateModules(BotGuild, Module, Active))
+            if(!ModuleManager.UpdateModules(BotGuild, Module, Active) && !Module.Equals("all" , StringComparison.OrdinalIgnoreCase))
             {
                 await ReplyAsync(Properties.Resources.BadModule);
                 return;
@@ -153,6 +207,20 @@ namespace HeartFlame.Configuration
             string Status = "off";
             if (Active)
                 Status = "on";
+
+            if(Module.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                ModuleManager.UpdateAllModules(BotGuild, Active);
+                await ReplyAsync($"All modules have been turned {Status}"); 
+                
+                if (BotGuild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                    $"All modules have been turned {Status} by {BotGuild.GetUser(Context.User).Name}",
+                            Context);
+                return;
+            }
+
 
             await ReplyAsync($"The {Module} module has been turned {Status}");
 
@@ -194,7 +262,7 @@ namespace HeartFlame.Configuration
                         Context);
         }
 
-        //TODO: Use Join Role
+        //TODO: "Use Join Role" command
 
         public static List<Embed> HelpEmbed(string CommandName, string Remarks, int level)
         {

@@ -19,11 +19,11 @@ namespace HeartFlame
         public static DiscordSocketClient Client;
         public static CommandService Commands;
         private IServiceProvider Service;
-        internal static readonly bool BetaActive = true;
 
         private string Token = "";
         private string Game = "";
         private string Prefix = "";
+        public static readonly bool BetaActive = true;
 
         private static void Main(string[] args)
          => new Program().MainAsync().GetAwaiter().GetResult();
@@ -117,7 +117,7 @@ namespace HeartFlame
 
         private Task Client_RoleUpdated(SocketRole arg1, SocketRole arg2)
         {
-            ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Role Update", $"The {arg2.Name} role has been updated");
+            //ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Role Update", $"The {arg2.Name} role has been updated");
             return Task.CompletedTask;
         }
 
@@ -249,7 +249,7 @@ namespace HeartFlame
         private async Task Client_Ready()
         {
             string game = Game;
-            await Client.SetGameAsync(game).ConfigureAwait(false);//what game is the bot "playing"
+            await Client.SetGameAsync(game, null, ActivityType.Watching).ConfigureAwait(false);//what game is the bot "playing"
         }
 
         private async Task Client_MessageReceived(SocketMessage arg)
@@ -297,5 +297,10 @@ namespace HeartFlame
             GuildManager.UpdateGuildName(Context.Guild);
             ModuleManager.MessageTunnel(arg);
         }
+        //TODOH: Adjust Role Hierarchy if Error 403 when modifying Role
+        //TODOL: Announcements
+        //TODOL: Time
+        //TODOL: Voting / Poll
+        //TODOL: Dice
     }
 }

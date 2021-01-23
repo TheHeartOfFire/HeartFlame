@@ -51,14 +51,15 @@ namespace HeartFlame.ChatLevels
             GetOverlay(ref imf, User);//semitransparent content area
             imf.Overlay(AvatarMask());//semitransparent avatar backing
             imf.Overlay(await GetAvatarAsync(user));//Masked avatar image
-            RankAndLevel(user, ref imf);//Rank and level
             imf.Watermark(GetName(User));//User's Name
             imf.Overlay(GetExpBar(User, false));//Exp bar Background
             imf.Overlay(GetExpBar(User, true));//Exp Bar actual Exp
             imf.Watermark(GetExp(User));//current exp / xp to next level
+            RankAndLevel(user, ref imf);//Rank and level
             imf.Watermark(GetMessages(User));//User's message count
             AddBadges(User, ref imf);
             Image output = imf.Image;
+            PersistentData.SaveChangesToJson();
             return output;
 
         }
@@ -91,9 +92,13 @@ namespace HeartFlame.ChatLevels
 
         private static TextLayer GetName(GuildUser User)
         {
+            string Name = User.Name;
+            if (Name.Length > 10)
+                Name = Name.Substring(0, 10);
+
             return new TextLayer()
             {
-                Text = User.Name,
+                Text = Name,
                 FontColor = User.Banner.GetColor(),
                 FontFamily = new FontFamily("Arial"),
                 Position = new Point(AvatarLocation.X + AvatarSize.Width + 10, TotalSize.Height / 2 - TextManagement.SmallNormalCharacter.Height - 5),
@@ -150,11 +155,15 @@ namespace HeartFlame.ChatLevels
             float maxW = ExpBarSize.Width;
             int userLevel = User.Chat.ChatLevel;
             if (userLevel == 0)
+            {
                 userLevel++;
+                User.Chat.ChatLevel++;
+            }
 
             float exp = 0;
             if (User.Chat.ChatExp > 0)
                 exp = User.Chat.ChatExp - LevelManagement.GetExpAtLevel(userLevel - 1);
+
             float nextLv = LevelManagement.GetExpAtLevel(userLevel) - LevelManagement.GetExpAtLevel(userLevel - 1);
             exp /= nextLv;
             exp *= maxW;
@@ -295,7 +304,6 @@ namespace HeartFlame.ChatLevels
                 Layer.FontColor = Color.FromArgb(255, 164, 102, 40);
                 User.Banner.Badges.Rank3 = true;
             }
-            PersistentData.SaveChangesToJson();
         }
 
         private static ImageLayer AvatarMask()
@@ -341,7 +349,8 @@ namespace HeartFlame.ChatLevels
             var width = ExpBarSize.Width;
             if (fore)
                 width = GetExpLength(User);
-
+            if (width == 0)
+                width++;
 
             var Bit = new Bitmap(width, ExpBarSize.Height, PixelFormat.Format32bppArgb); 
             for (int x = 0; x < Bit.Width; x++)

@@ -29,6 +29,13 @@ namespace HeartFlame.Logging
 
         public static async void AuditLog(GuildData Guild, string Event, string Message)
         {
+            if (Guild.Configuration.Logging.SplitServerBotLogging)
+                if (Guild.Configuration.Logging.ServerLoggingChannel == 0)
+                    return;
+
+            if (Guild.Configuration.LogChannel == 0)
+                return;
+
             await GetServerLoggingChannel(Guild).SendMessageAsync("", false, GetEmbed(Event, Message));
         }
 
@@ -53,7 +60,9 @@ namespace HeartFlame.Logging
         public static ISocketMessageChannel GetServerLoggingChannel(GuildData Guild)
         {
             var Client = Program.Client;
-            return (SocketGuildChannel)Client.GetChannel(Guild.Configuration.Logging.ServerLoggingChannel) as ISocketMessageChannel;
+            if (Guild.Configuration.Logging.SplitServerBotLogging)
+                return (SocketGuildChannel)Client.GetChannel(Guild.Configuration.Logging.ServerLoggingChannel) as ISocketMessageChannel;
+            return (SocketGuildChannel)Client.GetChannel(Guild.Configuration.LogChannel) as ISocketMessageChannel;
         }
 
         public static Embed GetEmbed(SocketGuildUser User, bool Join = true)
@@ -89,5 +98,7 @@ namespace HeartFlame.Logging
             Embed.AddField(DateTime.UtcNow.ToString(), $"{Event}: {Message}");
             return Embed.Build();
         }
+
+        //TODOH: Use reflection to compare changes in User/Channel/Guild/Role
     }
 }

@@ -73,6 +73,7 @@ namespace HeartFlame.SelfAssign
                     $"A Console Self Assign prefab was generated in {Context.Channel.Name}",
                         Context);
             }
+            //TODO: Custom Console Self Assign
         }
 
         [Group("TimeZone"), Alias("Time")]
@@ -119,7 +120,12 @@ namespace HeartFlame.SelfAssign
                     $"A TimeZone Self Assign prefab was generated in {Context.Channel.Name}",
                         Context);
             }
+            //TODO: Custom Time Self Assign
+
         }
+
+        //TODOH: Custom Self Assign
+        //TODOL: Color Self Assign
 
         public static bool CorrectChannel(SocketGuildChannel Channel, ulong MessageID)
         {

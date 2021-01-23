@@ -27,7 +27,7 @@ namespace HeartFlame.Moderation
                 await ReplyAsync("", false, embed);
             }
         }
-
+        //TODO: Toggle Join Role
         [Command("Mute"), Summary("Mute a user."), Priority(1)]
         [RequirePermission(Roles.MOD)]
         public async Task ModerationMute(SocketGuildUser User, int Incriment, string Duration)

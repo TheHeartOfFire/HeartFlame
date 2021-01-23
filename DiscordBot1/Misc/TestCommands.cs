@@ -15,10 +15,13 @@ namespace HeartFlame.Misc
         [Command]
         public async Task Test(SocketGuildUser User)
         {
-            GuildManager.GetUser(User).Banner.Badges.Rank1 = false;
+            foreach(var _User in GuildManager.GetAllUsers())
+            {
+                _User.Banner.Badges.Global.BetaTester = true;
+            }
             PersistentData.SaveChangesToJson();
 
-            await ReplyAsync($"User's Rank1 badge has been removed.");
+            await ReplyAsync($"All users have bee set as beta testers.");
         }
 
 

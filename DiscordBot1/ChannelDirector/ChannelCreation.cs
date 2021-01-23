@@ -121,7 +121,7 @@ namespace HeartFlame.ChannelDirector
         {
             var Modules = new List<ChannelLocations>();
 
-            if (Guild.ModuleControl.IncludeChat)
+            if (Guild.ModuleControl.IncludeChat && Guild.Configuration.UseChatChannel)
                 if (ValueIndependant || Guild.Configuration.ChatChannel == 0)
                     Modules.Add(ChannelLocations.CHAT);
 

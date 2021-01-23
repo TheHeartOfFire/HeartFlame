@@ -24,7 +24,7 @@ namespace HeartFlame.ChannelDirector
         [Command("Get"), Alias("list"), Summary("Get the required channels")]
         public async Task GetChannels(bool MissingOrNot = false)
         {
-            await ReplyAsync("", false, ChannelCreation.RequiredChannelsEmbed(Context.Guild, $"`{PersistentData.Data.Config.CommandPrefix}Requirements Create {MissingOrNot}`", MissingOrNot));
+            await ReplyAsync("", false, ChannelCreation.RequiredChannelsEmbed(Context.Guild, $"{PersistentData.Data.Config.CommandPrefix}Requirements Create {MissingOrNot}", MissingOrNot));
         }
 
         [Command("Create"), Alias("set", "make"), Summary("Create the required channels")]
