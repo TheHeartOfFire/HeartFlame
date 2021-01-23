@@ -27,7 +27,7 @@ namespace HeartFlame.Logging
             var Attributes = Class.GetMethod(MethodName).GetCustomAttributesData();
 
             var Attribute = Attributes.First(x => x.AttributeType == typeof(SummaryAttribute));
-            var Action = Attribute.ToString();
+            var Action = Attribute.ConstructorArguments[0].Value.ToString();
 
             PrintLogMessage(MethodName, Action, Message, GuildID, GuildManager.GetUser(User));
         }
