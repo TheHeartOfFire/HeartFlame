@@ -20,11 +20,8 @@ namespace HeartFlame.Reporting
             if (guild.Id == PersistentData.Data.Config.Reporting.GuildID)
                 if (Reaction.MessageId == PersistentData.Data.Config.Reporting.MessageID)
                     if (Reaction.Emote.Name.Equals("ref"))
-                    {
-                        var msg = Channel.GetMessageAsync(PersistentData.Data.Config.Reporting.MessageID);
-                        var Message = ((IUserMessage)msg.Result);
-                        await Message.ModifyAsync(x => x.Embed = PrimaryReport());
-                    }
+                        Utils.UpdateMessage(Channel, PersistentData.Data.Config.Reporting.MessageID, PrimaryReport());
+                    
         }
 
         public static void OnReactionRemoved(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)

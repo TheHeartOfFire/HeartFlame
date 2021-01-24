@@ -127,6 +127,10 @@ Please make sure to use a hexadecimal color code like FFFFFF.\n
 If you typed #FFFFFF please omit the #.</value>
     <comment>error for malformed hex</comment>
   </data>
+  <data name="BadHierarchyPosition" xml:space="preserve">
+    <value>:x:Uh oh! I dont appear to have a role with the correct Hierarchy position. Either give me a role that is higher on the role list than all of the roles i should manager or move my generated role above the roles i should manage.</value>
+    <comment>Error if 403 when modifying roles</comment>
+  </data>
   <data name="BadModule" xml:space="preserve">
     <value>:x: I'm not sure which module that is. Please try again with a valid module.</value>
     <comment>Error message for bad module</comment>

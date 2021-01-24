@@ -39,6 +39,18 @@ namespace HeartFlame.Logging
             await GetServerLoggingChannel(Guild).SendMessageAsync("", false, GetEmbed(Event, Message));
         }
 
+        public static async void AuditLog(GuildData Guild, string Event, List<CompareResult> Results)
+        {
+            if (Guild.Configuration.Logging.SplitServerBotLogging)
+                if (Guild.Configuration.Logging.ServerLoggingChannel == 0)
+                    return;
+
+            if (Guild.Configuration.LogChannel == 0)
+                return;
+
+            await GetServerLoggingChannel(Guild).SendMessageAsync("", false, GetEmbed(Event, Results));
+        }
+
         public static ISocketMessageChannel GetJoinChannel(GuildData Guild)
         {
             var Client = Program.Client;
@@ -99,6 +111,19 @@ namespace HeartFlame.Logging
             return Embed.Build();
         }
 
-        //TODOH: Use reflection to compare changes in User/Channel/Guild/Role
+        public static Embed GetEmbed(string Event, List<CompareResult> Results)
+        {
+            var Embed = new EmbedBuilder
+            {
+                Color = Color.Orange
+            };
+
+            Embed.WithDescription(DateTime.UtcNow.ToString() + " : " + Event);
+            foreach(var Result in Results)
+            Embed.AddField(Result.Event, $"{Result.Message}");
+
+            return Embed.Build();
+        }
+
     }
 }

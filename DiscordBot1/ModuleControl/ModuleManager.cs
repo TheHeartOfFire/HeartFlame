@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using HeartFlame.ChannelDirector;
 using HeartFlame.ChatLevels;
@@ -7,6 +8,7 @@ using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
 using HeartFlame.Reporting;
+using System;
 
 namespace HeartFlame.ModuleControl
 {
@@ -25,14 +27,15 @@ namespace HeartFlame.ModuleControl
 
         public static void OnReactionAdded(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            foreach(var Guild in PersistentData.Data.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
                 if (((SocketGuildChannel)Channel).Guild.Id == Guild.GuildID)
                 {
-                    if(Guild.ModuleControl.IncludeSelfAssign)
+                    if (Guild.ModuleControl.IncludeSelfAssign)
                         SelfAssign.SelfAssign_ModuleIntegrator.OnReactionAdded(Cache, Channel, Reaction);
                 }
             }
+
 
             ReportingManager.OnReactionAdded(Cache, Channel, Reaction);
         }

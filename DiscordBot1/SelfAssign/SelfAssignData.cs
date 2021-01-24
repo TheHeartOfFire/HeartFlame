@@ -24,5 +24,17 @@ namespace HeartFlame.SelfAssign
 
             Misc = new List<RoleCategory<RoleObject>>();
         }
+
+        public void AddCustom(RoleCategory<RoleObject> Module)
+        {
+            Misc.Add(Module);
+            PersistentData.SaveChangesToJson();
+        }
+
+        public void RemoveCustom(RoleCategory<RoleObject> Module)
+        {
+            Misc.Remove(Module);
+            PersistentData.SaveChangesToJson();
+        }
     }
 }

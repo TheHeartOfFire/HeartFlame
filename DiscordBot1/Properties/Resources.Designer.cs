@@ -81,6 +81,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x:Uh oh! I dont appear to have a role with the correct Hierarchy position. Either give me a role that is higher on the role list than all of the roles i should manager or move my generated role above the roles i should manage..
+        /// </summary>
+        internal static string BadHierarchyPosition {
+            get {
+                return ResourceManager.GetString("BadHierarchyPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x: I&apos;m not sure which module that is. Please try again with a valid module..
         /// </summary>
         internal static string BadModule {

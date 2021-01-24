@@ -117,7 +117,9 @@ namespace HeartFlame
 
         private Task Client_RoleUpdated(SocketRole arg1, SocketRole arg2)
         {
-            //ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Role Update", $"The {arg2.Name} role has been updated");
+            var Updates = DiscordObjectComparison.Role(arg1, arg2);
+            if (Updates.Count > 0)
+                ServerLogging.AuditLog(GuildManager.GetGuild(arg1.Guild), "Role Update", Updates);
             return Task.CompletedTask;
         }
 
@@ -155,7 +157,10 @@ namespace HeartFlame
         private Task Client_ChannelUpdated(SocketChannel arg1, SocketChannel arg2)
         {
             var Channel = (SocketGuildChannel)arg2;
-            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Channel Update", $"{Channel.Name} was updated");
+            var Updates = DiscordObjectComparison.Channel((SocketGuildChannel)arg1, (SocketGuildChannel)arg2);
+            if(Updates.Count > 0)
+            ServerLogging.AuditLog(GuildManager.GetGuild(Channel.Guild), "Channel Update", Updates);
+
             return Task.CompletedTask;
         }
 
@@ -168,7 +173,9 @@ namespace HeartFlame
 
         private Task Client_GuildUpdated(SocketGuild arg1, SocketGuild arg2)
         {
-            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "Guild Update", $"{arg2.Name} was updated");
+            var Updates = DiscordObjectComparison.Guild(arg1, arg2);
+            if (Updates.Count > 0)
+                ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "Guild Update", Updates);
             return Task.CompletedTask;
         }
 
@@ -195,7 +202,9 @@ namespace HeartFlame
                 ErrorHandling.GlobalErrorLogging(e.Message, $"Guild Memeber Updated\nUser Value 1: {arg1.Username} | User Value 2: {arg2.Username}");
             }
 
-            ServerLogging.AuditLog(GuildManager.GetGuild(arg2), "User Update", $"{GuildManager.GetUser(arg2).Name} was updated");
+            var Updates = DiscordObjectComparison.User(arg1, arg2);
+            if (Updates.Count > 0)
+                ServerLogging.AuditLog(GuildManager.GetGuild(arg2),"User Update", Updates);
 
             await Task.CompletedTask;
 
@@ -297,7 +306,6 @@ namespace HeartFlame
             GuildManager.UpdateGuildName(Context.Guild);
             ModuleManager.MessageTunnel(arg);
         }
-        //TODOH: Adjust Role Hierarchy if Error 403 when modifying Role
         //TODOL: Announcements
         //TODOL: Time
         //TODOL: Voting / Poll
