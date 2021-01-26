@@ -49,7 +49,7 @@ namespace HeartFlame.ChatLevels
             var imf = new ImageFactory();
             GetBackground(ref imf, User);//user's banner image
             GetOverlay(ref imf);//semitransparent content area
-            imf.Overlay(AvatarMask());//semitransparent avatar backing
+            imf.Overlay(AvatarMask(true));//semitransparent avatar backing
             imf.Overlay(await GetAvatarAsync(user));//Masked avatar image
             imf.Watermark(GetName(User));//User's Name
             imf.Overlay(GetExpBar(User, false));//Exp bar Background
@@ -221,7 +221,7 @@ namespace HeartFlame.ChatLevels
             imf.Load(Image.FromStream(ms));
             imf.Resize(new ResizeLayer(AvatarSize) {ResizeMode = ResizeMode.Stretch });
             imf.Format(new PngFormat());
-            imf.Mask(AvatarMask());
+            imf.Mask(AvatarMask(false));
             ImageLayer il = new ImageLayer
             {
                 Image = imf.Image,
@@ -306,16 +306,19 @@ namespace HeartFlame.ChatLevels
             }
         }
 
-        private static ImageLayer AvatarMask()
+        private static ImageLayer AvatarMask(bool background)
         {
             var bit = new Bitmap(AvatarSize.Width, AvatarSize.Height, PixelFormat.Format32bppPArgb);
             var offset = AvatarSize.Width / 2;
-            for(int x = 0; x < AvatarSize.Width; x++)
+            var col = Color.FromArgb(0, 0, 0, 0);
+            if (background)
+                col = Color.FromArgb(100, 0, 0, 0);
+            for (int x = 0; x < AvatarSize.Width; x++)
             {
                 for(int y = 0; y < AvatarSize.Height; y++)
                 {
                     if (Square(x - offset) + Square(y - offset) <= Square(offset))
-                        bit.SetPixel(x, y, Color.FromArgb(100, 0, 0, 0));
+                        bit.SetPixel(x, y, col);
                     else
                         bit.SetPixel(x,y,Color.Empty);
                 }
