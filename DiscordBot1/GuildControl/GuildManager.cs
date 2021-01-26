@@ -145,5 +145,17 @@ namespace HeartFlame.GuildControl
             }
             return UserList;
         }
+
+        public static void CompareGuildUsers(SocketGuild Guild)
+        {
+            var BotGuild = GetGuild(Guild);
+
+            foreach(var User in Guild.Users)
+            {
+                if (!User.IsBot)
+                    BotGuild.AddUser(User);
+            }
+            PersistentData.SaveChangesToJson();
+        }
     }
 }

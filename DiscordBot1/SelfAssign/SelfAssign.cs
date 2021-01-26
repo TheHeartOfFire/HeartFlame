@@ -10,6 +10,7 @@ using Discord.WebSocket;
 using HeartFlame.Misc;
 using System.Threading.Tasks;
 using HeartFlame.GuildControl;
+using Discord.Rest;
 
 namespace HeartFlame.SelfAssign
 {
@@ -18,234 +19,155 @@ namespace HeartFlame.SelfAssign
         private static readonly GuildPermissions NoPerms = new GuildPermissions();
 
 
-        public static async Task<Embed> PrefabConsoleAsync(ulong GuildID)
-        { 
-            foreach(var BotGuild in PersistentData.Data.Guilds)
+        public static Embed PrefabConsoleAsync(SocketGuild Guild)
+        {
+            var Module = GuildManager.GetGuild(Guild).SelfAssign.Consoles;
+
+            Module = new RoleCategory()
             {
-                if(BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.Consoles = new RoleCategory<RoleObject>()
-                    {
-                        Roles = new List<RoleObject>()
-                    };
+                Roles = new List<RoleObject>(),
+                Name = "Consoles",
+                Title = "Consoles"
+            };
 
-                    var Guild = Program.Client.GetGuild(GuildID);
-                    var GuildRoles = new List<SocketRole>(Guild.Roles);
+            Module.SetDivider(CreateDivider(Guild, "Console").Result);
 
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "⁣ 	  	  	  	  	 ☚Consoles☛ 	  	  	  	  	 ⁣"))
-                        await Guild.CreateRoleAsync("⁣ 	  	  	  	  	 ☚Consoles☛ 	  	  	  	  	 ⁣", NoPerms, new Color(0x2f3136), false, false);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "Xbox"))
-                        await Guild.CreateRoleAsync("Xbox", NoPerms, Color.Green, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "PlayStation"))
-                        await Guild.CreateRoleAsync("PlayStation", NoPerms, Color.Blue, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "PC"))
-                        await Guild.CreateRoleAsync("PC", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "Nintendo"))
-                        await Guild.CreateRoleAsync("Nintendo", NoPerms, Color.Red, false, true);
-                    GuildRoles = new List<SocketRole>(Guild.Roles);
+            Module.AddRole("Xbox", 
+                EmoteRef.Emotes.GetValueOrDefault("Xbox"), 
+                1,
+                AddRoleIfNotExist(Guild, "Xbox", Color.Green).Result);
+            
+            Module.AddRole("PlayStation", 
+                EmoteRef.Emotes.GetValueOrDefault("PlayStation"), 
+                2,
+                AddRoleIfNotExist(Guild, "PlayStation", Color.Blue).Result);
 
-                    BotGuild.SelfAssign.Consoles.Name = "Consoles";
-                    BotGuild.SelfAssign.Consoles.Title = "Consoles";
+            Module.AddRole("PC", 
+                EmoteRef.Emotes.GetValueOrDefault("PC"), 
+                3,
+                AddRoleIfNotExist(Guild, "PC").Result);
 
-                    AddConsole("Xbox", EmoteRef.Emotes.GetValueOrDefault("Xbox"), 1, GuildRoles.FirstOrDefault(x => x.Name == "Xbox").Id, GuildID);
-                    AddConsole("PlayStation", EmoteRef.Emotes.GetValueOrDefault("PlayStation"), 2, GuildRoles.FirstOrDefault(x => x.Name == "PlayStation").Id, GuildID);
-                    AddConsole("PC", EmoteRef.Emotes.GetValueOrDefault("PC"), 3, GuildRoles.FirstOrDefault(x => x.Name == "PC").Id, GuildID);
-                    AddConsole("Nintendo", EmoteRef.Emotes.GetValueOrDefault("Nintendo"), 4, GuildRoles.FirstOrDefault(x => x.Name == "Nintendo").Id, GuildID);
+            Module.AddRole("Nintendo", 
+                EmoteRef.Emotes.GetValueOrDefault("Nintendo"), 
+                4,
+                AddRoleIfNotExist(Guild, "Nintendo", Color.Red).Result);
 
-                    SetConsoleDivider(GuildRoles.FirstOrDefault(x => x.Name == "⁣ 	  	  	  	  	 ☚Consoles☛ 	  	  	  	  	 ⁣").Id, GuildID);
-
-                    return ConsoleEmbed(GuildID);
-                }
-            }
-
-            return null;
+            return GenerateEmbed(Module, "the consoles you use");
         }
 
-        public static async Task<Embed> PrefabTimeAsync(ulong GuildID)
+        public static Embed PrefabTimeAsync(SocketGuild Guild)
         {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
+            var Module = GuildManager.GetGuild(Guild).SelfAssign.TimeZones;
+
+
+            Module = new RoleCategory()
             {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.TimeZones = new RoleCategory<RoleObject>()
-                    {
-                        Roles = new List<RoleObject>()
-                    };
+                Roles = new List<RoleObject>(),
+                Name = "TimeZones",
+                Title = "TimeZones"
+            };
 
-                    var Guild = Program.Client.GetGuild(GuildID);
-                    var GuildRoles = new List<SocketRole>(Guild.Roles);
+            Module.SetDivider(CreateDivider(Guild, "TimeZone").Result);
 
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "⁣⁣ 	  	  	  	  	 ☚TimeZone☛ 	  	  	  	  	 ⁣"))
-                        await Guild.CreateRoleAsync("⁣⁣ 	  	  	  	  	 ☚TimeZone☛ 	  	  	  	  	 ⁣", NoPerms, new Color(0x2f3136), false, false);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "US Pacific (-7)")) await Guild.CreateRoleAsync("US Pacific (-7)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "US Mountain (-6)")) await Guild.CreateRoleAsync("US Mountain (-6)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "US Central (-5)")) await Guild.CreateRoleAsync("US Central (-5)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "US Eastern (-4)")) await Guild.CreateRoleAsync("US Eastern (-4)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "Greenwich (+0)")) await Guild.CreateRoleAsync("Greenwich (+0)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "UK (+1)")) await Guild.CreateRoleAsync("UK (+1)", NoPerms, Color.Default, false, true);
-                    if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == "Australia (+10)")) await Guild.CreateRoleAsync("Australia (+10)", NoPerms, Color.Default, false, true);
+            Module.AddRole("US Pacific (-7)", 
+                EmoteRef.Emotes.GetValueOrDefault("1"), 
+                1,
+                AddRoleIfNotExist(Guild, "US Pacific (-7)").Result);
 
-                    GuildRoles = new List<SocketRole>(Guild.Roles);
+            Module.AddRole("US Mountain (-6)",
+                EmoteRef.Emotes.GetValueOrDefault("2"), 
+                2,
+                AddRoleIfNotExist(Guild, "US Mountain (-6)").Result);
 
-                    BotGuild.SelfAssign.TimeZones.Name = "TimeZones";
-                    BotGuild.SelfAssign.TimeZones.Title = "TimeZones";
+            Module.AddRole("US Central (-5)", 
+                EmoteRef.Emotes.GetValueOrDefault("3"), 
+                3,
+                AddRoleIfNotExist(Guild, "US Central (-5)").Result);
 
-                    AddTime("US Pacific (-7)", EmoteRef.Emotes.GetValueOrDefault("1"), 1, GuildRoles.FirstOrDefault(x => x.Name == "US Pacific (-7)").Id, GuildID);
-                    AddTime("US Mountain (-6)", EmoteRef.Emotes.GetValueOrDefault("2"), 2, GuildRoles.FirstOrDefault(x => x.Name == "US Mountain (-6)").Id, GuildID);
-                    AddTime("US Central (-5)", EmoteRef.Emotes.GetValueOrDefault("3"), 3, GuildRoles.FirstOrDefault(x => x.Name == "US Central (-5)").Id, GuildID);
-                    AddTime("US Eastern (-4)", EmoteRef.Emotes.GetValueOrDefault("4"), 4, GuildRoles.FirstOrDefault(x => x.Name == "US Eastern (-4)").Id, GuildID);
-                    AddTime("Greenwich (+0)", EmoteRef.Emotes.GetValueOrDefault("5"), 5, GuildRoles.FirstOrDefault(x => x.Name == "Greenwich (+0)").Id, GuildID);
-                    AddTime("UK (+1)", EmoteRef.Emotes.GetValueOrDefault("6"), 6, GuildRoles.FirstOrDefault(x => x.Name == "UK (+1)").Id, GuildID);
-                    AddTime("Australia (+10)", EmoteRef.Emotes.GetValueOrDefault("7"), 7, GuildRoles.FirstOrDefault(x => x.Name == "Australia (+10)").Id, GuildID);
+            Module.AddRole("US Eastern (-4)", 
+                EmoteRef.Emotes.GetValueOrDefault("4"), 
+                4,
+                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result);
 
-                    SetTimeDivider(GuildRoles.FirstOrDefault(x => x.Name == "⁣⁣ 	  	  	  	  	 ☚TimeZone☛ 	  	  	  	  	 ⁣").Id, GuildID);
+            Module.AddRole("Greenwich (+0)", 
+                EmoteRef.Emotes.GetValueOrDefault("5"), 
+                5,
+                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result);
 
-                    return TimeEmbed(GuildID);
-                }
-            }
-            return null;
+            Module.AddRole("UK (+1)", 
+                EmoteRef.Emotes.GetValueOrDefault("6"), 
+                6,
+                AddRoleIfNotExist(Guild, "UK (+1)").Result);
+
+            Module.AddRole("Australia (+10)",
+                EmoteRef.Emotes.GetValueOrDefault("7"),
+                7,
+                AddRoleIfNotExist(Guild, "Australia (+10)").Result);
+
+            return GenerateEmbed(Module, "your timezone");
         }
 
-        public static void AddConsole(string Name, string Emoji, int Position, ulong RoleID, ulong GuildID)
+        public static Embed CustomModule(List<SocketRole> Roles, RoleCategory Module, string Description = "the role you want")
         {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    foreach (var role in BotGuild.SelfAssign.Consoles.Roles)
-                    {
-                        if (role.Position >= Position)
-                            role.Position++;
-                    }
+            int pos = 0;
+            foreach (var Role in Roles)
+                Module.AddRole(Role.Name, EmoteRef.Emotes.GetValueOrDefault(pos++.ToString()), pos, Role.Id);
 
-                    BotGuild.SelfAssign.Consoles.Roles.Add(new RoleObject
-                    {
-                        Name = Name,
-                        Emoji = Emoji,
-                        Position = Position,
-                        RoleID = RoleID
-                    });
-
-                    BotGuild.SelfAssign.Consoles.Roles.Sort();
-                    PersistentData.SaveChangesToJson();
-                }
-            }
+            return GenerateEmbed(Module, Description);
         }
 
-        public static void AddTime(string Name, string Emoji, int Position, ulong RoleID, ulong GuildID)
+        public static Embed GenerateEmbed(RoleCategory Module, string Description)
         {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    foreach (var role in BotGuild.SelfAssign.TimeZones.Roles)
-                    {
-                        if (role.Position >= Position)
-                        {
-                            role.Position++;
-                            Emoji = EmoteRef.Emotes.GetValueOrDefault(Position.ToString());
-                        }
-                    }
-                    BotGuild.SelfAssign.TimeZones.Roles.Add(new RoleObject
-                    {
-                        Name = Name,
-                        Emoji = Emoji,
-                        Position = Position,
-                        RoleID = RoleID
-                    });
+            EmbedBuilder Embed = new EmbedBuilder();
+            Embed.WithDescription($"Please select the reaction corresponding to {Description}. Removing your reaction will remove the role from you.");
 
-                    BotGuild.SelfAssign.TimeZones.Roles.Sort();
-                    PersistentData.SaveChangesToJson();
-                }
+            foreach (var role in Module.Roles)
+            {
+                Embed.AddField($"{role.Emoji} for the {role.Name} role.", ".");
             }
+            Embed.WithFooter("");//TODOL: Additional command info
+            return Embed.Build();
         }
 
-        public static Embed ConsoleEmbed(ulong GuildID)
+        public static async Task<ulong> AddRoleIfNotExist(SocketGuild Guild, string Name, Color? Color = null, bool Mentionable = true)
         {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    EmbedBuilder Embed = new EmbedBuilder();
-                    Embed.WithDescription($"Please select the reaction corresponding to the consoles you use. Removing your reaction will remove the role from you.");
+            if (!Color.HasValue)
+                Color = Discord.Color.Default;
 
-                    foreach (var role in BotGuild.SelfAssign.Consoles.Roles)
-                    {
-                        Embed.AddField($"{role.Emoji} for the {role.Name} role.", ".");
-                    }
-                    Embed.WithFooter("");//edit information
-                    return Embed.Build();
-                }
+            var GuildRoles = new List<SocketRole>(Guild.Roles);
+
+            ulong ID = 0;
+
+            if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == Name))
+            {
+                var Role = await Guild.CreateRoleAsync(Name, NoPerms, Color.Value, false, Mentionable);
+                await Role.ModifyAsync(x => x.Position = 0);
+                ID = Role.Id;
             }
-            return null;
+            else
+                ID = GuildRoles.FirstOrDefault(x => x.Name == Name).Id;
+
+
+            return ID;
         }
 
-        public static Embed TimeEmbed(ulong GuildID)
+        public static async Task<ulong> CreateDivider(SocketGuild Guild, string Name)
         {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    EmbedBuilder Embed = new EmbedBuilder();
-                    Embed.WithDescription($"Please select the reaction corresponding to your timezone. Removing your reaction will remove the role from you.");
+            var GuildRoles = new List<SocketRole>(Guild.Roles);
 
-                    foreach (var role in BotGuild.SelfAssign.TimeZones.Roles)
-                    {
-                        Embed.AddField($"{role.Emoji} for the {role.Name} role.", ".");
-                    }
-                    Embed.WithFooter("");//edit information
-                    return Embed.Build();
-                }
-            }
-            return null;
-        }
+            ulong ID = 0;
 
-        public static void SetConsoleMessageID(ulong MessageID, ulong GuildID)
-        {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
+            if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == Name))
             {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.Consoles.MsgID = MessageID;
-                    PersistentData.SaveChangesToJson();
-                }
+                var Role = await Guild.CreateRoleAsync($"⁣⁣ 	  	  	  	  	 ☚{Name}☛ 	  	  	  	  	 ⁣", NoPerms, new Color(0x2f3136), false, false);
+                await Role.ModifyAsync(x => x.Position = 0);
+                ID = Role.Id;
             }
-        }
+            else
+                ID = GuildRoles.FirstOrDefault(x => x.Name == Name).Id;
 
-        public static void SetTimeMessageID(ulong MessageID, ulong GuildID)
-        {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.TimeZones.MsgID = MessageID;
-                    PersistentData.SaveChangesToJson();
-                }
-            }
-        }
 
-        public static void SetConsoleDivider(ulong RoleID, ulong GuildID)
-        {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.Consoles.DividerRoleID = RoleID;
-                    PersistentData.SaveChangesToJson();
-                }
-            }
-        }
-
-        public static void SetTimeDivider(ulong RoleID, ulong GuildID)
-        {
-            foreach (var BotGuild in PersistentData.Data.Guilds)
-            {
-                if (BotGuild.GuildID == GuildID)
-                {
-                    BotGuild.SelfAssign.TimeZones.DividerRoleID = RoleID;
-                    PersistentData.SaveChangesToJson();
-                }
-            }
+            return ID;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace HeartFlame.ChatLevels
             
             var imf = new ImageFactory();
             GetBackground(ref imf, User);//user's banner image
-            GetOverlay(ref imf, User);//semitransparent content area
+            GetOverlay(ref imf);//semitransparent content area
             imf.Overlay(AvatarMask());//semitransparent avatar backing
             imf.Overlay(await GetAvatarAsync(user));//Masked avatar image
             imf.Watermark(GetName(User));//User's Name
@@ -82,7 +82,7 @@ namespace HeartFlame.ChatLevels
             imf.Resize(res);
         }
 
-        private static void GetOverlay(ref ImageFactory imf, GuildUser User)
+        private static void GetOverlay(ref ImageFactory imf)
         {
             var rec = new Rectangle(Buffer, InnerSize);
             SolidBrush RecColor = new SolidBrush(Color.FromArgb(GreyAlpha, TestGreyScale, TestGreyScale, TestGreyScale));
@@ -93,7 +93,7 @@ namespace HeartFlame.ChatLevels
         private static TextLayer GetName(GuildUser User)
         {
             string Name = User.Name;
-            if (Name.Length > 10)
+            if (Name.Length > 10)//TODOL: Make Banner name text size a function of it's length
                 Name = Name.Substring(0, 10);
 
             return new TextLayer()

@@ -259,6 +259,9 @@ namespace HeartFlame
         {
             string game = Game;
             await Client.SetGameAsync(game, null, ActivityType.Watching).ConfigureAwait(false);//what game is the bot "playing"
+
+            foreach (var Guild in Client.Guilds)
+                GuildManager.CompareGuildUsers(Guild);
         }
 
         private async Task Client_MessageReceived(SocketMessage arg)
