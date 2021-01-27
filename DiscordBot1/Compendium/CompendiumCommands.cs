@@ -20,7 +20,7 @@ namespace HeartFlame.Compendium
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Username Group"), Remarks("Usernames_Help")]
         public async Task UsernameHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames Help", "Usernames_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames Help", "Usernames_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);
@@ -108,7 +108,7 @@ namespace HeartFlame.Compendium
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Username All Group"), Remarks("Usernames_All_Help")]
             public async Task UsernameHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames All Help", "Usernames_All_Help", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Usernames All Help", "Usernames_All_Help");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);

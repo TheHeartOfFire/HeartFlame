@@ -23,7 +23,7 @@ namespace HeartFlame.ChatLevels
             [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the Chat Color Group"), Remarks("ChatCommandColorHelp")]
             public async Task ChatCommandColorHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Color Help", "ChatCommandColorHelp", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Color Help", "ChatCommandColorHelp");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);

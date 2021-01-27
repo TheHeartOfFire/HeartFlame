@@ -33,24 +33,24 @@ namespace HeartFlame.SelfAssign
             Module.SetDivider(CreateDivider(Guild, "Console").Result);
 
             Module.AddRole("Xbox", 
-                EmoteRef.Emotes.GetValueOrDefault("Xbox"), 
                 1,
-                AddRoleIfNotExist(Guild, "Xbox", Color.Green).Result);
+                AddRoleIfNotExist(Guild, "Xbox", Color.Green).Result, 
+                EmoteRef.Emotes.GetValueOrDefault("Xbox"));
             
             Module.AddRole("PlayStation", 
-                EmoteRef.Emotes.GetValueOrDefault("PlayStation"), 
                 2,
-                AddRoleIfNotExist(Guild, "PlayStation", Color.Blue).Result);
+                AddRoleIfNotExist(Guild, "PlayStation", Color.Blue).Result,
+                EmoteRef.Emotes.GetValueOrDefault("PlayStation"));
 
             Module.AddRole("PC", 
-                EmoteRef.Emotes.GetValueOrDefault("PC"), 
                 3,
-                AddRoleIfNotExist(Guild, "PC").Result);
+                AddRoleIfNotExist(Guild, "PC").Result,
+                EmoteRef.Emotes.GetValueOrDefault("PC"));
 
             Module.AddRole("Nintendo", 
-                EmoteRef.Emotes.GetValueOrDefault("Nintendo"), 
                 4,
-                AddRoleIfNotExist(Guild, "Nintendo", Color.Red).Result);
+                AddRoleIfNotExist(Guild, "Nintendo", Color.Red).Result,
+                EmoteRef.Emotes.GetValueOrDefault("Nintendo"));
 
             return GenerateEmbed(Module, "the consoles you use");
         }
@@ -70,39 +70,39 @@ namespace HeartFlame.SelfAssign
             Module.SetDivider(CreateDivider(Guild, "TimeZone").Result);
 
             Module.AddRole("US Pacific (-7)", 
-                EmoteRef.Emotes.GetValueOrDefault("1"), 
                 1,
-                AddRoleIfNotExist(Guild, "US Pacific (-7)").Result);
+                AddRoleIfNotExist(Guild, "US Pacific (-7)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("1"));
 
             Module.AddRole("US Mountain (-6)",
-                EmoteRef.Emotes.GetValueOrDefault("2"), 
                 2,
-                AddRoleIfNotExist(Guild, "US Mountain (-6)").Result);
+                AddRoleIfNotExist(Guild, "US Mountain (-6)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("2"));
 
             Module.AddRole("US Central (-5)", 
-                EmoteRef.Emotes.GetValueOrDefault("3"), 
                 3,
-                AddRoleIfNotExist(Guild, "US Central (-5)").Result);
+                AddRoleIfNotExist(Guild, "US Central (-5)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("3"));
 
             Module.AddRole("US Eastern (-4)", 
-                EmoteRef.Emotes.GetValueOrDefault("4"), 
                 4,
-                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result);
+                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("4"));
 
             Module.AddRole("Greenwich (+0)", 
-                EmoteRef.Emotes.GetValueOrDefault("5"), 
                 5,
-                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result);
+                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("5"));
 
             Module.AddRole("UK (+1)", 
-                EmoteRef.Emotes.GetValueOrDefault("6"), 
                 6,
-                AddRoleIfNotExist(Guild, "UK (+1)").Result);
+                AddRoleIfNotExist(Guild, "UK (+1)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("6"));
 
             Module.AddRole("Australia (+10)",
-                EmoteRef.Emotes.GetValueOrDefault("7"),
                 7,
-                AddRoleIfNotExist(Guild, "Australia (+10)").Result);
+                AddRoleIfNotExist(Guild, "Australia (+10)").Result,
+                EmoteRef.Emotes.GetValueOrDefault("7"));
 
             return GenerateEmbed(Module, "your timezone");
         }
@@ -111,7 +111,7 @@ namespace HeartFlame.SelfAssign
         {
             int pos = 0;
             foreach (var Role in Roles)
-                Module.AddRole(Role.Name, EmoteRef.Emotes.GetValueOrDefault(pos++.ToString()), pos, Role.Id);
+                Module.AddRole(Role.Name, pos, Role.Id, EmoteRef.Emotes.GetValueOrDefault(pos++.ToString()));
 
             return GenerateEmbed(Module, Description);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HeartFlame.Misc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -24,25 +25,39 @@ namespace HeartFlame.SelfAssign
             {
                 if (Role.RoleID == RoleID)
                     Roles.Remove(Role);
+
+                if(Role.RoleID > RoleID)
+                {
+                    Role.Position--;
+                    Role.Emoji = GetEmoji(Role);
+                }  
             }
             PersistentData.SaveChangesToJson();
         }
 
-        public void AddRole(string Name, string Emoji, int Position, ulong RoleID)
+        public void AddRole(string Name, int Position, ulong RoleID, string Emoji = null)
         {
             foreach (var role in Roles)
             {
                 if (role.Position >= Position)
+                {
                     role.Position++;
+                    role.Emoji = GetEmoji(role);
+                }
             }
-
-            Roles.Add(new RoleObject
+            var Role = new RoleObject
             {
                 Name = Name,
                 Emoji = Emoji,
                 Position = Position,
                 RoleID = RoleID
-            });
+            };
+
+            if (Role.Emoji is null)
+                Role.Emoji = GetEmoji(Role);
+
+            Roles.Add(Role);
+
 
             Roles.Sort();
             PersistentData.SaveChangesToJson();
@@ -69,6 +84,20 @@ namespace HeartFlame.SelfAssign
         {
             MsgID = MessageID;
             PersistentData.SaveChangesToJson();
+        }
+
+        private string GetEmoji(RoleObject Role)
+        {
+            if (Role.Name.Equals("xbox", StringComparison.OrdinalIgnoreCase))
+                return EmoteRef.Emotes.GetValueOrDefault("Xbox");
+            if (Role.Name.Equals("PlayStation", StringComparison.OrdinalIgnoreCase))
+                return EmoteRef.Emotes.GetValueOrDefault("PlayStation");
+            if (Role.Name.Equals("PC", StringComparison.OrdinalIgnoreCase))
+                return EmoteRef.Emotes.GetValueOrDefault("PC");
+            if (Role.Name.Equals("Nintendo", StringComparison.OrdinalIgnoreCase))
+                return EmoteRef.Emotes.GetValueOrDefault("Nintendo");
+
+            return EmoteRef.Emotes.GetValueOrDefault(Role.Position.ToString());
         }
     }
 }

@@ -18,7 +18,7 @@ namespace HeartFlame.Configuration
         [Command("Help"), Alias("", "?"), Remarks("Global_Config_Help"), Summary("Get all of the commands in the Global Configuration Group.")]
         public async Task GlobalConfigHelp()
         {
-            var embeds = Configuration_Command.HelpEmbed("Global Config Help", "Global_Config_Help", 0);
+            var embeds = Configuration_Command.HelpEmbed("Global Config Help", "Global_Config_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);

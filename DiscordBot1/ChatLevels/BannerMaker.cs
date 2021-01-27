@@ -20,6 +20,7 @@ namespace HeartFlame.ChatLevels
 {
     public class BannerMaker
     {
+        //Melech the Unfavoured(Dakota)
         private static readonly Point Buffer = new Point(25, 25);
         private static readonly Size TotalSize = new Size(512, 192);
         private static readonly Size InnerSize = new Size(TotalSize.Width - (2 * Buffer.X), TotalSize.Height - (2 * Buffer.X));
@@ -33,6 +34,9 @@ namespace HeartFlame.ChatLevels
         private static readonly Point MessagesLocation = new Point(AvatarLocation.X + AvatarSize.Width - 12, TotalSize.Height - Buffer.Y - 10);
         private static readonly Point BadgesLocation = new Point(TotalSize.Width - Buffer.X, TotalSize.Height - Buffer.Y);
         private static readonly Size BadgesBuffer = new Size(8, 6);
+        private static readonly Point ShortNameLocation = new Point(AvatarLocation.X + AvatarSize.Width + 12, TotalSize.Height / 2 - TextManagement.SmallNormalCharacter.Height - 5);
+        private static readonly Point MediumNameLocation = new Point(AvatarLocation.X + AvatarSize.Width + 12, TotalSize.Height / 2 - TextManagement.SmallNormalCharacter.Height);
+        private static readonly Point LongNameLocation = new Point(AvatarLocation.X + AvatarSize.Width + 12, TotalSize.Height / 2 - (TextManagement.SmallNormalCharacter.Height * 2) - 5);
 
 
         public static async Task<Image> BuildBannerAsync(SocketUser User)
@@ -93,17 +97,49 @@ namespace HeartFlame.ChatLevels
         private static TextLayer GetName(GuildUser User)
         {
             string Name = User.Name;
-            if (Name.Length > 10)//TODOL: Make Banner name text size a function of it's length
-                Name = Name.Substring(0, 10);
+            var Location = ShortNameLocation;
+
+            if (Name.Length > 10)
+                Location = MediumNameLocation;
+            if(Name.Length>15)
+            {
+                Location = LongNameLocation;
+                var Idx = new List<int>();
+                int counter = 0;
+                foreach(var ch in Name)
+                {
+                    if (ch.Equals(' '))
+                        if (counter > 5 && counter < 27)
+                            Idx.Add(counter);
+                    counter++;
+                }
+
+                if (Idx.Count == 0)
+                    Name = Name.Insert(Name.Length / 2, Environment.NewLine);
+                else
+                {
+                    var Index = Utils.GetClosest(Idx, (Name.Length / 2));
+                    Name = Name.Remove(Index, 1);
+                    Name = Name.Insert(Index, Environment.NewLine);
+
+                }
+            }
 
             return new TextLayer()
             {
                 Text = Name,
                 FontColor = User.Banner.GetColor(),
                 FontFamily = new FontFamily("Arial"),
-                Position = new Point(AvatarLocation.X + AvatarSize.Width + 10, TotalSize.Height / 2 - TextManagement.SmallNormalCharacter.Height - 5),
-                FontSize = 30
+                Position = Location,
+                FontSize = GetFontSize(Name)
             };
+        }
+
+        private static int GetFontSize(string Text)
+        {
+            if (Text.Length <= 10)
+                return 30;
+            return 20;
         }
 
         private static async Task<Image> GetBannerAsync(string ImageName = "default")
@@ -310,7 +346,7 @@ namespace HeartFlame.ChatLevels
         {
             var bit = new Bitmap(AvatarSize.Width, AvatarSize.Height, PixelFormat.Format32bppPArgb);
             var offset = AvatarSize.Width / 2;
-            var col = Color.FromArgb(0, 0, 0, 0);
+            var col = Color.FromArgb(255, 0, 0, 0);
             if (background)
                 col = Color.FromArgb(100, 0, 0, 0);
             for (int x = 0; x < AvatarSize.Width; x++)

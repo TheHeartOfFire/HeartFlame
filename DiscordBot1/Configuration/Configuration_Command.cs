@@ -21,7 +21,7 @@ namespace HeartFlame.Configuration
         [Command("Help"), Alias("", "?"), Remarks("Config_Help"), Summary("Get all of the commands in the Global Configuration Group.")]
         public async Task ConfigHelp()
         {
-            var embeds = HelpEmbed("Config Help", "Config_Help", 0);
+            var embeds = HelpEmbed("Config Help", "Config_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);
@@ -264,7 +264,7 @@ namespace HeartFlame.Configuration
 
         //TODO: "Use Join Role" command
 
-        public static List<Embed> HelpEmbed(string CommandName, string Remarks, int level)
+        public static List<Embed> HelpEmbed(string CommandName, string Remarks)
         {
             var Commands = Program.Commands.Commands.ToList();
             var Module = Commands.Find(x => x.Remarks == Remarks).Module;

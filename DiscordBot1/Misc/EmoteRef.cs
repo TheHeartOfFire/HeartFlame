@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HeartFlame.Misc
+namespace HeartFlame
 {
     public class EmoteRef
     {

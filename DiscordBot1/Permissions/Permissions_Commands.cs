@@ -19,7 +19,7 @@ namespace HeartFlame.Permissions
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("Permissions_Help")]
         public async Task PermissionsHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Permissions Help", "Permissions_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Permissions Help", "Permissions_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);

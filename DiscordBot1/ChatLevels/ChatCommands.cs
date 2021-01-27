@@ -41,7 +41,7 @@ namespace HeartFlame.ChatLevels
         [Command("Help"), Alias("h", "?"), Summary("Get all of the commands in the Permissions Group"), Remarks("ChatCommandHelp"), Priority(1)]
         public async Task ChatCommandsHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Help", "ChatCommandHelp", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Help", "ChatCommandHelp");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);

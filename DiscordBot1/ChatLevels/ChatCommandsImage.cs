@@ -20,7 +20,7 @@ namespace HeartFlame.ChatLevels
             [Command(""), Alias("h", "?", "help"), Summary("Get all of the commands in the ChatImage Group"), Remarks("ChatCommandImageHelp")]
             public async Task ChatCommandImageHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Image Help", "ChatCommandImageHelp", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Chat Image Help", "ChatCommandImageHelp");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);

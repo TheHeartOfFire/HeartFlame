@@ -17,12 +17,13 @@ namespace HeartFlame.SelfAssign
 {
     [Group("SelfAssign"), Alias("Self Assign", "Self", "sa", "s a")]
     [RequireModule(Modules.SELFASSIGN)]
+    [RequirePermission(Roles.MOD)]
     public class SelfAssign_Commands : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Group"), Remarks("SelfAssign_Help")]
         public async Task SelfAssignHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Help", "SelfAssign_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Help", "SelfAssign_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);
@@ -35,7 +36,7 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Console Group"), Remarks("SelfAssign_Console_Help")]
             public async Task SelfAssignHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Console Help", "SelfAssign_Console_Help", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Console Help", "SelfAssign_Console_Help");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);
@@ -102,9 +103,80 @@ namespace HeartFlame.SelfAssign
                     $"A custom Console Self Assign module was created in {Context.Channel.Name}",
                         Context);
             }
-            //TODO: Remove Module
-            //TODO: Remove Role
-            //TODO: Add Role
+
+            [Command("Remove"), Alias("rem", "delete", "del"), Summary("Create a new custom console self assign module"), Priority(1)]
+            [RequirePermission(Roles.MOD)]
+            public async Task SelfAssignRemove()
+            {
+                var Guild = GuildManager.GetGuild(Context.Guild);
+
+                Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.Consoles.MsgID, $"This Message has been deleted by {GuildManager.GetUser(Context.User).Name}!");
+
+                Guild.SelfAssign.Consoles = new RoleCategory();
+                PersistentData.SaveChangesToJson();
+
+                await Context.Message.DeleteAsync();
+
+                if (Guild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                    $"The Console Self Assign module was removed.",
+                        Context);
+            }
+
+            [Group("Role")]
+            public class SelfAssign_Console_Role_Commands : ModuleBase<SocketCommandContext>
+            {
+                [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Console Role Group"), Remarks("SelfAssign_Console_Role_Help")]
+                public async Task SelfAssignHelp()
+                {
+                    var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Console Role Help", "SelfAssign_Console_Role_Help");
+                    foreach (var embed in embeds)
+                    {
+                        await ReplyAsync("", false, embed);
+                    }
+                }
+
+                [Command("Add"), Summary("Add a role to the Console Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleAdd(SocketRole Role, int Position = -1)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+
+                    if (Position < 0)
+                        Position = Guild.SelfAssign.Consoles.Roles.Count;
+
+                    Guild.SelfAssign.Consoles.AddRole(Role.Name, Position, Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.Consoles.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was added to the Console Self Assign Module!",
+                            Context);
+                }
+
+                [Command("Remove"), Alias("Delete", "rem", "del"), Summary("Remove a role from the Console Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleRemove(SocketRole Role)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+
+                    Guild.SelfAssign.Consoles.RemoveRole(Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.Consoles.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was removed from the Console Self Assign Module!",
+                            Context);
+                }
+
+            }
         }
 
         [Group("TimeZone"), Alias("Time")]
@@ -113,7 +185,7 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Time Group"), Remarks("SelfAssign_Time_Help")]
             public async Task SelfAssignHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Time Help", "SelfAssign_Time_Help", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Time Help", "SelfAssign_Time_Help");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);
@@ -179,9 +251,80 @@ namespace HeartFlame.SelfAssign
                     $"A custom TimeZone Self Assign module was created in {Context.Channel.Name}",
                         Context);
             }
-            //TODO: Remove Module
-            //TODO: Remove Role
-            //TODO: Add Role
+
+            [Command("Remove"), Alias("rem", "delete", "del"), Summary("Create a new custom console self assign module"), Priority(1)]
+            [RequirePermission(Roles.MOD)]
+            public async Task SelfAssignRemove()
+            {
+                var Guild = GuildManager.GetGuild(Context.Guild);
+
+                Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, $"This Message has been deleted by {GuildManager.GetUser(Context.User).Name}!");
+
+                Guild.SelfAssign.TimeZones = new RoleCategory();
+                PersistentData.SaveChangesToJson();
+
+                await Context.Message.DeleteAsync();
+
+                if (Guild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                    $"The Time Self Assign module was removed.",
+                        Context);
+            }
+
+            [Group("Role")]
+            public class SelfAssign_Console_Role_Commands : ModuleBase<SocketCommandContext>
+            {
+                [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign TimeZone Role Group"), Remarks("SelfAssign_TimeZone_Role_Help")]
+                public async Task SelfAssignHelp()
+                {
+                    var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Timezone Role Help", "SelfAssign_TimeZone_Role_Help");
+                    foreach (var embed in embeds)
+                    {
+                        await ReplyAsync("", false, embed);
+                    }
+                }
+
+                [Command("Add"), Summary("Add a role to the TimeZone Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleAdd(SocketRole Role, int Position = -1)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+
+                    if (Position < 0)
+                        Position = Guild.SelfAssign.TimeZones.Roles.Count;
+
+                    Guild.SelfAssign.TimeZones.AddRole(Role.Name, Position, Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was added to the TimeZone Self Assign Module!",
+                            Context);
+                }
+
+                [Command("Remove"), Alias("Delete", "rem", "del"), Summary("Remove a role from the TimeZone Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleRemove(SocketRole Role)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+
+                    Guild.SelfAssign.TimeZones.RemoveRole(Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was removed from the TimeZone Self Assign Module!",
+                            Context);
+                }
+
+            }
 
         }
 
@@ -191,7 +334,7 @@ namespace HeartFlame.SelfAssign
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Custom Group"), Remarks("SelfAssign_Custom_Help")]
             public async Task SelfAssignHelp()
             {
-                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Custom Help", "SelfAssign_Custom_Help", 1);
+                var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Custom Help", "SelfAssign_Custom_Help");
                 foreach (var embed in embeds)
                 {
                     await ReplyAsync("", false, embed);
@@ -226,9 +369,87 @@ namespace HeartFlame.SelfAssign
                     $"A custom Self Assign module named {Name} was created in {Context.Channel.Name}",
                         Context);
             }
-            //TODO: Remove Module
-            //TODO: Remove Role
-            //TODO: Add Role
+
+            [Command("Remove"), Alias("rem", "delete", "del"), Summary("Create a new custom console self assign module"), Priority(1)]
+            [RequirePermission(Roles.MOD)]
+            public async Task SelfAssignRemove(string Name)
+            {
+                var Guild = GuildManager.GetGuild(Context.Guild);
+
+                var Module = Guild.SelfAssign.GetCustom(Name);
+
+                if (Module is null)
+                    return; //TODOL: Module not found
+
+                Utils.UpdateMessage(Context.Guild, Module.MsgID, $"This Message has been deleted by {GuildManager.GetUser(Context.User).Name}!");
+                
+                Guild.SelfAssign.RemoveCustom(Module);
+                PersistentData.SaveChangesToJson();
+
+                await Context.Message.DeleteAsync();
+
+                if (Guild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                    $"The Custom Self Assign module named {Name} was removed.",
+                        Context);
+            }
+
+            [Group("Role")]
+            public class SelfAssign_Console_Role_Commands : ModuleBase<SocketCommandContext>
+            {
+                [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Custom Role Group"), Remarks("SelfAssign_Custom_Role_Help")]
+                public async Task SelfAssignHelp()
+                {
+                    var embeds = Configuration.Configuration_Command.HelpEmbed("Self Assign Custom Role Help", "SelfAssign_Custom_Role_Help");
+                    foreach (var embed in embeds)
+                    {
+                        await ReplyAsync("", false, embed);
+                    }
+                }
+
+                [Command("Add"), Summary("Add a role to a Custom Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleAdd(string Name, SocketRole Role, int Position = -1)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+                    var Module = Guild.SelfAssign.GetCustom(Name);
+
+                    if (Position < 0)
+                        Position = Module.Roles.Count;
+
+                    Module.AddRole(Role.Name, Position, Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Module.MsgID, SelfAssign.GenerateEmbed(Module, "the role you want"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was added to a Custom Self Assign Module!",
+                            Context);
+                }
+
+                [Command("Remove"), Alias("Delete", "rem", "del"), Summary("Remove a role from a Custom Self Assign module."), Priority(1)]
+                public async Task SelfAssignRoleRemove(string Name, SocketRole Role)
+                {
+                    var Guild = GuildManager.GetGuild(Context.Guild);
+                    var Module = Guild.SelfAssign.GetCustom(Name);
+
+                    Module.RemoveRole(Role.Id);
+
+                    await Context.Message.DeleteAsync();
+
+                    Utils.UpdateMessage(Context.Guild, Module.MsgID, SelfAssign.GenerateEmbed(Module, "the role you want"));
+
+                    if (Guild.ModuleControl.IncludeLogging)
+                        BotLogging.PrintLogMessage(
+                            MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"The {Role.Name} role was removed from a Custom Self Assign Module!",
+                            Context);
+                }
+
+            }
         }
 
         //TODOL: Color Self Assign

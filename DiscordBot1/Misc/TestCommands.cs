@@ -13,7 +13,7 @@ namespace HeartFlame.Misc
     public class TestCommands : ModuleBase<SocketCommandContext>
     {
         [Command]
-        public async Task Test(SocketGuildUser User)
+        public async Task Test()
         {
             foreach(var _User in GuildManager.GetAllUsers())
             {

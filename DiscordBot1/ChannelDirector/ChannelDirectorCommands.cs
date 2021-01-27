@@ -14,7 +14,7 @@ namespace HeartFlame.ChannelDirector
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Requirements Group"), Remarks("Requirements_Help")]
         public async Task UsernameHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Requirements Help", "Requirements_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Requirements Help", "Requirements_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);

@@ -21,7 +21,7 @@ namespace HeartFlame.Moderation
 
         public async Task ModerationHelp()
         {
-            var embeds = Configuration.Configuration_Command.HelpEmbed("Moderation Help", "Moderation_Help", 0);
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Moderation Help", "Moderation_Help");
             foreach (var embed in embeds)
             {
                 await ReplyAsync("", false, embed);
