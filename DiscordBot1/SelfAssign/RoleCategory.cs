@@ -21,12 +21,16 @@ namespace HeartFlame.SelfAssign
 
         public void RemoveRole(ulong RoleID)
         {
+            if (!Roles.Exists(x => x.RoleID == RoleID))
+                return;
+            int Position = GetRole(RoleID).Position;
+
             foreach(var Role in Roles)
             {
                 if (Role.RoleID == RoleID)
                     Roles.Remove(Role);
 
-                if(Role.RoleID > RoleID)
+                if(Role.Position > Position)
                 {
                     Role.Position--;
                     Role.Emoji = GetEmoji(Role);
@@ -37,14 +41,19 @@ namespace HeartFlame.SelfAssign
 
         public void AddRole(string Name, int Position, ulong RoleID, string Emoji = null)
         {
-            foreach (var role in Roles)
-            {
-                if (role.Position >= Position)
+            if (Roles is null)
+                Roles = new List<RoleObject>();
+
+            if (Roles.Count > 0)
+                foreach (var role in Roles)
                 {
-                    role.Position++;
-                    role.Emoji = GetEmoji(role);
+                    if (role.Position >= Position)
+                    {
+                        role.Position++;
+                        role.Emoji = GetEmoji(role);
+                    }
                 }
-            }
+
             var Role = new RoleObject
             {
                 Name = Name,

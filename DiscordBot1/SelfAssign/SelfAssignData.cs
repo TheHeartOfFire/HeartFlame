@@ -45,6 +45,9 @@ namespace HeartFlame.SelfAssign
 
         public RoleCategory AddCustom(RoleCategory Module)
         {
+            if (Misc.Exists(x => x.Name == Module.Name))
+                return null;
+
             Misc.Add(Module);
             PersistentData.SaveChangesToJson();
             return GetCustom(Module.Name);

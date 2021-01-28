@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HeartFlame.SelfAssign
 {
@@ -15,54 +16,21 @@ namespace HeartFlame.SelfAssign
     {
         public static async void OnReactionAdded(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            SocketGuildUser user = (SocketGuildUser)Reaction.User;
-            SocketGuild guild = user.Guild;
-
-            if (user.IsBot)
+            if (((SocketGuildUser)Reaction.User).IsBot)
                 return;
-
             try
             {
-                foreach (var Guild in PersistentData.Data.Guilds)
-                {
-                    if (Reaction.MessageId == Guild.SelfAssign.Consoles.MsgID)
-                    {
+                var Guild = GuildManager.GetGuild(Reaction.User.Value);
 
-                        foreach (var role in Guild.SelfAssign.Consoles.Roles)
-                        {
-                            if (role.Emoji.Contains(Reaction.Emote.Name))
-                            {
-                                var Role = guild.GetRole(role.RoleID);
-                                await user.AddRoleAsync(Role);// Discord.Net.HttpException: 'The server responded with error 403: Forbidden'
-                                if (Guild.SelfAssign.Consoles.DividerRoleID > 0)
-                                {
-                                    Role = guild.GetRole(Guild.SelfAssign.Consoles.DividerRoleID);
-                                    await user.AddRoleAsync(Role);// Discord.Net.HttpException: 'The server responded with error 403: Forbidden'
-                                }
-                                return;
-                            }
-                        }
+                if (await CheckForSelfAssignMessage(Guild.SelfAssign.Consoles, Reaction))
+                    return;
 
-                    }
-                    if (Reaction.MessageId == Guild.SelfAssign.TimeZones.MsgID)
-                    {
-                        foreach (var role in Guild.SelfAssign.TimeZones.Roles)
-                        {
-                            if (role.Emoji.Contains(Reaction.Emote.Name))
-                            {
-                                var Role = guild.GetRole(role.RoleID);
-                                await user.AddRoleAsync(Role);
-                                if (Guild.SelfAssign.TimeZones.DividerRoleID > 0)
-                                {
-                                    Role = guild.GetRole(Guild.SelfAssign.TimeZones.DividerRoleID);
-                                    await user.AddRoleAsync(Role);
-                                }
-                                return;
-                            }
-                        }
-                    }
+                if (await CheckForSelfAssignMessage(Guild.SelfAssign.TimeZones, Reaction))
+                    return;
 
-                }
+                foreach (var Module in Guild.SelfAssign.Misc)
+                    if (await CheckForSelfAssignMessage(Module, Reaction))
+                        return;
 
             }
             catch (HttpException e)
@@ -74,40 +42,21 @@ namespace HeartFlame.SelfAssign
 
         public static async void OnReactionRemoved(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
         {
-            SocketGuildUser user = (SocketGuildUser)Reaction.User;
-            SocketGuild guild = user.Guild;
-
-            if (user.IsBot)
+            if (((SocketGuildUser)Reaction.User).IsBot)
                 return;
             try
             {
-                foreach (var Guild in PersistentData.Data.Guilds)
-                {
-                    if (Reaction.MessageId == Guild.SelfAssign.Consoles.MsgID)
-                    {
-                        foreach (var role in Guild.SelfAssign.Consoles.Roles)
-                        {
-                            if (role.Emoji.Contains(Reaction.Emote.Name))
-                            {
-                                var Role = guild.GetRole(role.RoleID);
-                                await user.RemoveRoleAsync(Role);
-                                return;
-                            }
-                        }
-                    }
-                    if (Reaction.MessageId == Guild.SelfAssign.TimeZones.MsgID)
-                    {
-                        foreach (var role in Guild.SelfAssign.TimeZones.Roles)
-                        {
-                            if (role.Emoji.Contains(Reaction.Emote.Name))
-                            {
-                                var Role = guild.GetRole(role.RoleID);
-                                await user.RemoveRoleAsync(Role);
-                                return;
-                            }
-                        }
-                    }
-                }
+                var Guild = GuildManager.GetGuild(Reaction.User.Value);
+
+                if (await CheckForSelfAssignMessage(Guild.SelfAssign.Consoles, Reaction, false))
+                    return;
+
+                if (await CheckForSelfAssignMessage(Guild.SelfAssign.TimeZones, Reaction, false))
+                    return;
+
+                foreach(var Module in Guild.SelfAssign.Misc)
+                    if (await CheckForSelfAssignMessage(Module, Reaction, false))
+                        return;
 
             }
             catch (HttpException e)
@@ -115,6 +64,36 @@ namespace HeartFlame.SelfAssign
                 if (e.HttpCode == HttpStatusCode.Forbidden)
                     await Channel.SendMessageAsync(Properties.Resources.BadHierarchyPosition);
             }
+        }
+
+        private static async Task<bool> CheckForSelfAssignMessage(RoleCategory Module, SocketReaction Reaction, bool Add = true)
+        {
+
+            var user = (SocketGuildUser)Reaction.User;
+            var guild = user.Guild;
+
+            if (Reaction.MessageId == Module.MsgID)
+            {
+                foreach (var role in Module.Roles)
+                {
+                    if (role.Emoji.Contains(Reaction.Emote.Name))
+                    {
+                        var Role = guild.GetRole(role.RoleID);
+                        if (Add)
+                        {
+                            await user.AddRoleAsync(Role);
+                            if (Module.DividerRoleID > 0)
+                            {
+                                Role = guild.GetRole(Module.DividerRoleID);
+                                await user.AddRoleAsync(Role);
+                            }
+                        }else
+                        await user.RemoveRoleAsync(Role);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace HeartFlame.ModuleControl
         SELFASSIGN,
         COMPENDIUM,
         MODERATION,
-        SERVERLOGGING
+        SERVERLOGGING,
+        TIME
     }
 }

@@ -119,6 +119,24 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: Uh oh! That Module exists already. Please use a different name or update/delete the existing one..
+        /// </summary>
+        internal static string ModuleExists {
+            get {
+                return ResourceManager.GetString("ModuleExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x: Uh oh! I couldn&apos;t find that module. Please check the name and try again..
+        /// </summary>
+        internal static string ModuleNotFound {
+            get {
+                return ResourceManager.GetString("ModuleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x:Hmm. Is seems this Server has deleted their Join Role or has not set it up. Please set the Join role to a valid Discord Role..
         /// </summary>
         internal static string NoJoinRole {
@@ -232,6 +250,15 @@ namespace HeartFlame.Properties {
         internal static string NotServerLogging {
             get {
                 return ResourceManager.GetString("NotServerLogging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The time module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error..
+        /// </summary>
+        internal static string NotTime {
+            get {
+                return ResourceManager.GetString("NotTime", resourceCulture);
             }
         }
         

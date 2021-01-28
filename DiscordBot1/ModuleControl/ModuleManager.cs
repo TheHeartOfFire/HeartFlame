@@ -126,6 +126,9 @@ namespace HeartFlame.ModuleControl
                 case Modules.SERVERLOGGING:
                     Guild.ModuleControl.IncludeServerLogging = Active;
                     break;
+                case Modules.TIME:
+                    Guild.ModuleControl.IncludeServerLogging = Active;
+                    break;
             }
         }
 
@@ -147,6 +150,8 @@ namespace HeartFlame.ModuleControl
                 return Modules.MODERATION;
             if (Module.Equals("serverlogging") || Module.Equals("server logging") || Module.Equals("sl") || Module.Equals("s l"))
                 return Modules.SERVERLOGGING;
+            if (Module.Equals("time"))
+                return Modules.TIME;
             return null;
         }
 
@@ -177,6 +182,7 @@ namespace HeartFlame.ModuleControl
             SetModule(Guild, Modules.PERMISSIONS, Active);
             SetModule(Guild, Modules.SELFASSIGN, Active);
             SetModule(Guild, Modules.SERVERLOGGING, Active);
+            SetModule(Guild, Modules.TIME, Active);
             PersistentData.SaveChangesToJson();
         }
     }

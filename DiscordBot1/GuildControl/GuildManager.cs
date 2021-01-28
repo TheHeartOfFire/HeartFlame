@@ -45,7 +45,10 @@ namespace HeartFlame.GuildControl
         {
             return GetGuild(Guild.Id);
         }
-
+        public static GuildData GetGuild(IUser User)
+        {
+            return GetGuild((SocketGuildUser)User);
+        }
         public static GuildData GetGuild(SocketGuildUser User)
         {
             return GetGuild(User.Guild);

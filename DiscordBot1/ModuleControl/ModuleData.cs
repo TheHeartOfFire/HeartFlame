@@ -14,6 +14,7 @@ namespace HeartFlame.ModuleControl
         public bool IncludeCompendium { get; set; }
         public bool IncludeModeration { get; set; }
         public bool IncludeServerLogging { get; set; }
+        public bool IncludeTime { get; set; }
 
         public ModuleData()
         {
@@ -24,6 +25,7 @@ namespace HeartFlame.ModuleControl
             IncludePermissions = true;
             IncludeSelfAssign = true;
             IncludeServerLogging = true;
+            IncludeTime = true;
         }
     }
 }

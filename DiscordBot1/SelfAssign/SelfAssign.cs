@@ -21,9 +21,7 @@ namespace HeartFlame.SelfAssign
 
         public static Embed PrefabConsoleAsync(SocketGuild Guild)
         {
-            var Module = GuildManager.GetGuild(Guild).SelfAssign.Consoles;
-
-            Module = new RoleCategory()
+            var Module = new RoleCategory()
             {
                 Roles = new List<RoleObject>(),
                 Name = "Consoles",
@@ -52,15 +50,14 @@ namespace HeartFlame.SelfAssign
                 AddRoleIfNotExist(Guild, "Nintendo", Color.Red).Result,
                 EmoteRef.Emotes.GetValueOrDefault("Nintendo"));
 
+            GuildManager.GetGuild(Guild).SelfAssign.Consoles = Module;
+
             return GenerateEmbed(Module, "the consoles you use");
         }
 
         public static Embed PrefabTimeAsync(SocketGuild Guild)
         {
-            var Module = GuildManager.GetGuild(Guild).SelfAssign.TimeZones;
-
-
-            Module = new RoleCategory()
+            var Module = new RoleCategory()
             {
                 Roles = new List<RoleObject>(),
                 Name = "TimeZones",
@@ -104,6 +101,8 @@ namespace HeartFlame.SelfAssign
                 AddRoleIfNotExist(Guild, "Australia (+10)").Result,
                 EmoteRef.Emotes.GetValueOrDefault("7"));
 
+            GuildManager.GetGuild(Guild).SelfAssign.TimeZones = Module;
+
             return GenerateEmbed(Module, "your timezone");
         }
 
@@ -111,7 +110,13 @@ namespace HeartFlame.SelfAssign
         {
             int pos = 0;
             foreach (var Role in Roles)
-                Module.AddRole(Role.Name, pos, Role.Id, EmoteRef.Emotes.GetValueOrDefault(pos++.ToString()));
+            {
+                pos++;
+                var Emoji = EmoteRef.Emotes.GetValueOrDefault(pos.ToString());
+
+                Module.AddRole(Role.Name, pos, Role.Id, Emoji);
+
+            }
 
             return GenerateEmbed(Module, Description);
         }
@@ -119,17 +124,17 @@ namespace HeartFlame.SelfAssign
         public static Embed GenerateEmbed(RoleCategory Module, string Description)
         {
             EmbedBuilder Embed = new EmbedBuilder();
+            Embed.Title = $"Name: {Module.Name}\nTitle: {Module.Title}";
             Embed.WithDescription($"Please select the reaction corresponding to {Description}. Removing your reaction will remove the role from you.");
 
             foreach (var role in Module.Roles)
             {
                 Embed.AddField($"{role.Emoji} for the {role.Name} role.", ".");
             }
-            Embed.WithFooter("");//TODOL: Additional command info
             return Embed.Build();
         }
 
-        public static async Task<ulong> AddRoleIfNotExist(SocketGuild Guild, string Name, Color? Color = null, bool Mentionable = true)
+        public static async Task<ulong> AddRoleIfNotExist(SocketGuild Guild, string Name, Color? Color = null, bool Mentionable = true, int Position = 0)
         {
             if (!Color.HasValue)
                 Color = Discord.Color.Default;
@@ -141,7 +146,7 @@ namespace HeartFlame.SelfAssign
             if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == Name))
             {
                 var Role = await Guild.CreateRoleAsync(Name, NoPerms, Color.Value, false, Mentionable);
-                await Role.ModifyAsync(x => x.Position = 0);
+                await Role.ModifyAsync(x => x.Position = Position);
                 ID = Role.Id;
             }
             else
@@ -151,23 +156,22 @@ namespace HeartFlame.SelfAssign
             return ID;
         }
 
-        public static async Task<ulong> CreateDivider(SocketGuild Guild, string Name)
+        public static async Task<ulong> CreateDivider(SocketGuild Guild, string Name, SocketRole[] Roles = null)
         {
-            var GuildRoles = new List<SocketRole>(Guild.Roles);
+            var Position = 0;
+            if (!(Roles is null))
+                Position = MaxPosition(Roles) + 1;
+            return await AddRoleIfNotExist(Guild, $"⁣⁣ 	  	  	  	  	 ☚{Name}☛ 	  	  	  	  	 ⁣", new Color(0x2f3136), false, Position);
+        }
 
-            ulong ID = 0;
+        private static int MaxPosition(SocketRole[] Roles)
+        {
+            int Winner = 0;
+            foreach (var Role in Roles)
+                if (Role.Position > Winner)
+                    Winner = Role.Position;
 
-            if (GuildRoles is null || !GuildRoles.Exists(x => x.Name == Name))
-            {
-                var Role = await Guild.CreateRoleAsync($"⁣⁣ 	  	  	  	  	 ☚{Name}☛ 	  	  	  	  	 ⁣", NoPerms, new Color(0x2f3136), false, false);
-                await Role.ModifyAsync(x => x.Position = 0);
-                ID = Role.Id;
-            }
-            else
-                ID = GuildRoles.FirstOrDefault(x => x.Name == Name).Id;
-
-
-            return ID;
+            return Winner;
         }
     }
 }

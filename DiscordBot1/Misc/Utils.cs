@@ -14,7 +14,7 @@ namespace HeartFlame
             var msg = Channel.GetMessageAsync(MsgID);
             var Message = ((IUserMessage)msg.Result);
             if (RemoveText)
-                await Message.ModifyAsync(x => x.Content = "");
+                await Message.ModifyAsync(x => x.Content = ".");
 
             await Message.ModifyAsync(x => x.Embed = Embed);
         }
@@ -49,24 +49,28 @@ namespace HeartFlame
             await Message.ModifyAsync(x => x.Content = Text);
         }
 
-        public static async void UpdateMessage(SocketGuild Guild, ulong MsgID, Embed Embed, bool RemoveText = false)
+        public static async Task<IUserMessage> UpdateMessage(SocketGuild Guild, ulong MsgID, Embed Embed, bool RemoveText = false)
         {
-            Task<IMessage> msg = null;
+            IMessage msg = null;
 
             foreach (var Channel in Guild.TextChannels)
             {
-                if (!(Channel.GetMessageAsync(MsgID) is null))
-                    msg = Channel.GetMessageAsync(MsgID);
+                var TestCase = await Channel.GetMessageAsync(MsgID);
+
+                if (!(TestCase is null))
+                    msg = TestCase;
             }
 
-            if (!(msg is null))
-                return;
+            if (msg is null)
+                return null;
 
-            var Message = ((IUserMessage)msg.Result);
+            var Message = ((IUserMessage)msg);
             if (RemoveText)
                 await Message.ModifyAsync(x => x.Content = "");
 
             await Message.ModifyAsync(x => x.Embed = Embed);
+
+            return Message;
         }
 
         public static int GetClosest(List<int> Candidates, int Comparison)

@@ -310,7 +310,6 @@ namespace HeartFlame
             ModuleManager.MessageTunnel(arg);
         }
         //TODOL: Announcements
-        //TODOL: Time
         //TODOL: Voting / Poll
         //TODOL: Dice
     }

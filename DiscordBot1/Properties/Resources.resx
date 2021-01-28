@@ -145,6 +145,14 @@ Make sure to leave a space between each value.</value>
     <value>264555514510311424</value>
     <comment>HeartFire's User ID</comment>
   </data>
+  <data name="ModuleExists" xml:space="preserve">
+    <value>:x: Uh oh! That Module exists already. Please use a different name or update/delete the existing one.</value>
+    <comment>Error if module exists</comment>
+  </data>
+  <data name="ModuleNotFound" xml:space="preserve">
+    <value>:x: Uh oh! I couldn't find that module. Please check the name and try again.</value>
+    <comment>Error if Module not found</comment>
+  </data>
   <data name="NoJoinRole" xml:space="preserve">
     <value>:x:Hmm. Is seems this Server has deleted their Join Role or has not set it up. Please set the Join role to a valid Discord Role.</value>
     <comment>Error Message if Join Role Bad/Missing</comment>
@@ -195,6 +203,10 @@ Make sure to leave a space between each value.</value>
   <data name="NotServerLogging" xml:space="preserve">
     <value>:x:Hmm. The server logging module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error.</value>
     <comment>Error Message if server logging is not enabled.</comment>
+  </data>
+  <data name="NotTime" xml:space="preserve">
+    <value>:x:Hmm. The time module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error.</value>
+    <comment>Error message if time is not enabled</comment>
   </data>
   <data name="PatreonLink" xml:space="preserve">
     <value>https://www.patreon.com/heartflamebot</value>

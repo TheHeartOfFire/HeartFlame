@@ -261,8 +261,34 @@ namespace HeartFlame.Configuration
                         $"{msg}",
                         Context);
         }
+        [Command("UseJoinRole")]
+        [Summary("Choose whether or not a join role is awarded to new members")]
+        [Priority(1)]
+        [RequirePermission(Roles.ADMIN)]
+        public async Task UseJoinRole(bool use = true)
+        {
+            var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+            if (use && BotGuild.Moderation.JoinRole <= 0)
+            {
+                await ReplyAsync($"There is no Join Role. Please use `{PersistentData.Data.Config.CommandPrefix}Configuration SetJoinRole` to select a role for this purpose.");
+                return;
+            }
 
-        //TODO: "Use Join Role" command
+            BotGuild.Moderation.UseJoinRole = use;
+            PersistentData.SaveChangesToJson();
+
+            var msg = "now";
+            if (!use)
+                msg = "no longer";
+
+            await Context.Channel.SendMessageAsync($"New Members will {msg} be awarded a role when they join the server.");
+
+            if (BotGuild.ModuleControl.IncludeLogging)
+                BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                        $"New Members will {msg} be awarded a role when they join the server.",
+                        Context);
+        }
 
         public static List<Embed> HelpEmbed(string CommandName, string Remarks)
         {

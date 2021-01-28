@@ -94,7 +94,7 @@ namespace HeartFlame.Moderation
 
         public static async void GiveJoinRole(GuildData Guild, SocketGuildUser User)
         {
-            if (Guild.Moderation.JoinRole != 0)
+            if (Guild.Moderation.JoinRole != 0 && Guild.Moderation.UseJoinRole)
             {
                 var role = User.Guild.GetRole(Guild.Moderation.JoinRole);
                 await User.AddRoleAsync(role);

@@ -54,7 +54,12 @@ namespace HeartFlame.SelfAssign
                     foreach (var chnl in Context.Guild.Channels)
                     {
                         if (CorrectChannel(chnl, BotGuild.SelfAssign.Consoles.MsgID))
-                            await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID);
+                        {
+                            
+                            try {
+                                await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID); 
+                            } catch (Exception){ };
+                        }
                     }
                 }
 
@@ -143,14 +148,21 @@ namespace HeartFlame.SelfAssign
                     var Guild = GuildManager.GetGuild(Context.Guild);
 
                     if (Position < 0)
-                        Position = Guild.SelfAssign.Consoles.Roles.Count;
+                        Position = Guild.SelfAssign.Consoles.Roles.Count+1;
 
                     Guild.SelfAssign.Consoles.AddRole(Role.Name, Position, Role.Id);
 
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.Consoles.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, 
+                        Guild.SelfAssign.Consoles.MsgID, 
+                        SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
 
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Guild.SelfAssign.Consoles.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
                             MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
@@ -163,12 +175,22 @@ namespace HeartFlame.SelfAssign
                 {
                     var Guild = GuildManager.GetGuild(Context.Guild);
 
+                    try
+                    {
                     Guild.SelfAssign.Consoles.RemoveRole(Role.Id);
-
+                    }
+                    catch (Exception) { };
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.Consoles.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, 
+                        Guild.SelfAssign.Consoles.MsgID, 
+                        SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
 
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Guild.SelfAssign.Consoles.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
                             MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
@@ -202,7 +224,15 @@ namespace HeartFlame.SelfAssign
                     foreach (var chnl in Context.Guild.Channels)
                     {
                         if (CorrectChannel(chnl, BotGuild.SelfAssign.TimeZones.MsgID))
-                            await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID);
+                        {
+
+                            try
+                            {
+                                await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.TimeZones.MsgID);
+                            }
+                            catch (Exception) { };
+                        }
+                        
                     }
                 }
 
@@ -297,7 +327,15 @@ namespace HeartFlame.SelfAssign
 
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, 
+                        Guild.SelfAssign.TimeZones.MsgID, 
+                        SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Guild.SelfAssign.TimeZones.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
 
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
@@ -311,11 +349,23 @@ namespace HeartFlame.SelfAssign
                 {
                     var Guild = GuildManager.GetGuild(Context.Guild);
 
-                    Guild.SelfAssign.TimeZones.RemoveRole(Role.Id);
-
+                    
+                    try
+                    {
+                        Guild.SelfAssign.TimeZones.RemoveRole(Role.Id);
+                    }
+                    catch (Exception) { };
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, 
+                        Guild.SelfAssign.TimeZones.MsgID, 
+                        SelfAssign.GenerateEmbed(Guild.SelfAssign.TimeZones, "your timezone"));
+
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Guild.SelfAssign.TimeZones.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
 
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
@@ -352,8 +402,12 @@ namespace HeartFlame.SelfAssign
 
                 var Embed = SelfAssign.CustomModule(Roles.ToList(), Module, "the role you want");
 
-                Module.SetDivider(await SelfAssign.CreateDivider(Context.Guild, DividerRoleName));
-                BotGuild.SelfAssign.AddCustom(Module);
+                Module.SetDivider(await SelfAssign.CreateDivider(Context.Guild, DividerRoleName, Roles));
+                if(BotGuild.SelfAssign.AddCustom(Module) == null)
+                {
+                    await ReplyAsync(Properties.Resources.ModuleExists);
+                    return; 
+                }
 
                 Utils.UpdateMessage(Context.Channel, Msg.Id, Embed, true);
 
@@ -379,7 +433,10 @@ namespace HeartFlame.SelfAssign
                 var Module = Guild.SelfAssign.GetCustom(Name);
 
                 if (Module is null)
-                    return; //TODOL: Module not found
+                {
+                    await ReplyAsync(Properties.Resources.ModuleNotFound);
+                    return;
+                }
 
                 Utils.UpdateMessage(Context.Guild, Module.MsgID, $"This Message has been deleted by {GuildManager.GetUser(Context.User).Name}!");
                 
@@ -415,14 +472,21 @@ namespace HeartFlame.SelfAssign
                     var Module = Guild.SelfAssign.GetCustom(Name);
 
                     if (Position < 0)
-                        Position = Module.Roles.Count;
+                        Position = Module.Roles.Count + 1;
 
                     Module.AddRole(Role.Name, Position, Role.Id);
 
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Module.MsgID, SelfAssign.GenerateEmbed(Module, "the role you want"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, 
+                        Module.MsgID, 
+                        SelfAssign.GenerateEmbed(Module, "the role you want"));
 
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Module.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
                             MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
@@ -436,12 +500,20 @@ namespace HeartFlame.SelfAssign
                     var Guild = GuildManager.GetGuild(Context.Guild);
                     var Module = Guild.SelfAssign.GetCustom(Name);
 
-                    Module.RemoveRole(Role.Id);
-
+                    try
+                    {
+                        Module.RemoveRole(Role.Id);
+                    }
+                    catch (Exception) { };
                     await Context.Message.DeleteAsync();
 
-                    Utils.UpdateMessage(Context.Guild, Module.MsgID, SelfAssign.GenerateEmbed(Module, "the role you want"));
+                    var Message = await Utils.UpdateMessage(Context.Guild, Module.MsgID, SelfAssign.GenerateEmbed(Module, "the role you want"));
 
+                    await Message.RemoveAllReactionsAsync();
+                    foreach (var role in Module.Roles)
+                    {
+                        await Message.AddReactionAsync(Emote.Parse(role.Emoji));
+                    }
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
                             MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,

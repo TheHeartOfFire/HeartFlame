@@ -62,6 +62,12 @@ namespace HeartFlame.ModuleControl
                             return Task.FromResult(PreconditionResult.FromSuccess());
                         else
                             return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotServerLogging));
+
+                    case Modules.TIME:
+                        if (mods.IncludeTime)
+                            return Task.FromResult(PreconditionResult.FromSuccess());
+                        else
+                            return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotTime));
                 }
             }
 
