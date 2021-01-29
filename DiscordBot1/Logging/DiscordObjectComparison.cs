@@ -39,7 +39,7 @@ namespace HeartFlame.Logging
                 if (Perm.Gained)
                     Action = "now";
 
-                Results.Add(new CompareResult("Permission Update", $"{Name} {Action} has the {Perm.Permission}"));
+                Results.Add(new CompareResult("Permission Update", $"{Name} can {Action} {Perm.Permission}"));
             }
 
             return Results;
@@ -81,7 +81,7 @@ namespace HeartFlame.Logging
                 if (Perm.Gained)
                     Action = "now";
 
-                Results.Add(new CompareResult("Permission Update", $"{After.Name} {Action} has the {Perm.Permission}"));
+                Results.Add(new CompareResult("Permission Update", $"{After.Name} can {Action} {Perm.Permission}"));
             }
 
             return Results;

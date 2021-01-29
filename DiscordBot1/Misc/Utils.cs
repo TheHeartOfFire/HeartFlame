@@ -82,5 +82,14 @@ namespace HeartFlame
 
             return Winner;
         }
+
+        public static bool AdvancedCompare(StringComparison CompType, string Comparison, params string[] Options)
+        {
+            foreach (var Option in Options)
+                if (Option.Equals(Comparison, CompType))
+                    return true;
+
+            return false;
+        }
     }
 }

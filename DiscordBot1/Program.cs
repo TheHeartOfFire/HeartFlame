@@ -266,8 +266,7 @@ namespace HeartFlame
 
         private async Task Client_MessageReceived(SocketMessage arg)
         {
-            var Message = arg as SocketUserMessage;
-            if (Message is null)
+            if (!(arg is SocketUserMessage Message))
                 return;
 
             var Context = new SocketCommandContext(Client, Message);
@@ -279,6 +278,9 @@ namespace HeartFlame
             if (GuildManager.GetUser(Context.User).Moderation.isMuted()) await arg.DeleteAsync();
 
             bool HasPfx = false;
+
+            GuildManager.UpdateGuildName(Context.Guild);
+            ModuleManager.MessageTunnel(arg);
 
             if (GuildManager.GetGuild(Context.User).Configuration.Prefixes.Count > 0)
                 foreach (var prefix in GuildManager.GetGuild(Context.User).Configuration.Prefixes)
@@ -306,8 +308,6 @@ namespace HeartFlame
                 ErrorHandling.DotNetCommandException((CommandError)Result.Error, Context);
                 Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
             }
-            GuildManager.UpdateGuildName(Context.Guild);
-            ModuleManager.MessageTunnel(arg);
         }
         //TODOL: Announcements
         //TODOL: Voting / Poll

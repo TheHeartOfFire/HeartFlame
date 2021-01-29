@@ -20,8 +20,16 @@ namespace HeartFlame.ModuleControl
             {
                 if(((SocketGuildChannel)arg.Channel).Guild.Id == Guild.GuildID)
                 {
-                    if(Guild.ModuleControl.IncludeChat) ChatModuleIntegrator.OnMessagePosted(arg);
+                    if(Guild.ModuleControl.IncludeChat) ChatModuleIntegrator.OnMessagePosted(arg); 
+                    
+                    if (Guild.ModuleControl.IncludeTime && arg.Content.Contains("what time", StringComparison.OrdinalIgnoreCase))
+                    {
+                        arg.Channel.SendMessageAsync($"Would you like to know the time? Try `!hf Time`");
+                    }
+                    return;
                 }
+
+                
             }
         }
 
