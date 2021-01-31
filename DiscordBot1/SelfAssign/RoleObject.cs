@@ -5,7 +5,6 @@ using System.Text;
 
 namespace HeartFlame.SelfAssign
 {
-    //level 4
     public class RoleObject : IEquatable<RoleObject>, IComparable<RoleObject>
     {
         public ulong RoleID { get; set; }
@@ -13,7 +12,7 @@ namespace HeartFlame.SelfAssign
         public string Name { get; set; }
         public int Position { get; set; }
 
-        public int CompareTo(RoleObject other)
+        public virtual int CompareTo(RoleObject other)
         {
             if (other is null) return 1;
             else if (other.Position == Position) return string.Compare(Name, other.Name);

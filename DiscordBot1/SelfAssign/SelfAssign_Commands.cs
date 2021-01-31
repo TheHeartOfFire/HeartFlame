@@ -6,6 +6,7 @@ using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.ModuleControl;
 using HeartFlame.Permissions;
+using HeartFlame.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,10 +56,10 @@ namespace HeartFlame.SelfAssign
                     {
                         if (CorrectChannel(chnl, BotGuild.SelfAssign.Consoles.MsgID))
                         {
-                            
+
                             try {
-                                await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID); 
-                            } catch (Exception){ };
+                                await ((IMessageChannel)chnl).DeleteMessageAsync(BotGuild.SelfAssign.Consoles.MsgID);
+                            } catch (Exception) { };
                         }
                     }
                 }
@@ -148,14 +149,14 @@ namespace HeartFlame.SelfAssign
                     var Guild = GuildManager.GetGuild(Context.Guild);
 
                     if (Position < 0)
-                        Position = Guild.SelfAssign.Consoles.Roles.Count+1;
+                        Position = Guild.SelfAssign.Consoles.Roles.Count + 1;
 
                     Guild.SelfAssign.Consoles.AddRole(Role.Name, Position, Role.Id);
 
                     await Context.Message.DeleteAsync();
 
-                    var Message = await Utils.UpdateMessage(Context.Guild, 
-                        Guild.SelfAssign.Consoles.MsgID, 
+                    var Message = await Utils.UpdateMessage(Context.Guild,
+                        Guild.SelfAssign.Consoles.MsgID,
                         SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
 
                     await Message.RemoveAllReactionsAsync();
@@ -177,13 +178,13 @@ namespace HeartFlame.SelfAssign
 
                     try
                     {
-                    Guild.SelfAssign.Consoles.RemoveRole(Role.Id);
+                        Guild.SelfAssign.Consoles.RemoveRole(Role.Id);
                     }
                     catch (Exception) { };
                     await Context.Message.DeleteAsync();
 
-                    var Message = await Utils.UpdateMessage(Context.Guild, 
-                        Guild.SelfAssign.Consoles.MsgID, 
+                    var Message = await Utils.UpdateMessage(Context.Guild,
+                        Guild.SelfAssign.Consoles.MsgID,
                         SelfAssign.GenerateEmbed(Guild.SelfAssign.Consoles, "the consoles you use"));
 
                     await Message.RemoveAllReactionsAsync();
@@ -202,6 +203,7 @@ namespace HeartFlame.SelfAssign
         }
 
         [Group("TimeZone"), Alias("Time")]
+        [RequireModule(Modules.TIME)]
         public class SelfAssign_Time_Commands : ModuleBase<SocketCommandContext>
         {
             [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign Time Group"), Remarks("SelfAssign_Time_Help")]
@@ -254,35 +256,7 @@ namespace HeartFlame.SelfAssign
                         Context);
             }
 
-            [Command("Custom"), Alias("new"), Summary("Create a new custom timezone self assign module"), Priority(1)]
-            [RequirePermission(Roles.MOD)]
-            public async Task SelfAssignCustom(string Name, string Title, params SocketRole[] Roles)
-            {
-                var Msg = await ReplyAsync("Module is loading. Please wait...");
-                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
-                var Module = new RoleCategory() { Name = Name, Title = Title, MsgID = Msg.Id };
-
-                var Embed = SelfAssign.CustomModule(Roles.ToList(), Module, "your timezone");
-
-                Utils.UpdateMessage(Context.Channel, Msg.Id, Embed, true);
-
-                Module.SetDivider(await SelfAssign.CreateDivider(Context.Guild, "TimeZone"));
-                BotGuild.SelfAssign.TimeZones = Module;
-
-                PersistentData.SaveChangesToJson();
-                foreach (var role in Module.Roles)
-                {
-                    await Msg.AddReactionAsync(Emote.Parse(role.Emoji));
-                }
-
-                if (BotGuild.ModuleControl.IncludeLogging)
-                    BotLogging.PrintLogMessage(
-                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
-                    $"A custom TimeZone Self Assign module was created in {Context.Channel.Name}",
-                        Context);
-            }
-
-            [Command("Remove"), Alias("rem", "delete", "del"), Summary("Create a new custom console self assign module"), Priority(1)]
+            [Command("Remove"), Alias("rem", "delete", "del"), Summary("Remove the TimeZone self assign module"), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task SelfAssignRemove()
             {
@@ -290,7 +264,7 @@ namespace HeartFlame.SelfAssign
 
                 Utils.UpdateMessage(Context.Guild, Guild.SelfAssign.TimeZones.MsgID, $"This Message has been deleted by {GuildManager.GetUser(Context.User).Name}!");
 
-                Guild.SelfAssign.TimeZones = new RoleCategory();
+                Guild.SelfAssign.TimeZones = new TimeZoneCategory();
                 PersistentData.SaveChangesToJson();
 
                 await Context.Message.DeleteAsync();
@@ -302,9 +276,9 @@ namespace HeartFlame.SelfAssign
                         Context);
             }
 
-            [Group("Role")]
+            [Group("Role"), Alias("zone")]
             public class SelfAssign_Console_Role_Commands : ModuleBase<SocketCommandContext>
-            {
+            {//Change Timezone Roles to add or remove individual Timezones. Check for duplicates
                 [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Self Assign TimeZone Role Group"), Remarks("SelfAssign_TimeZone_Role_Help")]
                 public async Task SelfAssignHelp()
                 {
@@ -316,14 +290,19 @@ namespace HeartFlame.SelfAssign
                 }
 
                 [Command("Add"), Summary("Add a role to the TimeZone Self Assign module."), Priority(1)]
-                public async Task SelfAssignRoleAdd(SocketRole Role, int Position = -1)
+                public async Task SelfAssignRoleAdd(string TimeZone)
                 {
                     var Guild = GuildManager.GetGuild(Context.Guild);
+                    var TZone = TimeManager.GetTimezone(TimeZone);
 
-                    if (Position < 0)
-                        Position = Guild.SelfAssign.TimeZones.Roles.Count;
+                    if(TZone.Equals(TimeZoneInfo.Utc))
+                    {
+                        //TODOH: Bad Timezone
+                        return;
+                    }
 
-                    Guild.SelfAssign.TimeZones.AddRole(Role.Name, Position, Role.Id);
+                    SelfAssign.AddTimeZoneRole(Guild.SelfAssign.TimeZones, 9, TZone, Context.Guild);
+                    Guild.SelfAssign.TimeZones.Sort();
 
                     await Context.Message.DeleteAsync();
 
@@ -340,7 +319,7 @@ namespace HeartFlame.SelfAssign
                     if (Guild.ModuleControl.IncludeLogging)
                         BotLogging.PrintLogMessage(
                             MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
-                        $"The {Role.Name} role was added to the TimeZone Self Assign Module!",
+                        $"The {TimeZone} role was added to the TimeZone Self Assign Module!",
                             Context);
                 }
 
@@ -349,7 +328,6 @@ namespace HeartFlame.SelfAssign
                 {
                     var Guild = GuildManager.GetGuild(Context.Guild);
 
-                    
                     try
                     {
                         Guild.SelfAssign.TimeZones.RemoveRole(Role.Id);

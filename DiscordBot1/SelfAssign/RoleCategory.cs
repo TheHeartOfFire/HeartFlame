@@ -39,7 +39,7 @@ namespace HeartFlame.SelfAssign
             PersistentData.SaveChangesToJson();
         }
 
-        public void AddRole(string Name, int Position, ulong RoleID, string Emoji = null)
+        public virtual void AddRole(string Name, int Position, ulong RoleID, string Emoji = null)
         {
             if (Roles is null)
                 Roles = new List<RoleObject>();
@@ -95,7 +95,7 @@ namespace HeartFlame.SelfAssign
             PersistentData.SaveChangesToJson();
         }
 
-        private string GetEmoji(RoleObject Role)
+        protected string GetEmoji(RoleObject Role)
         {
             if (Role.Name.Equals("xbox", StringComparison.OrdinalIgnoreCase))
                 return EmoteRef.Emotes.GetValueOrDefault("Xbox");

@@ -312,5 +312,6 @@ namespace HeartFlame
         //TODOL: Announcements
         //TODOL: Voting / Poll
         //TODOL: Dice
+        //TODOL: Server Info
     }
 }

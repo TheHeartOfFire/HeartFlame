@@ -24,5 +24,7 @@ namespace HeartFlame.Time
         {
             await Context.Channel.SendMessageAsync("", false, TimeManager.BuildEmbed(User));
         }
+        //TODO: be able to add or remove timezones from the embed
+        //TODOH: Group time commands and add help command.
     }
 }

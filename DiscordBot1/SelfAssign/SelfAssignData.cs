@@ -7,7 +7,7 @@ namespace HeartFlame.SelfAssign
     public class SelfAssignData
     {
         public RoleCategory Consoles { get; set; }
-        public RoleCategory TimeZones { get; set; }
+        public TimeZoneCategory TimeZones { get; set; }
         public List<RoleCategory> Misc { get; set; }//level 5
 
         public SelfAssignData()
@@ -17,7 +17,7 @@ namespace HeartFlame.SelfAssign
                 Roles = new List<RoleObject>()
             };
 
-            TimeZones = new RoleCategory
+            TimeZones = new TimeZoneCategory
             {
                 Roles = new List<RoleObject>()
             };

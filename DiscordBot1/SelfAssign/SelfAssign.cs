@@ -11,6 +11,7 @@ using HeartFlame.Misc;
 using System.Threading.Tasks;
 using HeartFlame.GuildControl;
 using Discord.Rest;
+using HeartFlame.Time;
 
 namespace HeartFlame.SelfAssign
 {
@@ -55,9 +56,9 @@ namespace HeartFlame.SelfAssign
             return GenerateEmbed(Module, "the consoles you use");
         }
 
-        public static Embed PrefabTimeAsync(SocketGuild Guild)
-        {
-            var Module = new RoleCategory()
+        public static Embed PrefabTimeAsync(SocketGuild Guild) 
+        { 
+            var Module = new TimeZoneCategory()
             {
                 Roles = new List<RoleObject>(),
                 Name = "TimeZones",
@@ -66,40 +67,14 @@ namespace HeartFlame.SelfAssign
 
             Module.SetDivider(CreateDivider(Guild, "TimeZone").Result);
 
-            Module.AddRole("US Pacific (-7)", 
-                1,
-                AddRoleIfNotExist(Guild, "US Pacific (-7)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("1"));
-
-            Module.AddRole("US Mountain (-6)",
-                2,
-                AddRoleIfNotExist(Guild, "US Mountain (-6)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("2"));
-
-            Module.AddRole("US Central (-5)", 
-                3,
-                AddRoleIfNotExist(Guild, "US Central (-5)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("3"));
-
-            Module.AddRole("US Eastern (-4)", 
-                4,
-                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("4"));
-
-            Module.AddRole("Greenwich (+0)", 
-                5,
-                AddRoleIfNotExist(Guild, "US Eastern (-4)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("5"));
-
-            Module.AddRole("UK (+1)", 
-                6,
-                AddRoleIfNotExist(Guild, "UK (+1)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("6"));
-
-            Module.AddRole("Australia (+10)",
-                7,
-                AddRoleIfNotExist(Guild, "Australia (+10)").Result,
-                EmoteRef.Emotes.GetValueOrDefault("7"));
+            AddTimeZoneRole(Module, 1, TimeManager.GetTimezone("pst"), Guild);
+            AddTimeZoneRole(Module, 2, TimeManager.GetTimezone("az"), Guild);
+            AddTimeZoneRole(Module, 3, TimeManager.GetTimezone("mst"), Guild);
+            AddTimeZoneRole(Module, 4, TimeManager.GetTimezone("cst"), Guild);
+            AddTimeZoneRole(Module, 5, TimeManager.GetTimezone("est"), Guild);
+            AddTimeZoneRole(Module, 6, TimeManager.GetTimezone("0"), Guild);
+            AddTimeZoneRole(Module, 7, TimeManager.GetTimezone("+1"), Guild);
+            AddTimeZoneRole(Module, 8, TimeManager.GetTimezone("+10"), Guild);
 
             GuildManager.GetGuild(Guild).SelfAssign.TimeZones = Module;
 
@@ -172,6 +147,14 @@ namespace HeartFlame.SelfAssign
                     Winner = Role.Position;
 
             return Winner;
+        }
+
+        public static void AddTimeZoneRole(TimeZoneCategory Module, int Pos, TimeZoneInfo TZone, SocketGuild Guild)
+        {
+            Module.AddRole(TZone.DisplayName,
+                Pos,
+                AddRoleIfNotExist(Guild, TZone.DisplayName).Result,
+                EmoteRef.Emotes.GetValueOrDefault(Pos.ToString()));
         }
     }
 }

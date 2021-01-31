@@ -26,6 +26,17 @@ namespace HeartFlame.GuildControl
             Usernames = new CompendiumData();
             Moderation = new ModerationUserData();
             Chat = new ChatData();
+
+            var GlobalUser = GuildManager.GetGlobalUser(this);
+            foreach(var Profile in GlobalUser)
+            {
+                if (Profile.Banner.Badges.Global.Rank1)
+                    Banner.Badges.Global.Rank1 = true;
+                if (Profile.Banner.Badges.Global.Patreon)
+                    Banner.Badges.Global.Patreon = true;
+                if (Profile.Banner.Badges.Global.BetaTester)
+                    Banner.Badges.Global.BetaTester = true;
+            }
         }
 
         [JsonConstructor]

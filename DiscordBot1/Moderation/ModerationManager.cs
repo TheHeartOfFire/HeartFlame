@@ -12,6 +12,8 @@ namespace HeartFlame.Moderation
 {
     public class ModerationManager
     {
+        //TODO: Warning system
+
         /// <summary>
         /// returns true if successful
         /// </summary>
