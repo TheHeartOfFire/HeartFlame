@@ -58,7 +58,7 @@ namespace HeartFlame.SelfAssign
             foreach(var Role in Roles)
             {
                 Role.Position = Roles.IndexOf(Role);
-                Role.Emoji = EmoteRef.Emotes.GetValueOrDefault(Role.Position.ToString()));
+                Role.Emoji = EmoteRef.Emotes.GetValueOrDefault(Role.Position.ToString());
             }
             PersistentData.SaveChangesToJson();
         }
