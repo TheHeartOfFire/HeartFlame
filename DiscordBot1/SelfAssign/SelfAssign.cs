@@ -98,8 +98,10 @@ namespace HeartFlame.SelfAssign
 
         public static Embed GenerateEmbed(RoleCategory Module, string Description)
         {
-            EmbedBuilder Embed = new EmbedBuilder();
-            Embed.Title = $"Name: {Module.Name}\nTitle: {Module.Title}";
+            EmbedBuilder Embed = new EmbedBuilder
+            {
+                Title = $"Name: {Module.Name}\nTitle: {Module.Title}"
+            };
             Embed.WithDescription($"Please select the reaction corresponding to {Description}. Removing your reaction will remove the role from you.");
 
             foreach (var role in Module.Roles)
@@ -154,6 +156,7 @@ namespace HeartFlame.SelfAssign
             Module.AddRole(TZone.DisplayName,
                 Pos,
                 AddRoleIfNotExist(Guild, TZone.DisplayName).Result,
+                TZone,
                 EmoteRef.Emotes.GetValueOrDefault(Pos.ToString()));
         }
     }
