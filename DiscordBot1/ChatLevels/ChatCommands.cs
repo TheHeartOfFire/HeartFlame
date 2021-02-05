@@ -28,7 +28,7 @@ namespace HeartFlame.ChatLevels
 
             var img = await BannerMaker.BuildBannerAsync(DisUser);
 
-            await GuildManager.GetChatChannel(Context, BotGuild).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
+            await BotGuild.GetChatChannel(Context).SendFileAsync(BannerMaker.ToStream(img, System.Drawing.Imaging.ImageFormat.Png), "banner.png");
         }
 
         [Command("Ranking"), Alias("Top", "Leaders", "LeaderBoard", "Leader Board", "rank", "r"), Summary("Get the top 10 chat levels.")]
@@ -61,8 +61,6 @@ namespace HeartFlame.ChatLevels
                 return true;
             return false;
         }
-
-        
 
         public static bool OnlyHexInString(string test)
         {

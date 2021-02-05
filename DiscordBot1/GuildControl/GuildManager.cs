@@ -73,38 +73,14 @@ namespace HeartFlame.GuildControl
             }
         }
 
-        public static IMessageChannel GetChatChannel(SocketCommandContext Context, GuildData Guild)
+        public static GuildUser GetUser(IUser User) => GetUser(((SocketGuildUser)User).Guild, User.Id);
+        public static GuildUser GetUser(SocketGuild Guild, ulong UserId)
         {
-            return GetChatChannel(Context.Channel, Guild);
+            return GetGuild(Guild).GetUser(UserId);
         }
 
-        public static IMessageChannel GetChatChannel(IMessageChannel MessageChannel, GuildData Guild)
-        {
-            if (Guild.Configuration.UseChatChannel)
-                return Program.Client.GetChannel(Guild.Configuration.ChatChannel) as ISocketMessageChannel;
-            return MessageChannel;
-        }
 
-        public static GuildUser GetUser(SocketGuildUser User)
-        {
-            return GetGuild(User).GetUser(User);
-        }
-
-        public static GuildUser GetUser(SocketUser User)
-        {
-            return GetUser((SocketGuildUser)User);
-        }
-
-        public static List<GuildUser> GetGlobalUser(SocketUser User)
-        {
-            return GetGlobalUser(GetUser(User));
-        }
-
-        public static List<GuildUser> GetGlobalUser(SocketGuildUser User)
-        {
-            return GetGlobalUser(GetUser(User));
-        }
-
+        public static List<GuildUser> GetGlobalUser(IUser User) => GetGlobalUser(GetUser(User));
         public static List<GuildUser> GetGlobalUser(GuildUser User)
         {
             var Users = new List<GuildUser>();

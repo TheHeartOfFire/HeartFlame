@@ -48,22 +48,25 @@ namespace HeartFlame.GuildControl
             }
         }
 
+        public bool AddUser(IUser User) => AddUser(User);
         public void AddUser(SocketGuildUser User)
         {
             if (UserExists(User)) return;
             Users.Add(new GuildUser(User));
         }
 
-        public bool UserExists(SocketGuildUser User)
+        public bool UserExists(IUser User) => UserExists(User.Id);
+        public bool UserExists(ulong UserId)
         {
             foreach(var GUser in Users)
             {
-                if (User.Id == GUser.DiscordID)
+                if (UserId == GUser.DiscordID)
                     return true;
             }
             return false;
         }
-        
+
+        public bool RemoveUser(IUser User) => RemoveUser(User);
         public void RemoveUser(SocketGuildUser User)
         {
             foreach (var GUser in Users)
@@ -73,21 +76,7 @@ namespace HeartFlame.GuildControl
             }
         }
 
-        public GuildUser GetUser(SocketGuildUser User)
-        {
-            return GetUser(User.Id);
-        }
-
-        public GuildUser GetUser(SocketUser User)
-        {
-            return GetUser(User.Id);
-        }
-
-        public GuildUser GetUser(IUser User)
-        {
-            return GetUser(User.Id);
-        }
-
+        public GuildUser GetUser(IUser User) => GetUser(User.Id);
         public GuildUser GetUser(ulong UserID)
         {
 
@@ -101,11 +90,8 @@ namespace HeartFlame.GuildControl
             return null;
         }
 
-        public IMessageChannel GetChatChannel(SocketCommandContext Context)
-        {
-            return GetChatChannel(Context.Channel);
-        }
 
+        public IMessageChannel GetChatChannel(SocketCommandContext Context) => GetChatChannel(Context.Channel);
         public IMessageChannel GetChatChannel(IMessageChannel MessageChannel)
         {
             if (Configuration.UseChatChannel)

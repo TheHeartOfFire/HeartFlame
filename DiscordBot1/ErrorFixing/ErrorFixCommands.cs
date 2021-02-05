@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Permissions;
+using HeartFlame.Time;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -57,6 +58,56 @@ namespace HeartFlame.ErrorFixing
             PersistentData.SaveChangesToJson();
 
             await ReplyAsync($"{GUser.Name}'s various profiles have had their badge data updated.");
+        }
+
+        [Command("Time")]
+        public async Task Time()
+        {
+            var Guild = GuildManager.GetGuild(Context.Guild);
+
+            await Context.Guild.DownloadUsersAsync();
+
+            foreach(var User in Context.Guild.Users)
+            {
+                foreach(var Role in User.Roles)
+                {
+                    if (Role.Name.Equals("US Pacific (-7)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("pst")).RoleID));
+                    }
+                    if (Role.Name.Equals("US Mountain (-6)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("mst")).RoleID));
+                    }
+                    if (Role.Name.Equals("US Central (-5)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("cst")).RoleID));
+                    }
+                    if (Role.Name.Equals("US Eastern (-4)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("est")).RoleID));
+                    }
+                    if (Role.Name.Equals("Greenwich (+0)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("gmt")).RoleID));
+                    }
+                    if (Role.Name.Equals("UK (+1)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("west")).RoleID));
+                    }
+                    if (Role.Name.Equals("Australia (+10)"))
+                    {
+                        await User.RemoveRoleAsync(Role);
+                        await User.AddRoleAsync(Context.Guild.GetRole(Guild.SelfAssign.TimeZones.GetRole(TimeManager.GetTimezone("aus")).RoleID));
+                    }
+                }
+            }
         }
     }
 }
