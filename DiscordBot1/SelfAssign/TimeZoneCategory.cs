@@ -6,6 +6,7 @@ namespace HeartFlame.SelfAssign
 {
     public class TimeZoneCategory : RoleCategory
     {
+
         /// <summary>
         /// DO NOT USE. USE THE VERSION WITH TIMEZONEINFO INSTEAD.
         /// </summary>
@@ -39,7 +40,7 @@ namespace HeartFlame.SelfAssign
                 Emoji = Emoji,
                 Position = Position,
                 RoleID = RoleID,
-                TimeZone = TimeZone
+                TimeZoneID = TimeZone.Id
             };
 
             if (Role.Emoji is null)
@@ -69,7 +70,19 @@ namespace HeartFlame.SelfAssign
             {
                 var ZoneRole = Role as TimeZoneRole;
 
-                if (ZoneRole.TimeZone.Equals(TZone))
+                if (ZoneRole.TimeZoneID.Equals(TZone.Id))
+                    return ZoneRole;
+            }
+
+            return null;
+        }
+
+        public TimeZoneRole GetRole(RoleObject role)
+        {
+            foreach (var Role in Roles)
+            {
+                var ZoneRole = Role as TimeZoneRole;
+                if (Role.Equals(role))
                     return ZoneRole;
             }
 

@@ -6,7 +6,7 @@ namespace HeartFlame.SelfAssign
 {
     public class TimeZoneRole : RoleObject
     {
-        public TimeZoneInfo TimeZone { get; set; }
+        public string TimeZoneID { get; set; }
 
         public override int CompareTo(RoleObject other)
         {
@@ -20,7 +20,7 @@ namespace HeartFlame.SelfAssign
             }
             else
             {
-                return TimeZone.BaseUtcOffset.Hours.CompareTo((other as TimeZoneRole).TimeZone.BaseUtcOffset.Hours);
+                return TimeZoneInfo.FindSystemTimeZoneById(TimeZoneID).BaseUtcOffset.Hours.CompareTo(TimeZoneInfo.FindSystemTimeZoneById((other as TimeZoneRole).TimeZoneID).BaseUtcOffset.Hours);
             }
         }
     }

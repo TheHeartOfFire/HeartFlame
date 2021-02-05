@@ -5,26 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Discord.WebSocket;
+using HeartFlame.SelfAssign;
 
 namespace HeartFlame.Time
 {
     public class TimeManager
     {
-        public static SocketRole UserTimezone(SocketGuildUser User)
+        public static RoleObject UserTimezone(IUser User)
         {
             var Guild = GuildManager.GetGuild(User);
-            foreach(var Role in User.Roles)
+            var Roles = ((SocketGuildUser)User).Roles.ToList();
+
+
+            foreach (var Role in Guild.SelfAssign.TimeZones.Roles)
             {
-                if (Guild.SelfAssign.TimeZones.Roles.Exists(x => x.RoleID == Role.Id))
-                    return Role;
+                if (Roles.Exists(x => x.Id == Role.RoleID))
+                    return Guild.SelfAssign.TimeZones.GetRole(Role);
             }
 
-            return User.Guild.EveryoneRole;
-        }
-
-        public static SocketRole UserTimezone(SocketUser User)
-        {
-            return UserTimezone((SocketGuildUser)User);
+            return null;
         }
 
         public static Embed BuildEmbed(SocketUser User)
@@ -56,9 +55,10 @@ namespace HeartFlame.Time
             Embed.AddField(TZone.DisplayName, TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TZone), true);
             TZone = GetTimezone("+10");
             Embed.AddField(TZone.DisplayName, TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TZone), true);
-            IRole userTimeZone = UserTimezone(User);
-            if (userTimeZone != User.Guild.EveryoneRole)
-                Embed.AddField(GUser.Name + " has the following Time Zone.", userTimeZone.Name);
+            //TimeZoneRole userTimeZone = UserTimezone(User) as TimeZoneRole;
+            //if (!(userTimeZone is null))
+            //    Embed.AddField($"{GUser.Name}'s TimeZone is {userTimeZone.TimeZone.StandardName}", 
+            //        $"Their current time is {TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, userTimeZone.TimeZone)}");
             return Embed.Build();
         }
 

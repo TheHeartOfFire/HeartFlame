@@ -9,22 +9,31 @@ using System.Threading.Tasks;
 
 namespace HeartFlame.Time
 {
+    [Group("Time")]
+    [RequireModule(Modules.TIME)]
     public class TimeCommands : ModuleBase<SocketCommandContext>
     {
-        [Command("Time")]
-        [RequireModule(Modules.TIME)]
+
+        [Command("Help"), Alias("?"), Summary("Get all of the commands in the Time Group"), Remarks("Time_Help")]
+        public async Task SelfAssignHelp()
+        {
+            var embeds = Configuration.Configuration_Command.HelpEmbed("Time Help", "Time_Help");
+            foreach (var embed in embeds)
+            {
+                await ReplyAsync("", false, embed);
+            }
+        }
+
+        [Command]
         public async Task Time()
         {
             await Context.Channel.SendMessageAsync("", false, TimeManager.BuildEmbed(Context.User));
         }
 
-        [Command("Time")]
-        [RequireModule(Modules.TIME)]
+        [Command]
         public async Task Time(SocketGuildUser User)
         {
             await Context.Channel.SendMessageAsync("", false, TimeManager.BuildEmbed(User));
         }
-        //TODO: be able to add or remove timezones from the embed
-        //TODOH: Group time commands and add help command.
     }
 }

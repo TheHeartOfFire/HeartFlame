@@ -249,8 +249,9 @@ namespace HeartFlame
         private async Task Client_Log(LogMessage arg)
         {
             Console.WriteLine($"{DateTime.Now} at {arg.Source}: {arg.Message}");//debug log message formatting
-            if (arg.Severity == LogSeverity.Critical || arg.Severity == LogSeverity.Error || arg.Message.Equals("Connecting") || arg.Message.Equals("Disconnected") || arg.Message.Equals("Disconnecting"))
-                ErrorHandling.GlobalErrorLogging(arg.Message, arg.Source); ;
+            if (!(arg.Message is null))
+                if (arg.Severity == LogSeverity.Critical || arg.Severity == LogSeverity.Error || arg.Message.Equals("Connecting") || arg.Message.Equals("Disconnected") || arg.Message.Equals("Disconnecting"))
+                    ErrorHandling.GlobalErrorLogging(arg.Message, arg.Source);
 
             await Task.CompletedTask;
         }
