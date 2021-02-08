@@ -297,7 +297,7 @@ namespace HeartFlame.SelfAssign
 
                     if(TZone.Equals(TimeZoneInfo.Utc))
                     {
-                        //TODOH: Bad Timezone
+                        await ReplyAsync("", false, BadTimeZone(TimeZone));
                         return;
                     }
 
@@ -507,6 +507,13 @@ namespace HeartFlame.SelfAssign
         public static bool CorrectChannel(SocketGuildChannel Channel, ulong MessageID)
         {
             return Channel is IMessageChannel && ((IMessageChannel)Channel).GetMessageAsync(MessageID) != null;
+        }
+
+        public static Embed BadTimeZone(string TimeZone)
+        {
+            var Embed = new EmbedBuilder();
+            Embed.WithDescription($"`{TimeZone}` was not recognized as a valid Timezone.");
+            return Embed.Build();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using HeartFlame.GuildControl;
 using HeartFlame.Permissions;
+using HeartFlame.SelfAssign;
 using HeartFlame.Time;
 using System;
 using System.Collections.Generic;
@@ -67,9 +68,9 @@ namespace HeartFlame.ErrorFixing
 
             await Context.Guild.DownloadUsersAsync();
 
-            foreach(var User in Context.Guild.Users)
+            foreach (var User in Context.Guild.Users)
             {
-                foreach(var Role in User.Roles)
+                foreach (var Role in User.Roles)
                 {
                     if (Role.Name.Equals("US Pacific (-7)"))
                     {
@@ -109,5 +110,41 @@ namespace HeartFlame.ErrorFixing
                 }
             }
         }
+
+        [Command("Time2")]
+        public async Task Time2()
+        {
+            foreach(var Guild in PersistentData.Data.Guilds)
+            {
+                if(Guild.ModuleControl.IncludeSelfAssign && Guild.ModuleControl.IncludeTime)
+                {
+                    if (Guild.SelfAssign.TimeZones.Roles.Count > 0)
+                    {
+                        var NewRoles = new List<TimeZoneRole>();
+
+                        foreach(var Role in Guild.SelfAssign.TimeZones.Roles)
+                        {
+                            NewRoles.Add( new TimeZoneRole
+                            {
+                                Emoji = Role.Emoji,
+                                Name = Role.Name,
+                                Position = Role.Position,
+                                RoleID = Role.RoleID,
+                                TimeZoneID = TimeManager.GetTimezone(Role.Name).Id
+                            });
+                        }
+
+                        Guild.SelfAssign.TimeZones.Roles = new List<RoleObject>();
+                        foreach(var Role in NewRoles)
+                        {
+                            Guild.SelfAssign.TimeZones.AddRole(Role);
+                        }
+                    }
+                }
+            }
+
+            await ReplyAsync("Error fix implimented");
+        }
+
     }
 }

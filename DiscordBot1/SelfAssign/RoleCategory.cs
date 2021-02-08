@@ -25,17 +25,17 @@ namespace HeartFlame.SelfAssign
                 return;
             int Position = GetRole(RoleID).Position;
 
+            Roles.Remove(GetRole(RoleID));
+
             foreach(var Role in Roles)
             {
-                if (Role.RoleID == RoleID)
-                    Roles.Remove(Role);
-
-                if(Role.Position > Position)
+                 if(Role.Position > Position)
                 {
                     Role.Position--;
                     Role.Emoji = GetEmoji(Role);
                 }  
             }
+
             PersistentData.SaveChangesToJson();
         }
 
@@ -106,7 +106,7 @@ namespace HeartFlame.SelfAssign
             if (Role.Name.Equals("Nintendo", StringComparison.OrdinalIgnoreCase))
                 return EmoteRef.Emotes.GetValueOrDefault("Nintendo");
 
-            return EmoteRef.Emotes.GetValueOrDefault(Role.Position.ToString());
+            return EmoteRef.Emotes.GetValueOrDefault((Role.Position+1).ToString());
         }
     }
 }

@@ -26,7 +26,10 @@ namespace HeartFlame.SelfAssign
                     return;
 
                 if (await CheckForSelfAssignMessage(Guild.SelfAssign.TimeZones, Reaction))
+                {
+                    RemoveExtras(Guild.SelfAssign.TimeZones, Reaction);
                     return;
+                }
 
                 foreach (var Module in Guild.SelfAssign.Misc)
                     if (await CheckForSelfAssignMessage(Module, Reaction))
@@ -94,6 +97,24 @@ namespace HeartFlame.SelfAssign
                 }
             }
             return false;
+        }
+
+        private static async void RemoveExtras(RoleCategory Module, SocketReaction Reaction)
+        {
+            var user = (SocketGuildUser)Reaction.User;
+            var guild = user.Guild;
+
+            if (Reaction.MessageId == Module.MsgID)
+            {
+                foreach (var role in Module.Roles)
+                {
+                    if (!role.Emoji.Contains(Reaction.Emote.Name))
+                    {
+                        var Role = guild.GetRole(role.RoleID);
+                        await user.RemoveRoleAsync(Role);
+                    }
+                }
+            }
         }
     }
 }

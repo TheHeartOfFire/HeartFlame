@@ -53,13 +53,36 @@ namespace HeartFlame.SelfAssign
             PersistentData.SaveChangesToJson();
         }
 
+        public void AddRole(TimeZoneRole Role)
+        {
+            if (Roles is null)
+                Roles = new List<RoleObject>();
+
+            if (Roles.Count > 0)
+                foreach (var role in Roles)
+                {
+                    if (role.Position >= Role.Position)
+                    {
+                        role.Position++;
+                        role.Emoji = GetEmoji(role);
+                    }
+                }
+
+
+            if (Role.Emoji is null)
+                Role.Emoji = GetEmoji(Role);
+
+            Roles.Add(Role);
+            Roles.Sort();
+            PersistentData.SaveChangesToJson();
+        }
         public void Sort()
         {
             Roles.Sort();
             foreach(var Role in Roles)
             {
                 Role.Position = Roles.IndexOf(Role);
-                Role.Emoji = EmoteRef.Emotes.GetValueOrDefault(Role.Position.ToString());
+                Role.Emoji = EmoteRef.Emotes.GetValueOrDefault((Role.Position+1).ToString());
             }
             PersistentData.SaveChangesToJson();
         }

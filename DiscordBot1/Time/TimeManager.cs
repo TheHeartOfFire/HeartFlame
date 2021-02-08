@@ -55,10 +55,10 @@ namespace HeartFlame.Time
             Embed.AddField(TZone.DisplayName, TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TZone), true);
             TZone = GetTimezone("+10");
             Embed.AddField(TZone.DisplayName, TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TZone), true);
-            //TimeZoneRole userTimeZone = UserTimezone(User) as TimeZoneRole;
-            //if (!(userTimeZone is null))
-            //    Embed.AddField($"{GUser.Name}'s TimeZone is {userTimeZone.TimeZone.StandardName}", 
-            //        $"Their current time is {TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, userTimeZone.TimeZone)}");
+            TimeZoneRole userTimeZone = UserTimezone(User) as TimeZoneRole;
+            if (!(userTimeZone is null))
+                Embed.AddField($"{GUser.Name}'s TimeZone is {TimeZoneInfo.FindSystemTimeZoneById(userTimeZone.TimeZoneID).StandardName}",
+                    $"Their current time is {TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(userTimeZone.TimeZoneID))}");
             return Embed.Build();
         }
 
@@ -68,21 +68,21 @@ namespace HeartFlame.Time
                 return TimeZoneInfo.FindSystemTimeZoneById("Hawaiian Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Alaska", "-9"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Alaskan Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Pacific", "-8", "pst"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Pacific", "-8", "pst", "(UTC-08:00) Pacific Time (US & Canada)"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Arizona", "az"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Arizona", "az", "(UTC-07:00) Arizona"))
                 return TimeZoneInfo.FindSystemTimeZoneById("US Mountain Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Mountain", "-7", "mst"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Mountain", "-7", "mst", "(UTC-07:00) Mountain Time (US & Canada)"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Central", "-6", "cst"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Central", "-6", "cst", "(UTC-06:00) Central Time (US & Canada)"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Eastern", "-5", "est"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Eastern", "-5", "est", "(UTC-05:00) Eastern Time (US & Canada)"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Atlantic", "-4", "ast"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Atlantic Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Dublin", "London", "gmt", "0", "-0", "+0"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Dublin", "London", "gmt", "0", "-0", "+0", "(UTC+00:00) Dublin, Edinburgh, Lisbon, London"))
                 return TimeZoneInfo.FindSystemTimeZoneById("GMT Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Amsterdam", "+1", "west", "berlin", "rome"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Amsterdam", "+1", "west", "berlin", "rome", "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"))
                 return TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Jerusalem", "+2", "ist", "Israel"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
@@ -100,7 +100,7 @@ namespace HeartFlame.Time
                 return TimeZoneInfo.FindSystemTimeZoneById("China Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Tokyo", "+9", "Japan"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
-            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Australia", "+10", "Sydney", "AUS"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Australia", "+10", "Sydney", "AUS", "(UTC+10:00) Canberra, Melbourne, Sydney"))
                 return TimeZoneInfo.FindSystemTimeZoneById("AUS Eastern Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Soloman Islands", "+11", "CPST"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Central Pacific Standard Time");
