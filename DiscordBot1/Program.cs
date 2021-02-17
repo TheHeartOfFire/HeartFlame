@@ -314,7 +314,7 @@ namespace HeartFlame
                         HasPfx = true;
                 }
 
-            if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos) || HasPfx)) return true;
+            if (Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos) || HasPfx) return true;
             return false;
         }
         //TODOL: Announcements

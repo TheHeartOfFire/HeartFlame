@@ -33,7 +33,7 @@ namespace HeartFlame.ModuleControl
             var Guild = GuildManager.GetGuild(((SocketGuildChannel)Message.Channel).Guild);
 
             await ModerationManager.OnMessageReceived(Message, argpos, Context);
-            if (Guild.ModuleControl.IncludeCustomCommands)
+            if (Guild.ModuleControl.IncludeCustomCommands && Guild.Commands != null)
                 await Guild.Commands.Client_MessageReceived(Message, argpos);
 
         }
