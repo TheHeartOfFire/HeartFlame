@@ -9,125 +9,60 @@ namespace HeartFlame.Permissions
     {
         public static void AddMod(SocketGuildUser User)
         {
-            foreach(var Guild in PersistentData.Data.Guilds)
-            {
-                if(Guild.GuildID == User.Guild.Id)
-                {
-                    foreach(var GUser in Guild.Users)
-                    {
-                        if(GUser.DiscordID == User.Id)
-                        {
-                            GUser.Perms.Mod = true;
-                            GUser.Perms.Admin = false;
-                        }
-                    }
-                }
-            }
+            var GUser = GuildManager.GetUser(User);
+
+            GUser.Perms.Mod = true;
+            GUser.Perms.Admin = false;
             PersistentData.SaveChangesToJson();
         }
 
         public static void AddMod(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
+            foreach (var User in Users)
             {
-                if (Guild.GuildID == Users[0].Guild.Id)
-                {
-                    foreach (var User in Users)
-                    {
-                        foreach(var GUser in Guild.Users)
-                        {
-                            if(GUser.DiscordID == User.Id)
-                            {
-                                GUser.Perms.Mod = true;
-                                GUser.Perms.Admin = false;
-                            }
-                        }
-                    }
-                }
+                var GUser = GuildManager.GetUser(User);
+
+                GUser.Perms.Mod = true;
+                GUser.Perms.Admin = false;
             }
             PersistentData.SaveChangesToJson();
         }
 
         public static void AddAdmin(SocketGuildUser User)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
-            {
-                if (Guild.GuildID == User.Guild.Id)
-                {
-                    foreach (var GUser in Guild.Users)
-                    {
-                        if (GUser.DiscordID == User.Id)
-                        {
-                            GUser.Perms.Admin = true;
-                            GUser.Perms.Mod = false;
-                        }
-                    }
-
-                }
-            }
+            var GUser = GuildManager.GetUser(User);
+            GUser.Perms.Admin = true;
+            GUser.Perms.Mod = false;
             PersistentData.SaveChangesToJson();
         }
 
         public static void AddAdmin(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
+
+            foreach (var User in Users)
             {
-                if (Guild.GuildID == Users[0].Guild.Id)
-                {
-                    foreach (var User in Users)
-                    {
-                        foreach (var GUser in Guild.Users)
-                        {
-                            if (GUser.DiscordID == User.Id)
-                            {
-                                GUser.Perms.Mod = true;
-                                GUser.Perms.Admin = false;
-                            }
-                        }
-                    }
-                }
+                var GUser = GuildManager.GetUser(User);
+
+                GUser.Perms.Mod = true;
+                GUser.Perms.Admin = false;
             }
             PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveMod(SocketGuildUser User)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
-            {
-                if (Guild.GuildID == User.Guild.Id)
-                {
-                    foreach (var GUser in Guild.Users)
-                    {
-                        if (GUser.DiscordID == User.Id)
-                        {
-                            GUser.Perms.Mod = false;
-                        }
-                    }
-                }
-            }
+            GuildManager.GetUser(User).Perms.Mod = false;
             PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveMod(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
+            foreach (var User in Users)
             {
-                if (Guild.GuildID == Users[0].Guild.Id)
+                var GUser = GuildManager.GetUser(User);
+                if (GUser.Perms.Mod)
                 {
-                    foreach (var User in Users)
-                    {
-                        foreach(var GUser in Guild.Users)
-                        {
-                            if(GUser.DiscordID == User.Id)
-                            {
-                                if (GUser.Perms.Mod)
-                                {
-                                    GUser.Perms.Mod = false;
-                                }
-                            }
-                        }
-                    }
-
+                    GUser.Perms.Mod = false;
                 }
             }
             PersistentData.SaveChangesToJson();
@@ -135,42 +70,18 @@ namespace HeartFlame.Permissions
 
         public static void RemoveAdmin(SocketGuildUser User)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
-            {
-                if (Guild.GuildID == User.Guild.Id)
-                {
-                    foreach (var GUser in Guild.Users)
-                    {
-                        if (GUser.DiscordID == User.Id)
-                        {
-                            GUser.Perms.Admin = false;
-                        }
-                    }
-                }
-            }
+            GuildManager.GetUser(User).Perms.Admin = false;
             PersistentData.SaveChangesToJson();
         }
 
         public static void RemoveAdmin(List<SocketGuildUser> Users)
         {
-            foreach (var Guild in PersistentData.Data.Guilds)
+            foreach (var User in Users)
             {
-                if (Guild.GuildID == Users[0].Guild.Id)
+                var GUser = GuildManager.GetUser(User);
+                if (GUser.Perms.Mod)
                 {
-                    foreach (var User in Users)
-                    {
-                        foreach (var GUser in Guild.Users)
-                        {
-                            if (GUser.DiscordID == User.Id)
-                            {
-                                if (GUser.Perms.Mod)
-                                {
-                                    GUser.Perms.Admin = false;
-                                }
-                            }
-                        }
-                    }
-
+                    GUser.Perms.Admin = false;
                 }
             }
             PersistentData.SaveChangesToJson();
