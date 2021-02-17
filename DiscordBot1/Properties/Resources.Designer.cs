@@ -61,6 +61,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: That is not a valid command name. Either a custom command already exists with that name or a different command has that name or alias. Please try again with a different name..
+        /// </summary>
+        internal static string BadCommandName {
+            get {
+                return ResourceManager.GetString("BadCommandName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x: Unfortunately I&apos;m not sure how long that is. I can support Seconds, Minutes, Hours, Days, Weeks, Months and Years. Please check your spelling and try again..
         /// </summary>
         internal static string BadDuration {
@@ -90,6 +99,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: There is no message corresponding to that message ID. Please make sure you have the correct Message ID..
+        /// </summary>
+        internal static string BadMessageID {
+            get {
+                return ResourceManager.GetString("BadMessageID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x: I&apos;m not sure which module that is. Please try again with a valid module..
         /// </summary>
         internal static string BadModule {
@@ -106,6 +124,15 @@ namespace HeartFlame.Properties {
         internal static string BadRGB {
             get {
                 return ResourceManager.GetString("BadRGB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x: A command with that name was not found. Please check you spelling and try again..
+        /// </summary>
+        internal static string CommandNameNotFound {
+            get {
+                return ResourceManager.GetString("CommandNameNotFound", resourceCulture);
             }
         }
         
@@ -155,7 +182,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The chat module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The chat module has not been enabled. Please ask an admin to enable the chat feature if this is in error..
         /// </summary>
         internal static string NotChat {
             get {
@@ -164,7 +191,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the username feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The Username module has not been enabled. Please ask an admin to enable the username feature if this is in error..
         /// </summary>
         internal static string NotComp {
             get {
@@ -182,6 +209,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The custom commands module has not been enabled. Please ask an admin to enable the custom commands feature if this is in error..
+        /// </summary>
+        internal static string NotCustomCommands {
+            get {
+                return ResourceManager.GetString("NotCustomCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x:Uh oh! You do not have permission to do that. You must have the admin server permission to use this command..
         /// </summary>
         internal static string NotGuildAdmin {
@@ -191,7 +227,16 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The bot logging module has not been enabled. Please contact the bot developer to enable the logging feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The join messages module has not been enabled. Please ask an admin to enable the join messages feature if this is in error..
+        /// </summary>
+        internal static string NotJoin {
+            get {
+                return ResourceManager.GetString("NotJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The bot logging module has not been enabled. Please ask an admin to enable the logging feature if this is in error..
         /// </summary>
         internal static string NotLogging {
             get {
@@ -209,7 +254,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The moderation module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The moderation module has not been enabled. Please ask an admin to enable the moderation feature if this is in error..
         /// </summary>
         internal static string NotModeration {
             get {
@@ -227,7 +272,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The permissions module has not been enabled. Please contact the bot developer to enable the permissions feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The permissions module has not been enabled. Please ask an admin to enable the permissions feature if this is in error..
         /// </summary>
         internal static string NotPerms {
             get {
@@ -236,7 +281,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The self assign module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The self assign module has not been enabled. Please ask an admin to enable the self assign feature if this is in error..
         /// </summary>
         internal static string NotSelf {
             get {
@@ -245,7 +290,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The server logging module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The server logging module has not been enabled. Pleaseask an admin to enable the server logging feature if this is in error..
         /// </summary>
         internal static string NotServerLogging {
             get {
@@ -254,7 +299,7 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :x:Hmm. The time module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error..
+        ///   Looks up a localized string similar to :x:Hmm. The time module has not been enabled. Please ask an admin to enable the time feature if this is in error..
         /// </summary>
         internal static string NotTime {
             get {

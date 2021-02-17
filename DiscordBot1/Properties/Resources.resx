@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BadCommandName" xml:space="preserve">
+    <value>:x: That is not a valid command name. Either a custom command already exists with that name or a different command has that name or alias. Please try again with a different name.</value>
+    <comment>Error if command name is already in use</comment>
+  </data>
   <data name="BadDuration" xml:space="preserve">
     <value>:x: Unfortunately I'm not sure how long that is. I can support Seconds, Minutes, Hours, Days, Weeks, Months and Years. Please check your spelling and try again.</value>
     <comment>Error message for bad duration</comment>
@@ -131,6 +135,10 @@ If you typed #FFFFFF please omit the #.</value>
     <value>:x:Uh oh! I dont appear to have a role with the correct Hierarchy position. Either give me a role that is higher on the role list than all of the roles i should manager or move my generated role above the roles i should manage.</value>
     <comment>Error if 403 when modifying roles</comment>
   </data>
+  <data name="BadMessageID" xml:space="preserve">
+    <value>:x: There is no message corresponding to that message ID. Please make sure you have the correct Message ID.</value>
+    <comment>Error if incorrect Join Message ID</comment>
+  </data>
   <data name="BadModule" xml:space="preserve">
     <value>:x: I'm not sure which module that is. Please try again with a valid module.</value>
     <comment>Error message for bad module</comment>
@@ -140,6 +148,10 @@ If you typed #FFFFFF please omit the #.</value>
 Please make sure to type an rgb color code like 255 255 255.\n
 Make sure to leave a space between each value.</value>
     <comment>error for malformed rgb</comment>
+  </data>
+  <data name="CommandNameNotFound" xml:space="preserve">
+    <value>:x: A command with that name was not found. Please check you spelling and try again.</value>
+    <comment>Error if command not found.</comment>
   </data>
   <data name="CreatorID" xml:space="preserve">
     <value>264555514510311424</value>
@@ -162,23 +174,30 @@ Make sure to leave a space between each value.</value>
     <comment>Error message if user is not an Admin</comment>
   </data>
   <data name="NotChat" xml:space="preserve">
-    <value>:x:Hmm. The chat module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error.</value>
+    <value>:x:Hmm. The chat module has not been enabled. Please ask an admin to enable the chat feature if this is in error.</value>
     <comment>Error Message if chat is not enabled.</comment>
   </data>
   <data name="NotComp" xml:space="preserve">
-    <value>:x:Hmm. The Username module has not been enabled. Please contact the bot developer to enable the username feature if this is in error.</value>
+    <value>:x:Hmm. The Username module has not been enabled. Please ask an admin to enable the username feature if this is in error.</value>
     <comment>Error Message if compendium is not enabled.</comment>
   </data>
   <data name="NotCreator" xml:space="preserve">
     <value>:x:You must be the creator of this bot to use this command.</value>
     <comment>Error Message if not Creator</comment>
   </data>
+  <data name="NotCustomCommands" xml:space="preserve">
+    <value>:x:Hmm. The custom commands module has not been enabled. Please ask an admin to enable the custom commands feature if this is in error.</value>
+  </data>
   <data name="NotGuildAdmin" xml:space="preserve">
     <value>:x:Uh oh! You do not have permission to do that. You must have the admin server permission to use this command.</value>
     <comment>Error Message is user is not guild admin</comment>
   </data>
+  <data name="NotJoin" xml:space="preserve">
+    <value>:x:Hmm. The join messages module has not been enabled. Please ask an admin to enable the join messages feature if this is in error.</value>
+    <comment>Error Message if join messages is not enabled.</comment>
+  </data>
   <data name="NotLogging" xml:space="preserve">
-    <value>:x:Hmm. The bot logging module has not been enabled. Please contact the bot developer to enable the logging feature if this is in error.</value>
+    <value>:x:Hmm. The bot logging module has not been enabled. Please ask an admin to enable the logging feature if this is in error.</value>
     <comment>Error Message if bot logging is not enabled.</comment>
   </data>
   <data name="NotMod" xml:space="preserve">
@@ -186,26 +205,26 @@ Make sure to leave a space between each value.</value>
     <comment>Error message if user is not a mod</comment>
   </data>
   <data name="NotModeration" xml:space="preserve">
-    <value>:x:Hmm. The moderation module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error.</value>
+    <value>:x:Hmm. The moderation module has not been enabled. Please ask an admin to enable the moderation feature if this is in error.</value>
   </data>
   <data name="NotOwner" xml:space="preserve">
     <value>:x:You must be the owner of the Discord server to use this command.</value>
     <comment>Error message if not Server Owner</comment>
   </data>
   <data name="NotPerms" xml:space="preserve">
-    <value>:x:Hmm. The permissions module has not been enabled. Please contact the bot developer to enable the permissions feature if this is in error.</value>
+    <value>:x:Hmm. The permissions module has not been enabled. Please ask an admin to enable the permissions feature if this is in error.</value>
     <comment>Error Message if permissions are not enabled.</comment>
   </data>
   <data name="NotSelf" xml:space="preserve">
-    <value>:x:Hmm. The self assign module has not been enabled. Please contact the bot developer to enable the self assign feature if this is in error.</value>
+    <value>:x:Hmm. The self assign module has not been enabled. Please ask an admin to enable the self assign feature if this is in error.</value>
     <comment>Error Message if self assign is not enabled.</comment>
   </data>
   <data name="NotServerLogging" xml:space="preserve">
-    <value>:x:Hmm. The server logging module has not been enabled. Please contact the bot developer to enable the moderation feature if this is in error.</value>
+    <value>:x:Hmm. The server logging module has not been enabled. Pleaseask an admin to enable the server logging feature if this is in error.</value>
     <comment>Error Message if server logging is not enabled.</comment>
   </data>
   <data name="NotTime" xml:space="preserve">
-    <value>:x:Hmm. The time module has not been enabled. Please contact the bot developer to enable the chat feature if this is in error.</value>
+    <value>:x:Hmm. The time module has not been enabled. Please ask an admin to enable the time feature if this is in error.</value>
     <comment>Error message if time is not enabled</comment>
   </data>
   <data name="PatreonLink" xml:space="preserve">

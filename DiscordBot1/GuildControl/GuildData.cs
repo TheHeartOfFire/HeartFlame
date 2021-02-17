@@ -3,6 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using HeartFlame.ChatLevels;
 using HeartFlame.Configuration;
+using HeartFlame.CustomCommands;
+using HeartFlame.JoinMessage;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
 using HeartFlame.ModuleControl;
@@ -21,6 +23,8 @@ namespace HeartFlame.GuildControl
         public SelfAssignData SelfAssign { get; set; }
         public GuildConfigurationData Configuration { get; set; }
         public List<GuildUser> Users { get; set; }
+        public ResponseData Commands { get; set; }
+        public JoinData Join { get; set; }
 
         public GuildData(SocketGuild guild)
         {
@@ -34,6 +38,8 @@ namespace HeartFlame.GuildControl
             SelfAssign = new SelfAssignData();
             Configuration = new GuildConfigurationData();
             Users = new List<GuildUser>();
+            Commands = new ResponseData();
+            Join = new JoinData();
             AddUsers(guild.Users);
         }
         [JsonConstructor]

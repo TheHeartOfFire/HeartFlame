@@ -68,10 +68,37 @@ namespace HeartFlame.ModuleControl
                             return Task.FromResult(PreconditionResult.FromSuccess());
                         else
                             return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotTime));
+
+                    case Modules.COMMANDS:
+                        if (mods.IncludeCustomCommands)
+                            return Task.FromResult(PreconditionResult.FromSuccess());
+                        else
+                            return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotCustomCommands));
+
+                    case Modules.JOINMESSAGES:
+                        if (mods.IncludeJoinMessages)
+                            return Task.FromResult(PreconditionResult.FromSuccess());
+                        else
+                            return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotJoin));
                 }
             }
 
             return Task.FromResult(PreconditionResult.FromError("You must be in a guild to run this command. Wait what? How did you get here?"));
+        }
+
+        public static bool isModuleError(string Message)
+        {
+            if (Message.Equals(Properties.Resources.NotCustomCommands))return true;
+            if (Message.Equals(Properties.Resources.NotTime))return true;
+            if (Message.Equals(Properties.Resources.NotServerLogging))return true;
+            if (Message.Equals(Properties.Resources.NotModeration))return true;
+            if (Message.Equals(Properties.Resources.NotSelf))return true;
+            if (Message.Equals(Properties.Resources.NotPerms))return true;
+            if (Message.Equals(Properties.Resources.NotLogging))return true;
+            if (Message.Equals(Properties.Resources.NotComp))return true;
+            if (Message.Equals(Properties.Resources.NotChat))return true;
+            if (Message.Equals(Properties.Resources.NotJoin)) return true;
+            return false;
         }
     }
 }

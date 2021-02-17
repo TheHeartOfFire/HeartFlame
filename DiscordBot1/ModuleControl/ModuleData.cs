@@ -15,6 +15,8 @@ namespace HeartFlame.ModuleControl
         public bool IncludeModeration { get; set; }
         public bool IncludeServerLogging { get; set; }
         public bool IncludeTime { get; set; }
+        public bool IncludeCustomCommands { get; set; }
+        public bool IncludeJoinMessages { get; set; }
 
         public ModuleData()
         {
@@ -26,6 +28,8 @@ namespace HeartFlame.ModuleControl
             IncludeSelfAssign = true;
             IncludeServerLogging = true;
             IncludeTime = true;
+            IncludeCustomCommands = true;
+            IncludeJoinMessages = true;
         }
     }
 }

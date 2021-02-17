@@ -7,12 +7,26 @@ using System.Collections.Generic;
 using System.Text;
 using HeartFlame.Misc;
 using Discord;
+using System.Threading.Tasks;
 
 namespace HeartFlame.Moderation
 {
     public class ModerationManager
     {
         //TODO: Warning system
+
+        public static async Task OnMessageReceived(SocketUserMessage Message, int argpos, SocketCommandContext Context)
+        {
+            var Guild = GuildManager.GetGuild(Context.Guild);
+
+            if (Message.Content[argpos..].ToLowerInvariant().Equals(Guild.Moderation.JoinCommand))//Handle Join Message
+            {
+                if (!JoinCommand(Message))
+                    await Context.Channel.SendMessageAsync(Properties.Resources.NoJoinRole);
+
+                await Message.DeleteAsync();
+            }
+        }
 
         /// <summary>
         /// returns true if successful

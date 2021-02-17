@@ -142,7 +142,7 @@ namespace HeartFlame.ErrorFixing
                     }
                 }
             }
-
+            PersistentData.SaveChangesToJson();
             await ReplyAsync("Error fix implimented");
         }
 

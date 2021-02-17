@@ -7,6 +7,7 @@ using HeartFlame.Logging;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
 using HeartFlame.ModuleControl;
+using HeartFlame.Permissions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -22,7 +23,7 @@ namespace HeartFlame
 
         private string Token = "";
         private string Game = "";
-        private string Prefix = "";
+        private static string Prefix = "";
         public static readonly bool BetaActive = true;
 
         private static void Main(string[] args)
@@ -274,15 +275,38 @@ namespace HeartFlame
 
             if (Context.Message == null || Context.Message.Content == "") return; //dont want empty messages
             if (Context.User.IsBot) return;//dont want messages from bot
-            int argpos = 0;
 
             if (GuildManager.GetUser(Context.User).Moderation.isMuted()) await arg.DeleteAsync();
 
-            bool HasPfx = false;
 
             GuildManager.UpdateGuildName(Context.Guild);
             ModuleManager.MessageTunnel(arg);
 
+            int argpos = 0;
+            if (!HasPrefix(Context, Message, ref argpos)) return;
+
+            ModuleManager.CommandReceived(Message, Context, argpos);
+
+            var Result = await Commands.ExecuteAsync(Context, argpos, Service).ConfigureAwait(false);
+
+            if (!Result.IsSuccess)
+            {
+                CheckErrors(Result.ErrorReason, arg.Channel);
+                ErrorHandling.DotNetCommandException((CommandError)Result.Error, Context);
+                Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
+            }
+        }
+
+        private async void CheckErrors(string Error, ISocketMessageChannel Channel)
+        {
+            if (RequireModuleAttribute.isModuleError(Error) || RequirePermissionAttribute.isPermissionsError(Error))
+                await Channel.SendMessageAsync(Error);
+
+        }
+
+        private static bool HasPrefix(SocketCommandContext Context, SocketUserMessage Message, ref int argpos)
+        {
+            bool HasPfx = false;
             if (GuildManager.GetGuild(Context.User).Configuration.Prefixes.Count > 0)
                 foreach (var prefix in GuildManager.GetGuild(Context.User).Configuration.Prefixes)
                 {
@@ -290,25 +314,8 @@ namespace HeartFlame
                         HasPfx = true;
                 }
 
-            if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos) || HasPfx)) return;
-            //only want messages with prefix or @bot mention, or guild specific prefix
-
-            
-            if (Message.Content.ToLowerInvariant().Equals(Prefix + GuildManager.GetGuild(Context.Guild.Id).Moderation.JoinCommand))//Handle Join Message
-            {
-                if (!ModerationManager.JoinCommand(Message))
-                    await Context.Channel.SendMessageAsync(Properties.Resources.NoJoinRole);
-
-                await arg.DeleteAsync();
-            }
-
-            var Result = await Commands.ExecuteAsync(Context, argpos, Service).ConfigureAwait(false);
-
-            if (!Result.IsSuccess)
-            {
-                ErrorHandling.DotNetCommandException((CommandError)Result.Error, Context);
-                Console.WriteLine($"{DateTime.Now} at Commands: Something went wrong while evecuting a command. Text: {Context.Message.Content} | Error: {Result.ErrorReason}");//what went wrong?
-            }
+            if (!(Message.HasStringPrefix(Prefix, ref argpos) || Message.HasMentionPrefix(Client.CurrentUser, ref argpos) || HasPfx)) return true;
+            return false;
         }
         //TODOL: Announcements
         //TODOL: Voting / Poll

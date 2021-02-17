@@ -45,5 +45,15 @@ namespace HeartFlame.Permissions
 
             return Task.FromResult(PreconditionResult.FromError("You must be in a guild to run this command. Wait what? How did you get here?"));
         }
+
+        public static bool isPermissionsError(string Message)
+        {
+            if (Message.Equals(Properties.Resources.NotGuildAdmin)) return true;
+            if (Message.Equals(Properties.Resources.NotOwner)) return true;
+            if (Message.Equals(Properties.Resources.NotCreator)) return true;
+            if (Message.Equals(Properties.Resources.NotAdmin)) return true;
+            if (Message.Equals(Properties.Resources.NotMod)) return true;
+            return false;
+        }
     }
 }

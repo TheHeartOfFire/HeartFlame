@@ -13,6 +13,8 @@ namespace HeartFlame.ModuleControl
         COMPENDIUM,
         MODERATION,
         SERVERLOGGING,
-        TIME
+        TIME,
+        COMMANDS,
+        JOINMESSAGES
     }
 }

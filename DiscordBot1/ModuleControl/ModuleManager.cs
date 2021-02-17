@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
 using HeartFlame.ChannelDirector;
@@ -16,21 +17,25 @@ namespace HeartFlame.ModuleControl
     {
         public static void MessageTunnel(SocketMessage arg)
         {
-            foreach(var Guild in PersistentData.Data.Guilds)
-            {
-                if(((SocketGuildChannel)arg.Channel).Guild.Id == Guild.GuildID)
-                {
-                    if(Guild.ModuleControl.IncludeChat) ChatModuleIntegrator.OnMessagePosted(arg); 
-                    
-                    if (Guild.ModuleControl.IncludeTime && arg.Content.Contains("what time", StringComparison.OrdinalIgnoreCase))
-                    {
-                        arg.Channel.SendMessageAsync($"Would you like to know the time? Try `!hf Time`");
-                    }
-                    return;
-                }
+            var Guild = GuildManager.GetGuild(((SocketGuildChannel)arg.Channel).Guild);
 
-                
+            if (Guild.ModuleControl.IncludeChat) ChatModuleIntegrator.OnMessagePosted(arg);
+
+            if (Guild.ModuleControl.IncludeTime && arg.Content.Contains("what time", StringComparison.OrdinalIgnoreCase))
+            {
+                arg.Channel.SendMessageAsync($"Would you like to know the time? Try `!hf Time`");
             }
+             
+        }
+
+        public static async void CommandReceived(SocketUserMessage Message, SocketCommandContext Context, int argpos)
+        {
+            var Guild = GuildManager.GetGuild(((SocketGuildChannel)Message.Channel).Guild);
+
+            await ModerationManager.OnMessageReceived(Message, argpos, Context);
+            if (Guild.ModuleControl.IncludeCustomCommands)
+                await Guild.Commands.Client_MessageReceived(Message, argpos);
+
         }
 
         public static void OnReactionAdded(Cacheable<IUserMessage, ulong> Cache, ISocketMessageChannel Channel, SocketReaction Reaction)
@@ -137,29 +142,47 @@ namespace HeartFlame.ModuleControl
                 case Modules.TIME:
                     Guild.ModuleControl.IncludeServerLogging = Active;
                     break;
+                case Modules.COMMANDS:
+                    Guild.ModuleControl.IncludeCustomCommands = Active;
+                    break;
+                case Modules.JOINMESSAGES:
+                    Guild.ModuleControl.IncludeJoinMessages = Active;
+                    break;
             }
         }
 
         public static Modules? NormalizeModule(string Module)
         {
-            Module = Module.ToLowerInvariant();
-
-            if (Module.Equals("permissions") || Module.Equals("perms"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "permissions", "perms"))
                 return Modules.PERMISSIONS;
-            if (Module.Equals("logging"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "logging", "bot logging", "bl"))
                 return Modules.LOGGING;
-            if (Module.Equals("chat"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "chat"))
                 return Modules.CHAT;
-            if (Module.Equals("selfassign") || Module.Equals("sa") || Module.Equals("self assign") || Module.Equals("s a"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "selfassign", "sa", "self assign", "s a"))
                 return Modules.SELFASSIGN;
-            if (Module.Equals("compendium") || Module.Equals("usernames") || Module.Equals("username"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "compendium", "usernames", "username"))
                 return Modules.COMPENDIUM;
-            if (Module.Equals("moderation") || Module.Equals("mod"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "moderation", "mod"))
                 return Modules.MODERATION;
-            if (Module.Equals("serverlogging") || Module.Equals("server logging") || Module.Equals("sl") || Module.Equals("s l"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module, 
+                "serverlogging", "server logging", "sl", "s l"))
                 return Modules.SERVERLOGGING;
-            if (Module.Equals("time"))
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
+                "time"))
                 return Modules.TIME;
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
+                "commands", "custom commands", "echo"))
+                return Modules.COMMANDS;
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
+                "join", "join messages", "greet", "greetings"))
+                return Modules.JOINMESSAGES;
             return null;
         }
 
@@ -191,6 +214,8 @@ namespace HeartFlame.ModuleControl
             SetModule(Guild, Modules.SELFASSIGN, Active);
             SetModule(Guild, Modules.SERVERLOGGING, Active);
             SetModule(Guild, Modules.TIME, Active);
+            SetModule(Guild, Modules.COMMANDS, Active);
+            SetModule(Guild, Modules.JOINMESSAGES, Active);
             PersistentData.SaveChangesToJson();
         }
     }
