@@ -114,17 +114,17 @@ namespace HeartFlame.ErrorFixing
         [Command("Time2")]
         public async Task Time2()
         {
-            foreach(var Guild in PersistentData.Data.Guilds)
+            foreach (var Guild in PersistentData.Data.Guilds)
             {
-                if(Guild.ModuleControl.IncludeSelfAssign && Guild.ModuleControl.IncludeTime)
+                if (Guild.ModuleControl.IncludeSelfAssign && Guild.ModuleControl.IncludeTime)
                 {
                     if (Guild.SelfAssign.TimeZones.Roles.Count > 0)
                     {
                         var NewRoles = new List<TimeZoneRole>();
 
-                        foreach(var Role in Guild.SelfAssign.TimeZones.Roles)
+                        foreach (var Role in Guild.SelfAssign.TimeZones.Roles)
                         {
-                            NewRoles.Add( new TimeZoneRole
+                            NewRoles.Add(new TimeZoneRole
                             {
                                 Emoji = Role.Emoji,
                                 Name = Role.Name,
@@ -135,7 +135,7 @@ namespace HeartFlame.ErrorFixing
                         }
 
                         Guild.SelfAssign.TimeZones.Roles = new List<RoleObject>();
-                        foreach(var Role in NewRoles)
+                        foreach (var Role in NewRoles)
                         {
                             Guild.SelfAssign.TimeZones.AddRole(Role);
                         }
@@ -144,6 +144,20 @@ namespace HeartFlame.ErrorFixing
             }
             PersistentData.SaveChangesToJson();
             await ReplyAsync("Error fix implimented");
+        }
+        [Command("JoinCustomInit")]
+        public async Task JoinCustomInit()
+        { 
+            foreach(var Guild in PersistentData.Data.Guilds)
+            {
+                if (Guild.Commands is null)
+                    Guild.Commands = new CustomCommands.ResponseData();
+                if (Guild.Join is null)
+                    Guild.Join = new JoinMessage.JoinData();
+            }
+            PersistentData.SaveChangesToJson();
+
+            await ReplyAsync("Join message and Custom command modules initialized for non-null cases.");
         }
 
     }

@@ -57,10 +57,10 @@ namespace HeartFlame.JoinMessage
             }
 
             [Command("Add"), Summary("Add a new message to the list of greetings for new users. `~user~` will be replaced with the user's name"), Priority(1)]
-            public async Task AddMessage(string Message)
+            public async Task AddMessage(params string[] MessageIn)
             {
                 var Guild = GuildManager.GetGuild(Context.Guild);
-                Message = Guild.Join.ParseMessage(Message);
+                var Message = Guild.Join.ParseMessage(string.Join(" ", MessageIn));
 
                 int ID = Guild.Join.AddMessage(Message);
 
