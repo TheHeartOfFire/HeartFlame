@@ -80,6 +80,12 @@ namespace HeartFlame.ModuleControl
                             return Task.FromResult(PreconditionResult.FromSuccess());
                         else
                             return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotJoin));
+
+                    case Modules.PATCHNOTES:
+                        if (mods.IncludePatchNotes)
+                            return Task.FromResult(PreconditionResult.FromSuccess());
+                        else
+                            return Task.FromResult(PreconditionResult.FromError(Properties.Resources.NotPatchNotes));
                 }
             }
 
@@ -98,6 +104,7 @@ namespace HeartFlame.ModuleControl
             if (Message.Equals(Properties.Resources.NotComp))return true;
             if (Message.Equals(Properties.Resources.NotChat))return true;
             if (Message.Equals(Properties.Resources.NotJoin)) return true;
+            if (Message.Equals(Properties.Resources.NotPatchNotes)) return true;
             return false;
         }
     }

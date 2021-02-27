@@ -13,6 +13,7 @@ namespace HeartFlame.ChannelDirector
         CHAT,
         CHANGELOG,
         BOTUPDATES,
-        SELFASSIGN
+        SELFASSIGN,
+        PATCHNOTES
     }
 }

@@ -15,6 +15,7 @@ namespace HeartFlame.ModuleControl
         SERVERLOGGING,
         TIME,
         COMMANDS,
-        JOINMESSAGES
+        JOINMESSAGES,
+        PATCHNOTES
     }
 }

@@ -17,6 +17,7 @@ namespace HeartFlame.ModuleControl
         public bool IncludeTime { get; set; }
         public bool IncludeCustomCommands { get; set; }
         public bool IncludeJoinMessages { get; set; }
+        public bool IncludePatchNotes { get; set; }
 
         public ModuleData()
         {
@@ -30,6 +31,7 @@ namespace HeartFlame.ModuleControl
             IncludeTime = true;
             IncludeCustomCommands = true;
             IncludeJoinMessages = true;
+            IncludePatchNotes = false;
         }
     }
 }

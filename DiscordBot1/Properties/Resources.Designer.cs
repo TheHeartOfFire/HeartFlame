@@ -128,6 +128,15 @@ namespace HeartFlame.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :x: A task with that name already exists. Please try again with a different name..
+        /// </summary>
+        internal static string BadTaskName {
+            get {
+                return ResourceManager.GetString("BadTaskName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to :x: A command with that name was not found. Please check you spelling and try again..
         /// </summary>
         internal static string CommandNameNotFound {
@@ -268,6 +277,15 @@ namespace HeartFlame.Properties {
         internal static string NotOwner {
             get {
                 return ResourceManager.GetString("NotOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :x:Hmm. The patchnotes module has not been enabled. Pleaseask an admin to enable the patchnotes feature if this is in error..
+        /// </summary>
+        internal static string NotPatchNotes {
+            get {
+                return ResourceManager.GetString("NotPatchNotes", resourceCulture);
             }
         }
         

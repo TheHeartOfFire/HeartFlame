@@ -8,6 +8,7 @@ using HeartFlame.JoinMessage;
 using HeartFlame.Misc;
 using HeartFlame.Moderation;
 using HeartFlame.ModuleControl;
+using HeartFlame.PatchNotes;
 using HeartFlame.SelfAssign;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace HeartFlame.GuildControl
         public List<GuildUser> Users { get; set; }
         public ResponseData Commands { get; set; }
         public JoinData Join { get; set; }
+        public PatchNotesData PatchNotes { get; set; }
 
         public GuildData(SocketGuild guild)
         {
@@ -40,6 +42,7 @@ namespace HeartFlame.GuildControl
             Users = new List<GuildUser>();
             Commands = new ResponseData();
             Join = new JoinData();
+            PatchNotes = new PatchNotesData();
             AddUsers(guild.Users);
         }
         [JsonConstructor]
@@ -105,6 +108,12 @@ namespace HeartFlame.GuildControl
             return MessageChannel;
         }
 
-        
+        public IMessageChannel GetPatchChannel(SocketCommandContext Context) => GetPatchChannel(Context.Channel);
+        public IMessageChannel GetPatchChannel(IMessageChannel MessageChannel)
+        {
+            if (PatchNotes.ChannelId != 0)
+                return Program.Client.GetChannel(PatchNotes.ChannelId) as ISocketMessageChannel;
+            return MessageChannel;
+        }
     }
 }

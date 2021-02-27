@@ -148,6 +148,9 @@ namespace HeartFlame.ModuleControl
                 case Modules.JOINMESSAGES:
                     Guild.ModuleControl.IncludeJoinMessages = Active;
                     break;
+                case Modules.PATCHNOTES:
+                    Guild.ModuleControl.IncludePatchNotes = Active;
+                    break;
             }
         }
 
@@ -183,6 +186,9 @@ namespace HeartFlame.ModuleControl
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
                 "join", "join messages", "greet", "greetings"))
                 return Modules.JOINMESSAGES;
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
+                "PatchNotes", "Patch Notes", "patch", "patches"))
+                return Modules.PATCHNOTES;
             return null;
         }
 
@@ -216,6 +222,7 @@ namespace HeartFlame.ModuleControl
             SetModule(Guild, Modules.TIME, Active);
             SetModule(Guild, Modules.COMMANDS, Active);
             SetModule(Guild, Modules.JOINMESSAGES, Active);
+            SetModule(Guild, Modules.PATCHNOTES, Active);
             PersistentData.SaveChangesToJson();
         }
     }

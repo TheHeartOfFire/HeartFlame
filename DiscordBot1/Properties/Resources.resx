@@ -149,6 +149,10 @@ Please make sure to type an rgb color code like 255 255 255.\n
 Make sure to leave a space between each value.</value>
     <comment>error for malformed rgb</comment>
   </data>
+  <data name="BadTaskName" xml:space="preserve">
+    <value>:x: A task with that name already exists. Please try again with a different name.</value>
+    <comment>error if bad task name</comment>
+  </data>
   <data name="CommandNameNotFound" xml:space="preserve">
     <value>:x: A command with that name was not found. Please check you spelling and try again.</value>
     <comment>Error if command not found.</comment>
@@ -210,6 +214,10 @@ Make sure to leave a space between each value.</value>
   <data name="NotOwner" xml:space="preserve">
     <value>:x:You must be the owner of the Discord server to use this command.</value>
     <comment>Error message if not Server Owner</comment>
+  </data>
+  <data name="NotPatchNotes" xml:space="preserve">
+    <value>:x:Hmm. The patchnotes module has not been enabled. Pleaseask an admin to enable the patchnotes feature if this is in error.</value>
+    <comment>Error Message if patchnotes is not enabled.</comment>
   </data>
   <data name="NotPerms" xml:space="preserve">
     <value>:x:Hmm. The permissions module has not been enabled. Please ask an admin to enable the permissions feature if this is in error.</value>

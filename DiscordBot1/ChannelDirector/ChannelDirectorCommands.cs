@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HeartFlame.ChannelDirector
 {
-    [Group("Requirements"), Alias("req", "channels", "chnls")]
+    [Group("Requirements"), Alias("req", "channels", "chnls"), Summary("Commands relating to the generating of required channels.")]
     public partial class ChannelDirectorCommands : ModuleBase<SocketCommandContext>
     {
         [Command("Help"), Alias("", "?"), Summary("Get all of the commands in the Requirements Group"), Remarks("Requirements_Help")]

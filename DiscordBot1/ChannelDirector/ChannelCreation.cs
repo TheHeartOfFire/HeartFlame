@@ -112,6 +112,13 @@ namespace HeartFlame.ChannelDirector
                     "Heart Flame",
                     "subscribing to the changelog for this bot. Please contact the bot owner to set this up if you are unable to");
                     break;
+
+                case ChannelLocations.PATCHNOTES:
+                    CreateChannel(Guild,
+                    "patchnotes",
+                    "Heart Flame",
+                    "subscribing to patchnotes for this bot. Please contact the bot owner to set this up if you are unable to");
+                    break;
             }
 
             PersistentData.SaveChangesToJson();
@@ -143,6 +150,10 @@ namespace HeartFlame.ChannelDirector
                     if (ValueIndependant || Guild.Configuration.Logging.ServerLoggingChannel == 0)
                         Modules.Add(ChannelLocations.SERVERLOG);
             }
+
+            if (Guild.ModuleControl.IncludePatchNotes)
+                if (ValueIndependant || Guild.PatchNotes.ChannelId == 0)
+                    Modules.Add(ChannelLocations.PATCHNOTES);
 
             return Modules;
         }
@@ -197,6 +208,9 @@ namespace HeartFlame.ChannelDirector
 
                 case ChannelLocations.SERVERLOG:
                     return ("Server Log", "For logging server changes.");
+
+                case ChannelLocations.PATCHNOTES:
+                    return ("Patch Notes", "For displaying patch notes");
 
                 default:
                     throw new InvalidOperationException();
