@@ -402,6 +402,41 @@ namespace HeartFlame.SelfAssign
                         Context);
             }
 
+            [Command("Add"), Alias("new"), Summary("Create a new custom self assign module"), Priority(1)]
+            [RequirePermission(Roles.MOD)]
+            public async Task SelfAssignCustom(string Name, string Title, string DividerRoleName, params string[] Roles)
+            {
+                var Msg = await ReplyAsync("Module is loading. Please wait...");
+                var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
+
+                var Module = new RoleCategory() { Name = Name, Title = Title, MsgID = Msg.Id };
+
+                var CreatedRoles = SelfAssign.CreateRoles(Context.Guild, Roles).Result;
+
+                var Embed = SelfAssign.CustomModule(CreatedRoles, Module, "the role you want");
+
+                Module.SetDivider(await SelfAssign.CreateDivider(Context.Guild, DividerRoleName, CreatedRoles));
+                if (BotGuild.SelfAssign.AddCustom(Module) == null)
+                {
+                    await ReplyAsync(Properties.Resources.ModuleExists);
+                    return;
+                }
+
+                Utils.UpdateMessage(Context.Channel, Msg.Id, Embed, true);
+
+                PersistentData.SaveChangesToJson();
+                foreach (var role in Module.Roles)
+                {
+                    await Msg.AddReactionAsync(Emote.Parse(role.Emoji));
+                }
+
+                if (BotGuild.ModuleControl.IncludeLogging)
+                    BotLogging.PrintLogMessage(
+                        MethodBase.GetCurrentMethod().DeclaringType.DeclaringType,
+                    $"A custom Self Assign module named {Name} was created in {Context.Channel.Name}",
+                        Context);
+            }
+
             [Command("Remove"), Alias("rem", "delete", "del"), Summary("Create a new custom console self assign module"), Priority(1)]
             [RequirePermission(Roles.MOD)]
             public async Task SelfAssignRemove(string Name)

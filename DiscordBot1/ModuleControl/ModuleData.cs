@@ -18,6 +18,7 @@ namespace HeartFlame.ModuleControl
         public bool IncludeCustomCommands { get; set; }
         public bool IncludeJoinMessages { get; set; }
         public bool IncludePatchNotes { get; set; }
+        public bool IncludeComp { get; set; }
 
         public ModuleData()
         {
@@ -32,6 +33,7 @@ namespace HeartFlame.ModuleControl
             IncludeCustomCommands = true;
             IncludeJoinMessages = true;
             IncludePatchNotes = false;
+            IncludeComp = true;
         }
     }
 }

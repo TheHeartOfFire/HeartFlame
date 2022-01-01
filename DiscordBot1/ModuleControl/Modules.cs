@@ -16,6 +16,7 @@ namespace HeartFlame.ModuleControl
         TIME,
         COMMANDS,
         JOINMESSAGES,
-        PATCHNOTES
+        PATCHNOTES,
+        COMP
     }
 }

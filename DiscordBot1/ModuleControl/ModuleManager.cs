@@ -151,6 +151,9 @@ namespace HeartFlame.ModuleControl
                 case Modules.PATCHNOTES:
                     Guild.ModuleControl.IncludePatchNotes = Active;
                     break;
+                case Modules.COMP:
+                    Guild.ModuleControl.IncludeComp = Active;
+                    break;
             }
         }
 
@@ -189,6 +192,9 @@ namespace HeartFlame.ModuleControl
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
                 "PatchNotes", "Patch Notes", "patch", "patches"))
                 return Modules.PATCHNOTES;
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, Module,
+                "Comp"))
+                return Modules.COMP;
             return null;
         }
 
@@ -223,6 +229,7 @@ namespace HeartFlame.ModuleControl
             SetModule(Guild, Modules.COMMANDS, Active);
             SetModule(Guild, Modules.JOINMESSAGES, Active);
             SetModule(Guild, Modules.PATCHNOTES, Active);
+            SetModule(Guild, Modules.COMP, Active);
             PersistentData.SaveChangesToJson();
         }
     }

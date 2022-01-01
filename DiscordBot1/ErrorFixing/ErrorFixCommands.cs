@@ -160,5 +160,17 @@ namespace HeartFlame.ErrorFixing
             await ReplyAsync("Join message and Custom command modules initialized for non-null cases.");
         }
 
+        [Command("PatchInit")]
+        public async Task PatchInit()
+        {
+            foreach (var Guild in PersistentData.Data.Guilds)
+            {
+                if (Guild.PatchNotes is null)
+                    Guild.PatchNotes = new PatchNotes.PatchNotesData();
+            }
+            PersistentData.SaveChangesToJson();
+
+            await ReplyAsync("Patch notes module initialized for non-null cases.");
+        }
     }
 }

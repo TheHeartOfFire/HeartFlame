@@ -19,6 +19,14 @@ namespace HeartFlame.SelfAssign
     {
         private static readonly GuildPermissions NoPerms = new GuildPermissions();
 
+        public static async Task<List<SocketRole>> CreateRoles(SocketGuild Guild, string[] Roles)
+        {
+            var output = new List<SocketRole>();
+            foreach (var Role in Roles)
+                output.Add(Guild.GetRole(await AddRoleIfNotExist(Guild, Role)));
+
+            return output;
+        }
 
         public static Embed PrefabConsoleAsync(SocketGuild Guild)
         {
@@ -140,8 +148,24 @@ namespace HeartFlame.SelfAssign
                 Position = MaxPosition(Roles) + 1;
             return await AddRoleIfNotExist(Guild, $"⁣⁣ 	  	  	  	  	 ☚{Name}☛ 	  	  	  	  	 ⁣", new Color(0x2f3136), false, Position);
         }
+        public static async Task<ulong> CreateDivider(SocketGuild Guild, string Name, List<SocketRole> Roles)
+        {
+            var Position = 0;
+            if (!(Roles is null))
+                Position = MaxPosition(Roles) + 1;
+            return await AddRoleIfNotExist(Guild, $"⁣⁣ 	  	  	  	  	 ☚{Name}☛ 	  	  	  	  	 ⁣", new Color(0x2f3136), false, Position);
+        }
 
         private static int MaxPosition(SocketRole[] Roles)
+        {
+            int Winner = 0;
+            foreach (var Role in Roles)
+                if (Role.Position > Winner)
+                    Winner = Role.Position;
+
+            return Winner;
+        }
+        private static int MaxPosition(List<SocketRole> Roles)
         {
             int Winner = 0;
             foreach (var Role in Roles)

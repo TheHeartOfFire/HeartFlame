@@ -86,6 +86,8 @@ namespace HeartFlame.Time
                 return TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Jerusalem", "+2", "ist", "Israel"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time");
+            if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Athens", "Bucharest", "GTB"))
+                return TimeZoneInfo.FindSystemTimeZoneById("GTB Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Moscow", "+3", "rst"))
                 return TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
             if (Utils.AdvancedCompare(StringComparison.OrdinalIgnoreCase, TZone, "Samara", "+4", "rtz3"))

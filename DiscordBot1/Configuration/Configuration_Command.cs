@@ -18,7 +18,7 @@ namespace HeartFlame.Configuration
     [Group("Configuration"), Alias("Config")]
     public class Configuration_Command : ModuleBase<SocketCommandContext>
     {
-        [Command("Help"), Alias("", "?"), Remarks("Config_Help"), Summary("Get all of the commands in the Global Configuration Group.")]
+        [Command("Help"), Alias("", "?"), Remarks("Config_Help"), Summary("Get all of the commands in the Global Configuration Group."), Priority(0)]
         public async Task ConfigHelp()
         {
             var embeds = HelpEmbed("Config Help", "Config_Help");
@@ -33,16 +33,15 @@ namespace HeartFlame.Configuration
         {
             var BotGuild = GuildManager.GetGuild(Context.Guild.Id);
             string chnl;
-            if (channel is null)
-            {
-                BotGuild.Configuration.LogChannel = Context.Channel.Id;
-                chnl = Context.Channel.Name;
-            }
-            else
-            {
-                BotGuild.Configuration.LogChannel = channel.Id;
-                chnl = channel.Name;
-            }
+
+            var usedChannel = channel ?? Context.Channel;
+
+           
+
+                BotGuild.Configuration.LogChannel = usedChannel.Id;
+                chnl = usedChannel.Name;
+            
+
             PersistentData.SaveChangesToJson();
 
             await Context.Channel.SendMessageAsync($"The bot's log channels has been set to {chnl}.");
